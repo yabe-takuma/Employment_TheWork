@@ -11,7 +11,7 @@ public class CameraScript : MonoBehaviour
     {
 
         //unitychanの情報を取得
-        this.player = GameObject.Find("unitychan");
+        this.player = GameObject.Find("Character_Female_Hotel Owner");
 
         //MainCamera(自分自身)とplayerとの相対距離を求める
         offset = transform.position - player.transform.position;

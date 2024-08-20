@@ -16,12 +16,12 @@ public class SerchAreaScript : MonoBehaviour
     void OnTriggerStay(Collider other)
     {
         //プレイヤーキャラクタを発見
-        if (other.tag == "unitychan")
+        if (other.tag == "Player")
         {
             //敵キャラクターの状態を発見
             MoveEnemyScript.EnemyState state = moveEnemy.GetState();
             //敵キャラクターが追いかける状態でなければ追いかける設定に変更
-            if(state != MoveEnemyScript.EnemyState.Chase)
+            if(state == MoveEnemyScript.EnemyState.Wait||state == MoveEnemyScript.EnemyState.Walk)
             {
                 Debug.Log("プレイヤー発見");
                 moveEnemy.SetState(MoveEnemyScript.EnemyState.Chase, other.transform);
@@ -31,7 +31,7 @@ public class SerchAreaScript : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
-        if(other.tag == "unitychan")
+        if(other.tag == "Player")
         {
             Debug.Log("見失う");
             moveEnemy.SetState(MoveEnemyScript.EnemyState.Wait);

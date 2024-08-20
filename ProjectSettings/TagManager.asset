@@ -6,14 +6,19 @@ TagManager:
   tags:
   - unitychan
   - Tree
+  - Z_Arm
+  - Enemy
+  - Collide
+  - Shockwave
+  - Field
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Enemy
   - Water
   - UI
-  - 
+  - Chara
   - 
   - 
   - 

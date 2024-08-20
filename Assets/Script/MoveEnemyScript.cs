@@ -10,7 +10,13 @@ public class MoveEnemyScript : MonoBehaviour
     {
         Walk,
         Wait,
-        Chase
+        Chase,
+        Attack,
+        Freeze,
+        Damage,
+        Dead,
+        Attack2,
+        Attack3
     };
 
     private CharacterController enemyController;
@@ -31,7 +37,7 @@ public class MoveEnemyScript : MonoBehaviour
     //スタート位置
     private Vector3 startPosition;
 
-    
+
 
     //SetPositionスプリクト
     private SetPosition setPosition;
@@ -46,8 +52,19 @@ public class MoveEnemyScript : MonoBehaviour
     private EnemyState state;
     //プレイヤーTransform
     private Transform playerTransform;
-
-  
+    // 攻撃した後のフリーズ時間
+    [SerializeField]
+    private float freezeTime = 0.5f;
+    //攻撃を受けた時のエフェクト
+    [SerializeField]
+    private GameObject damageEffect;
+    [SerializeField]
+    private SphereCollider handCollider;
+    //敵のステータス管理スプリクト
+    [SerializeField]
+    private EnemyStatus enemyStatus;
+    [SerializeField]
+    private int randam;
 
     // Start is called before the first frame update
     void Start()
@@ -86,58 +103,87 @@ public class MoveEnemyScript : MonoBehaviour
                     velocity = direction * walkSpeed;
                 }
 
-
-                //目的地に到着したかどうかの判定
-                if (Vector3.Distance(transform.position, setPosition.GetDestination()) < 1.7f)
+                if (state == EnemyState.Walk)
                 {
-                    Debug.Log("目的地に着いた");
-                    arrived = true;
-                    SetState(EnemyState.Wait);
-                    animator.SetFloat("Speed", 0.0f);
-                }
-                //到着していたら一定時間待つ
 
+
+                    //目的地に到着したかどうかの判定
+                    if (Vector3.Distance(transform.position, setPosition.GetDestination()) < 1.7f)
+                    {
+                        Debug.Log("目的地に着いた");
+                        SetState(EnemyState.Wait);
+                        animator.SetFloat("Speed", 0.0f);
+                    }
+                }
+                else if (state == EnemyState.Chase)
+                {
+                    //攻撃する距離だったら攻撃
+                    if (Vector3.Distance(transform.position, setPosition.GetDestination()) < 1.35f)
+                    {
+                        randam = Random.Range(1, 10);
+                        SetState(EnemyState.Attack);
+                    }
+                   
+                }
             }
            
-
-            velocity.y += Physics.gravity.y * Time.deltaTime;
-            enemyController.Move(velocity * Time.deltaTime);
         }
-        if (state == EnemyState.Wait)
+        //到着していたら一定時間待つ
+        else if (state == EnemyState.Wait)
         {
             elapsedTime += Time.deltaTime;
-        }
-        if (state == EnemyState.Wait)
-        {
-
 
             //待ち時間を超えたら次の目的地を設定
             if (elapsedTime > waitTime)
             {
                 SetState(EnemyState.Walk);
             }
-
         }
+        else if(state ==EnemyState.Freeze)
+        {
+            elapsedTime += Time.deltaTime;
+
+            if (elapsedTime > freezeTime)
+            {
+                SetState(EnemyState.Walk);
+            }
+        }
+            velocity.y += Physics.gravity.y * Time.deltaTime;
+            enemyController.Move(velocity * Time.deltaTime);
+        
+        //if (state == EnemyState.Wait)
+        //{
+        //    elapsedTime += Time.deltaTime;
+        //}
+
+        if(Input.GetKey(KeyCode.Space))
+        {
+            animator.SetBool("Attack2", false);
+            animator.SetBool("Attack3", false);
+        }
+       
     }
 
 
     //敵キャラクターの状態変更メソッド
     public void SetState(EnemyState tempState, Transform targetObj = null)
     {
+        state = tempState;
         if(tempState==EnemyState.Walk)
         {
             arrived = false;
             elapsedTime = 0f;
             state = tempState;
             setPosition.CreateRandomPosition();
-        }else if(tempState == EnemyState.Chase)
-        {
-            state = tempState;
+        }
+        else if(tempState == EnemyState.Chase)
+        { 
             //待機状態から追いかける場合もあるのでoff
             arrived = false;
             //追いかける対象をセット
             playerTransform = targetObj;
-        } else if(tempState ==EnemyState.Wait)
+        } 
+        else if(tempState ==EnemyState.Wait)
         {
             elapsedTime = 0f;
             state = tempState;
@@ -145,10 +191,74 @@ public class MoveEnemyScript : MonoBehaviour
             velocity = Vector3.zero;
             animator.SetFloat("Speed", 0f);
         }
+        else if(tempState ==EnemyState.Attack)
+        {
+            velocity = Vector3.zero;
+            animator.SetFloat("Speed", 0f);
+            animator.SetBool("Attack", true);
+            randam = 0;
+        }
+        else if(tempState == EnemyState.Freeze)
+        {
+            elapsedTime = 0f;
+            velocity = Vector3.zero;
+            animator.SetFloat("Speed", 0f);
+            animator.SetBool("Attack", false);
+            animator.SetBool("Attack2", false);
+            animator.SetBool("Attack3", false);
+        }
+        else if(tempState==EnemyState.Damage)
+        {
+            velocity = Vector3.zero;
+            animator.ResetTrigger("Attack");
+            animator.ResetTrigger("Attack2");
+            animator.ResetTrigger("Attack3");
+            animator.SetTrigger("Damage");
+        }
+        else if(tempState == EnemyState.Dead)
+        {
+            animator.SetTrigger("Dead");
+            Destroy(this.gameObject, 3f);
+            velocity = Vector3.zero;
+        }
+        else if(tempState ==EnemyState.Attack2)
+        {
+            velocity = Vector3.zero;
+            animator.SetFloat("Speed", 0f);
+            animator.SetBool("Attack2", true);
+            randam = 0;
+        }
+        else if(tempState == EnemyState.Attack3)
+        {
+            velocity = Vector3.zero;
+            animator.SetFloat("Speed", 0f);
+            animator.SetBool("Attack3", true);
+            randam = 0;
+        }
     }
     //敵キャラクターの状態取得メソッド
     public EnemyState GetState()
     {
         return state;
     }
+
+    public void TakeDamage(int damage,Vector3 attackedPlace)
+    {
+        SetState(EnemyState.Damage);
+        handCollider.enabled = false;
+        var damageEffectIns = Instantiate<GameObject>(damageEffect);
+        damageEffectIns.transform.position = attackedPlace;
+        Destroy(damageEffectIns, 1f);
+        enemyStatus.SetHp(enemyStatus.GetHp() - damage);
+        if(enemyStatus.GetHp()<=0)
+        {
+            Dead();
+        }
+    }
+
+    void Dead()
+    {
+        SetState(EnemyState.Dead);
+    }
+
 }
