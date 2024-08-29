@@ -14,14 +14,20 @@ public class PlayerScript : MonoBehaviour
     private float walkSpeed;
     [SerializeField]
     private GameObject damageEffect;
+    [SerializeField]
+    private MyStatus myStatus;
+    //ジャンプ力
+    [SerializeField]
+    private float jumpPower = 5f;
 
     public enum MyState
     {
         Normal,
         Damage,
-        Attack
+        Attack,
+        Dead
     };
-
+    [SerializeField]
     private MyState state;
 
     // Start is called before the first frame update
@@ -52,10 +58,15 @@ public class PlayerScript : MonoBehaviour
                 {
                     animator.SetFloat("Speed", 0f);
                 }
-                if (Input.GetButtonDown("Fire3")&&!animator.IsInTransition(0))
+                if (Input.GetKey(KeyCode.Space)&&!animator.IsInTransition(0))
                 {
                     SetState(MyState.Attack);
 
+                }
+                if(Input.GetKey(KeyCode.F))
+                {
+                    animator.SetBool("Jump", true);
+                    velocity.y += jumpPower;
                 }
             }
         }
@@ -63,13 +74,18 @@ public class PlayerScript : MonoBehaviour
         characterController.Move(velocity * walkSpeed * Time.deltaTime);
     }
 
-    public void TakeDamage(Transform enemyTransform,Vector3 attackedPlace)
+    public void TakeDamage(Transform enemyTransform,Vector3 attackedPlace,int damage)
     {
         state = MyState.Damage;
         velocity = Vector3.zero;
         animator.SetTrigger("Damage");
         var damageEffectIns = Instantiate<GameObject>(damageEffect, attackedPlace, Quaternion.identity);
         Destroy(damageEffectIns, 1f);
+        myStatus.SetHp(myStatus.GetHp() - damage);
+        if(myStatus.GetHp()<=0)
+        {
+            Dead();
+        }
     }
 
     public void SetState(MyState tempState)
@@ -83,19 +99,34 @@ public class PlayerScript : MonoBehaviour
             state = MyState.Attack;
             animator.SetTrigger("Attack");
             }
+        else if(tempState == MyState.Dead)
+        {
+            animator.SetTrigger("Dead");
+            velocity = Vector3.zero;
+        }
         
     }
 
-    public void Damage()
+    public void Damage(int damage)
     {
         animator.SetTrigger("Damage");
         velocity = new Vector3(0f, velocity.y, 0f);
         state = MyState.Damage;
+        myStatus.SetHp(myStatus.GetHp() - damage);
+        if (myStatus.GetHp() <= 0)
+        {
+            Dead();
+        }
     }
 
     public MyState GetState()
     {
         return state;
+    }
+
+    void Dead()
+    {
+        SetState(MyState.Dead);
     }
 
 }

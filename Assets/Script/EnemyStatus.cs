@@ -67,6 +67,11 @@ public class EnemyStatus : MonoBehaviour
         hpSlider.value = (float)GetHp() / (float)GetMaxHp();
     }
 
+    public int GetAttackPower()
+    {
+        return attackPower;
+    }
+
     // Update is called once per frame
     void Update()
     {

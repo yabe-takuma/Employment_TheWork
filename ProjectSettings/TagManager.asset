@@ -11,6 +11,8 @@ TagManager:
   - Collide
   - Shockwave
   - Field
+  - Boss
+  - wave
   layers:
   - Default
   - TransparentFX

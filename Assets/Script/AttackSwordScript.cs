@@ -25,6 +25,15 @@ public class AttackSwordScript : MonoBehaviour
                 Debug.Log("敵に当たった");
             }
         }
+        if(other.tag=="Boss")
+        {
+            var trollScript = other.GetComponent<TrollScript>();
+            if(trollScript.GetState()!=TrollScript.TrollState.Dead)
+            {
+                other.GetComponent<TrollScript>().TakeDamage(myStatus.GetAttackPower(), other.ClosestPointOnBounds(transform.position));
+                Debug.Log("ボスに当たった");
+            }
+        }
     }
 
     // Update is called once per frame

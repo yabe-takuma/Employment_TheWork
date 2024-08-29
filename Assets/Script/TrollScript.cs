@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.UI;
 
 public class TrollScript : MonoBehaviour
 {
@@ -11,7 +12,9 @@ public class TrollScript : MonoBehaviour
         patrol,
         chase,
         attack,
-        shockwaveAttack
+        shockwaveAttack,
+        Damage,
+        Dead
     }
 
     private CharacterController characterController;
@@ -30,10 +33,10 @@ public class TrollScript : MonoBehaviour
     private Vector3 velocity = Vector3.zero;
     //歩くスピード
     [SerializeField]
-    private float walkSpeed = 0.5f;
+    private float walkSpeed = 0.01f;
     //追いかけるスピード
     [SerializeField]
-    private float chaseSpeed = 1f;
+    private float chaseSpeed = 0.6f;
     //向きを回転する速さ
     [SerializeField]
     private float rotateSpeed = 2f;
@@ -46,6 +49,14 @@ public class TrollScript : MonoBehaviour
     private Transform attackTargetTransform;
     //攻撃時の対象の位置
     private Vector3 attackTargetPos;
+    //敵のステータス管理スプリクト
+    [SerializeField]
+    private TrollStatus trollStatus;
+    //メイスのコライダー
+    [SerializeField]
+    private CapsuleCollider maceCapsuleCollider;
+    [SerializeField]
+    private SphereCollider maceSphereCollider;
 
     // Start is called before the first frame update
     void Start()
@@ -89,8 +100,9 @@ public class TrollScript : MonoBehaviour
     void SetRandomDestination()
     {
         //最初の位置から有効範囲のランダム位置を取得
-        var randomPos = defaultPos + Random.insideUnitSphere * movementRange;
-        var ray = new Ray(randomPos + Vector3.up * 10f, Vector3.down);
+      
+        var randomPos = Random.insideUnitCircle * 8;
+        var ray = new Ray(randomPos*Vector3.up*10f, Vector3.down);
         RaycastHit hit;
         //目的地が地面になるように再設定
         if(Physics.Raycast(ray,out hit, 100f,LayerMask.GetMask("Field")))
@@ -138,6 +150,18 @@ public class TrollScript : MonoBehaviour
             animator.SetBool("Chase", true);
             attackTargetTransform = playerTransform;
             Debug.Log("チェイス");
+        }
+        else if(trollState == TrollState.Damage)
+        {
+            //velocity = Vector3.zero;
+            //animator.ResetTrigger("Attack");
+            //animator.SetTrigger("Damage");
+        }
+        else if(trollState == TrollState.Dead)
+        {
+            animator.SetTrigger("Dead");
+            Destroy(this.gameObject, 3f);
+            velocity = Vector3.zero;
         }
     }
 
@@ -190,7 +214,6 @@ public class TrollScript : MonoBehaviour
             //追いかける時はキャラクターの向きに回転して進ませる
             var direction = (destination - transform.position).normalized;
             var targetRot = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(destination - transform.position),Time.deltaTime * rotateSpeed);
-            //animator.SetFloat("WalkSpeed", direction.magnitude);
             transform.rotation = Quaternion.Euler(transform.eulerAngles.x, targetRot.eulerAngles.y, transform.eulerAngles.z);
             velocity = transform.forward * chaseSpeed;
             Debug.Log("追いかける");
@@ -225,6 +248,23 @@ public class TrollScript : MonoBehaviour
             SetState(TrollState.idle);
             Debug.Log("トロル強化攻撃");
         }
+    }
+
+    public void TakeDamage(int damage,Vector3 attackedPlace)
+    {
+        //SetState(TrollState.Damage);
+        //maceCapsuleCollider.enabled = false;
+        //maceSphereCollider.enabled = false;
+        trollStatus.SetHp(trollStatus.GetHp() - damage);
+        if(trollStatus.GetHp()<=0)
+        {
+            Dead();
+        }
+    }
+
+    void Dead()
+    {
+        SetState(TrollState.Dead);
     }
 
 }

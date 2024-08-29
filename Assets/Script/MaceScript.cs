@@ -12,12 +12,15 @@ public class MaceScript : MonoBehaviour
     //攻撃相手のCharacterController
     [SerializeField]
     private CharacterController characterController;
+    [SerializeField]
+    private TrollStatus trollStatus;
 
     // Start is called before the first frame update
     void Start()
     {
         //メイスに使っているコライダを全取得
         maceColliders = GetComponents<Collider>();
+        trollStatus = transform.root.GetComponent<TrollStatus>();
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -33,7 +36,7 @@ public class MaceScript : MonoBehaviour
             //キャラがダメージ状態でなければダメージを与える
             if(playerChara.GetState() != PlayerScript.MyState.Damage)
             {
-                playerChara.Damage();
+                playerChara.Damage(trollStatus.GetAttackPower());
                 //キャラが攻撃を受けた時にメイスとの衝突を無効にする
                 IgnoreCollision(true);
             }

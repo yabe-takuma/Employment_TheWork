@@ -6,6 +6,9 @@ public class ChaseCharaScript : MonoBehaviour
 {
    
     private TrollScript trollScript;
+    //HPUI
+    [SerializeField]
+    private GameObject HPUI;
 
     // Start is called before the first frame update
     void Start()
@@ -19,9 +22,11 @@ public class ChaseCharaScript : MonoBehaviour
         if(other.tag == "Player"
             && trollScript.GetState()!= TrollScript.TrollState.chase
             && trollScript.GetState()!= TrollScript.TrollState.attack
-            && trollScript.GetState()!= TrollScript.TrollState.shockwaveAttack)
+            && trollScript.GetState()!= TrollScript.TrollState.shockwaveAttack
+            && trollScript.GetState() != TrollScript.TrollState.Dead)
         {
             trollScript.SetState(TrollScript.TrollState.chase, other.transform);
+            HPUI.SetActive(true);
         }
     }
 
@@ -32,6 +37,7 @@ public class ChaseCharaScript : MonoBehaviour
             && trollScript.GetState() == TrollScript.TrollState.chase)
         {
             trollScript.SetState(TrollScript.TrollState.idle);
+            HPUI.SetActive(false);
         }
     }
 

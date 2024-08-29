@@ -21,7 +21,7 @@ public class PlayerAttackStateBehaviour : StateMachineBehaviour
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if(Input.GetButtonDown("Fire3"))
+        if(Input.GetKey(KeyCode.Space))
         {
             animator.SetBool("Attack", true);
         }
