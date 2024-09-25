@@ -25,7 +25,8 @@ public class CollisionShockwave : MonoBehaviour
         //{
         //    Debug.Log("接触");
         //}
-        if (hit.collider.tag == "wave" && playerScript.GetState() != PlayerScript.MyState.Damage)
+        if (hit.collider.tag == "wave" && playerScript.GetState() != PlayerScript.MyState.Damage
+            &&playerScript.GetState()!=PlayerScript.MyState.Dead)
         {
             playerScript.Damage(trollStatus.GetAttackPower());
             Physics.IgnoreCollision(characterController, hit.collider, true);

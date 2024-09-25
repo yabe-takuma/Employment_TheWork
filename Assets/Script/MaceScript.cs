@@ -34,7 +34,8 @@ public class MaceScript : MonoBehaviour
         {
             var playerChara = collision.gameObject.GetComponent<PlayerScript>();
             //キャラがダメージ状態でなければダメージを与える
-            if(playerChara.GetState() != PlayerScript.MyState.Damage)
+            if(playerChara.GetState() != PlayerScript.MyState.Damage
+                &&playerChara.GetState()!=PlayerScript.MyState.Dead)
             {
                 playerChara.Damage(trollStatus.GetAttackPower());
                 //キャラが攻撃を受けた時にメイスとの衝突を無効にする
