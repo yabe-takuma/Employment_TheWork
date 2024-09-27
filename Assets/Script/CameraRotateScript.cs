@@ -16,6 +16,10 @@ public class CameraRotateScript : MonoBehaviour
     private float maxLimit = 30.0f;
 
     private float minLimit;
+
+
+
+   
     
     // Start is called before the first frame update
     void Start()
@@ -23,19 +27,22 @@ public class CameraRotateScript : MonoBehaviour
         targetPos = targetObj.transform.position;
 
         minLimit = 360 - maxLimit;
+       
     }
 
     // Update is called once per frame
     void Update()
     {
-      
+       
         if(targetObj!= null)
         {
 
             transform.position += targetObj.transform.position - targetPos;
 
             targetPos = targetObj.transform.position;
+            
         }
+      
 
         if(Input.GetKey(KeyCode.C))
         {

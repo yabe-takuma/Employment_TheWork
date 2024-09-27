@@ -58,6 +58,8 @@ public class TrollScript : MonoBehaviour
     [SerializeField]
     private SphereCollider maceSphereCollider;
 
+   
+
     // Start is called before the first frame update
     void Start()
     {
@@ -255,6 +257,8 @@ public class TrollScript : MonoBehaviour
         //SetState(TrollState.Damage);
         //maceCapsuleCollider.enabled = false;
         //maceSphereCollider.enabled = false;
+        //WeakUIをインスタンス化。登場位置はコライダの中心からカメラの方向に少し寄せた位置
+      
         trollStatus.SetHp(trollStatus.GetHp() - damage);
         if(trollStatus.GetHp()<=0)
         {

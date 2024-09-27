@@ -20,6 +20,8 @@ public class PlayerScript : MonoBehaviour
     [SerializeField]
     private float jumpPower = 5f;
 
+    private ChangeEquipScript changeequipscript;
+
     public enum MyState
     {
         Normal,
@@ -34,6 +36,7 @@ public class PlayerScript : MonoBehaviour
     void Start()
     {
         characterController = GetComponent<CharacterController>();
+        changeequipscript = GetComponent<ChangeEquipScript>();
     }
 
     // Update is called once per frame
@@ -58,7 +61,7 @@ public class PlayerScript : MonoBehaviour
                 {
                     animator.SetFloat("Speed", 0f);
                 }
-                if (Input.GetKey(KeyCode.Space)&&!animator.IsInTransition(0))
+                if (Input.GetKey(KeyCode.Space)&&!animator.IsInTransition(0)&& changeequipscript.GetEquipment() >= 1)
                 {
                     SetState(MyState.Attack);
 
@@ -94,11 +97,18 @@ public class PlayerScript : MonoBehaviour
         {
             state = MyState.Normal;
         }else if(tempState==MyState.Attack)
-            {
+        {
             velocity = Vector3.zero;
             state = MyState.Attack;
-            animator.SetTrigger("Attack");
+            if (changeequipscript.GetEquipment() == 1)
+            {
+                animator.SetTrigger("Attack");
             }
+            else if(changeequipscript.GetEquipment()==2)
+            {
+                animator.SetTrigger("AxeAttack");
+            }
+        }
         else if(tempState == MyState.Dead)
         {
             animator.SetTrigger("Dead");

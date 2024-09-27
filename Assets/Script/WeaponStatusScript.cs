@@ -10,13 +10,16 @@ public class WeaponStatusScript : MonoBehaviour
     {
         Sword,
         Gun,
-        Other
+        Other,
+        Axe
     }
 
     [SerializeField]
     private int attackPower;
     [SerializeField]
     private int shotPower;
+    [SerializeField]
+    private int axePower;
     [SerializeField]
     private WeaponType weaponType;
     [SerializeField]
@@ -30,6 +33,11 @@ public class WeaponStatusScript : MonoBehaviour
     public int GetShotPower()
     {
         return shotPower;
+    }
+
+    public int GetAxePower()
+    {
+        return axePower;
     }
 
     public WeaponType GetWeaponType()

@@ -19,6 +19,11 @@ public class ChangeEquipScript : MonoBehaviour
     private ProcessCharaAnimEventScript processCharaAnimEvent;
     private PlayerScript playerScript; 
 
+    public int GetEquipment()
+    {
+        return equipment;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -67,15 +72,22 @@ public class ChangeEquipScript : MonoBehaviour
                 weapon.transform.localEulerAngles = new Vector3(90f, 270f, 0f);
                 weapon.transform.localScale = new Vector3(0.05f, 0.1f, 0.05f);
             }
-            else
+            else if(equipment ==1)
             {
                 weapon.transform.SetParent(equipTransform);
                 weapon.transform.localPosition = new Vector3(-0.27f, 0.005f, 0.092f);
                 weapon.transform.localEulerAngles = new Vector3(291.87f, 6.4f, 80f);
                 weapon.transform.localScale = new Vector3(1f, 1f, 1f);
             }
+            else
+            {
+                weapon.transform.SetParent(equipTransform);
+                weapon.transform.localPosition = new Vector3(0.0f, 0.0f, 0.5f);
+                weapon.transform.localEulerAngles = new Vector3(90.0f, 0.0f, 0.0f);
+                weapon.transform.localScale = new Vector3(1f, 1f, 1f);
+            }
 
-            myStatus.SetEquip(weapon);
+                myStatus.SetEquip(weapon);
         }
 
         

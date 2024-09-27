@@ -87,7 +87,7 @@ CapsuleCollider:
   m_GameObject: {fileID: 1741876239302772530}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_Enabled: 1
+  m_Enabled: 0
   m_Radius: 0.1133434
   m_Height: 1.736715
   m_Direction: 1
@@ -106,6 +106,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackPower: 10
   shotPower: 0
+  axePower: 0
   weaponType: 0
   weaponRange: 0
 --- !u!114 &857624091
@@ -120,3 +121,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46157ae4d18c43940864a14100600477, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sworddamageUI: {fileID: 2634239737505882867, guid: cfd24881922a2934a9ab244ac28c251b, type: 3}

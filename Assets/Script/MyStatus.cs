@@ -46,6 +46,11 @@ public class MyStatus : MonoBehaviour
         return power + weaponStatus.GetAttackPower();
     }
 
+    public int GetAxeAttackPower()
+    {
+        return power + weaponStatus.GetAxePower();
+    }
+
     // Start is called before the first frame update
     void Start()
     {

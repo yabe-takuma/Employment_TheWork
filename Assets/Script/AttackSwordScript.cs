@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class AttackSwordScript : MonoBehaviour
 {
 
     private MyStatus myStatus;
+    [SerializeField]
+    private GameObject sworddamageUI;
 
     // Start is called before the first frame update
     private void Start()
@@ -22,6 +25,8 @@ public class AttackSwordScript : MonoBehaviour
             if (/*enemyScript.GetState() != MoveEnemyScript.EnemyState.Damage &&*/ enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead)
             {
                 other.GetComponent<MoveEnemyScript>().TakeDamage(myStatus.GetAttackPower(),other.ClosestPointOnBounds(transform.position));
+                var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y-1.0f, other.bounds.center.z), Quaternion.identity);
+                swordobj.transform.SetParent(other.transform);
                 Debug.Log("敵に当たった");
             }
         }
@@ -31,6 +36,8 @@ public class AttackSwordScript : MonoBehaviour
             if(trollScript.GetState()!=TrollScript.TrollState.Dead)
             {
                 other.GetComponent<TrollScript>().TakeDamage(myStatus.GetAttackPower(), other.ClosestPointOnBounds(transform.position));
+                var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y-4.0f, other.bounds.center.z), Quaternion.identity);
+                swordobj.transform.SetParent(other.transform);
                 Debug.Log("ボスに当たった");
             }
         }

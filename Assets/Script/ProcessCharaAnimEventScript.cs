@@ -16,6 +16,7 @@ public class ProcessCharaAnimEventScript : MonoBehaviour
     {
         playerscript = GetComponent<PlayerScript>();
         weaponCollider = equip.GetComponentInChildren<Collider>();
+       
     }
 
     public void AttackStart()
@@ -61,6 +62,6 @@ public class ProcessCharaAnimEventScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+       
     }
 }
