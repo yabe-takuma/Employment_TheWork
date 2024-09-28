@@ -35,10 +35,10 @@ public class AttackAxe : MonoBehaviour
         }
         if (other.tag == "Boss")
         {
-            var trollScript = other.GetComponent<TrollScript>();
+            var trollScript = other.GetComponentInParent<TrollScript>();
             if (trollScript.GetState() != TrollScript.TrollState.Dead)
             {
-                other.GetComponent<TrollScript>().TakeDamage(myStatus.GetAxeAttackPower()*2, other.ClosestPointOnBounds(transform.position));
+                other.GetComponentInParent<TrollScript>().TakeDamage(myStatus.GetAxeAttackPower()*2, other.ClosestPointOnBounds(transform.position));
                 var weakobj = Instantiate(weakUI, new Vector3(other.bounds.center.x,other.bounds.center.y-2.0f,other.bounds.center.z), Quaternion.identity);
                 weakobj.transform.SetParent(other.transform);
                 var axedamageobj = Instantiate(axedamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 4.0f, other.bounds.center.z), Quaternion.identity);
