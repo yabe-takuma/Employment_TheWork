@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.UI;
-
+using UnityEngine.AI;
 public class TrollScript : MonoBehaviour
 {
 
@@ -57,7 +57,10 @@ public class TrollScript : MonoBehaviour
     private CapsuleCollider maceCapsuleCollider;
     [SerializeField]
     private SphereCollider maceSphereCollider;
+    //エージェント
+    private NavMeshAgent navMeshAgent;
 
+    private SetPosition1 setposition1;
    
 
     // Start is called before the first frame update
@@ -66,6 +69,8 @@ public class TrollScript : MonoBehaviour
         characterController = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
         defaultPos = transform.position;
+        navMeshAgent = GetComponent<NavMeshAgent>();
+        setposition1 = GetComponent<SetPosition1>();
         SetRandomDestination();
     }
 
@@ -96,20 +101,27 @@ public class TrollScript : MonoBehaviour
         //共通するCharacterControllerの移動処理
         velocity.y += Physics.gravity.y * Time.deltaTime;
         characterController.Move(velocity * Time.deltaTime);
+        
     }
 
     //目的地を設定する
     void SetRandomDestination()
     {
         //最初の位置から有効範囲のランダム位置を取得
+
+        var randomPos = defaultPos + Random.insideUnitSphere*movementRange;
+        var ray = new Ray(randomPos + Vector3.up * 10f, Vector3.down);
       
-        var randomPos = Random.insideUnitCircle * 8;
-        var ray = new Ray(randomPos*Vector3.up*10f, Vector3.down);
         RaycastHit hit;
         //目的地が地面になるように再設定
-        if(Physics.Raycast(ray,out hit, 100f,LayerMask.GetMask("Field")))
+        if (Physics.Raycast(ray, out hit, 100f, LayerMask.GetMask("Field")))
         {
             destination = hit.point;
+        }
+        else
+        {
+            randomPos = Vector3.zero;
+            destination = Vector3.zero;
         }
     }
 
@@ -123,6 +135,7 @@ public class TrollScript : MonoBehaviour
             animator.SetFloat("WalkSpeed", 0f);
             animator.SetBool("Chase", false);
             SetRandomDestination();
+            
             Debug.Log("アイドル");
         }
         else if(trollState == TrollState.patrol)
@@ -136,6 +149,7 @@ public class TrollScript : MonoBehaviour
             velocity = new Vector3(0f, velocity.y, 0f);
             animator.SetTrigger("Attack");
             animator.SetBool("Chase", false);
+            navMeshAgent.isStopped = true;
             Debug.Log("通常攻撃");
         }
         else if(trollState == TrollState.shockwaveAttack)
@@ -145,12 +159,15 @@ public class TrollScript : MonoBehaviour
             velocity = new Vector3(0f, velocity.y, 0f);
             animator.SetTrigger("ShockwaveAttack");
             animator.SetBool("Chase", false);
+            navMeshAgent.isStopped = true;
             Debug.Log("衝撃波攻撃");
         }
         else if(trollState == TrollState.chase)
         {
             animator.SetBool("Chase", true);
             attackTargetTransform = playerTransform;
+            navMeshAgent.SetDestination(attackTargetTransform.position);
+            navMeshAgent.isStopped = false;
             Debug.Log("チェイス");
         }
         else if(trollState == TrollState.Damage)
@@ -158,12 +175,14 @@ public class TrollScript : MonoBehaviour
             //velocity = Vector3.zero;
             //animator.ResetTrigger("Attack");
             //animator.SetTrigger("Damage");
+
         }
         else if(trollState == TrollState.Dead)
         {
             animator.SetTrigger("Dead");
             Destroy(this.gameObject, 3f);
             velocity = Vector3.zero;
+            navMeshAgent.isStopped = true;
         }
     }
 
@@ -188,7 +207,7 @@ public class TrollScript : MonoBehaviour
     private void Patrol()
     {
         //通常移動処理
-        if(characterController.isGrounded)
+        if (characterController.isGrounded)
         {
             velocity = Vector3.zero;
             //目的地の方向を計算し、向きを変えて前方に進める
@@ -199,18 +218,19 @@ public class TrollScript : MonoBehaviour
             velocity = transform.forward * walkSpeed;
         }
         //目的地に着いたらidle状態にする
-        if(Vector3.Distance(transform.position,destination)<0.5f)
+        if (Vector3.Distance(transform.position,destination)<0.5f)
         {
             SetState(TrollState.idle);
+           
         }
     }
     //Chase状態の時の処理
     private void Chase()
     {
         //目的地を毎回設定し直す
-        destination = attackTargetTransform.position;
+        //destination = attackTargetTransform.position;
         //追いかける処理
-        if(characterController.isGrounded)
+        if (characterController.isGrounded)
         {
             velocity = Vector3.zero;
             //追いかける時はキャラクターの向きに回転して進ませる
@@ -260,7 +280,8 @@ public class TrollScript : MonoBehaviour
         //WeakUIをインスタンス化。登場位置はコライダの中心からカメラの方向に少し寄せた位置
       
         trollStatus.SetHp(trollStatus.GetHp() - damage);
-        if(trollStatus.GetHp()<=0)
+        navMeshAgent.isStopped = true;
+        if (trollStatus.GetHp()<=0)
         {
             Dead();
         }
