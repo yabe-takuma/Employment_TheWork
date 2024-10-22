@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CameraRotateScript : MonoBehaviour
@@ -18,33 +19,41 @@ public class CameraRotateScript : MonoBehaviour
     private float minLimit;
 
 
+    [SerializeField]
+    private LockOnTarget lockOnTarget;
 
-   
-    
+    private GameObject locktarget;
+    private float ANGLE_LIMIT_DOWN;
+    private float ANGLE_LIMIT_UP;
+
+
+
     // Start is called before the first frame update
     void Start()
     {
         targetPos = targetObj.transform.position;
 
         minLimit = 360 - maxLimit;
-       
+        ANGLE_LIMIT_DOWN = -100;
+        ANGLE_LIMIT_UP = 100;
+
     }
 
     // Update is called once per frame
     void Update()
     {
-       
-        if(targetObj!= null)
+
+        if (targetObj != null)
         {
 
             transform.position += targetObj.transform.position - targetPos;
 
             targetPos = targetObj.transform.position;
-            
-        }
-      
 
-        if(Input.GetKey(KeyCode.C))
+        }
+
+
+        if (Input.GetKey(KeyCode.C))
         {
             RotateCamera();
         }
@@ -61,6 +70,43 @@ public class CameraRotateScript : MonoBehaviour
             RotateCamera();
         }
 
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            GameObject target = lockOnTarget.getTarget();
+
+            if (target!=null)
+            {
+                locktarget = target;
+            }
+            else
+            {
+                
+                locktarget = null;
+            }
+        }
+
+        if(locktarget)
+        {
+            lockOnTargetObject(locktarget);
+        }else
+        {
+            if(Input.GetKey(KeyCode.U))
+            {
+                RotateCamera();
+            }
+        }
+
+        float angle_x = 360f <= transform.eulerAngles.x ? transform.eulerAngles.x - 720 : transform.eulerAngles.x;
+        transform.eulerAngles = new Vector3(
+            Mathf.Clamp(angle_x, ANGLE_LIMIT_DOWN, ANGLE_LIMIT_UP),
+            transform.eulerAngles.y,
+            transform.eulerAngles.z);
+
+    }
+
+    private void lockOnTargetObject(GameObject target)
+    {
+        transform.LookAt(target.transform, Vector3.up);
     }
 
     private void RotateCamera()
