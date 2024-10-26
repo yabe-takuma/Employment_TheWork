@@ -231,4 +231,13 @@ public class PlayerScript : MonoBehaviour
         move = new Vector3(context.ReadValue<Vector2>().x, 0f, context.ReadValue<Vector2>().y);
     }
 
+    public void OnAttack(InputAction.CallbackContext context)
+    {
+        if (context.started && !animator.IsInTransition(0) && changeequipscript.GetEquipment() >= 1)
+        {
+            SetState(MyState.Attack);
+
+        }
+    }
+
 }

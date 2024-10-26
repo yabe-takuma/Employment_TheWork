@@ -43,7 +43,7 @@
                 },
                 {
                     "name": "Lockon",
-                    "type": "Button",
+                    "type": "Value",
                     "id": "23e2fc27-9019-47c3-a05e-2512c0ba1c90",
                     "expectedControlType": "Button",
                     "processors": "",
@@ -51,10 +51,10 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "New action",
+                    "name": "Attack",
                     "type": "Value",
                     "id": "ee16a41d-d4ca-41df-861c-c4baa331861b",
-                    "expectedControlType": "Vector2",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -317,7 +317,7 @@
                 {
                     "name": "",
                     "id": "425c2946-a027-454f-88b8-a11d78d3bf51",
-                    "path": "<Gamepad>/rightTrigger",
+                    "path": "<Gamepad>/rightStickPress",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
@@ -328,11 +328,11 @@
                 {
                     "name": "",
                     "id": "e973411f-9352-4742-b910-28d6755263a7",
-                    "path": "<Gamepad>/leftStick",
+                    "path": "<XInputController>/buttonEast",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "New action",
+                    "action": "Attack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -8,11 +8,16 @@ public class SensorScript : MonoBehaviour
     public GameObject nowTarget;
     [SerializeField]
     private List<GameObject> enemyList;
+    private Camera cam;
+    [SerializeField]
+    private CameraScript camerascript;
     // Start is called before the first frame update
     void Start()
     {
         nowTarget = null;
         enemyList = new List<GameObject>();
+        cam = Camera.main;
+        camerascript = cam.GetComponent<CameraScript>();
     }
 
     void OnTriggerStay(Collider other)
@@ -23,11 +28,13 @@ public class SensorScript : MonoBehaviour
             if (other.tag == null)
             {
                 nowTarget = other.gameObject;
+                
             }
         }
+        camerascript.GetRockonTarget(nowTarget);
     }
 
-    void OnTiggerExit(Collider other)
+    void OnTriggerExit(Collider other)
     {
         if (other.tag == "Enemy" && !enemyList.Contains(other.gameObject))
         {
@@ -37,6 +44,9 @@ public class SensorScript : MonoBehaviour
             }
             enemyList.Remove(other.gameObject);
         }
+       
+            camerascript.IsRockon();
+        
     }
 
 

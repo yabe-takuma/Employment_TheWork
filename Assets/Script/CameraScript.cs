@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -11,7 +12,7 @@ public class CameraScript : MonoBehaviour
     //プレイヤー追従
     public GameObject TargetObject;
     public float Height = 1.5f;
-    public float Distance = 15.0f;
+    public float Distance = 5.0f;
     public float RotAngle = 0.0f;
     public float HeightAngle = 10.0f;
     public float dis_min = 5.0f;
@@ -37,7 +38,7 @@ public class CameraScript : MonoBehaviour
     public bool rock = false;
     public GameObject RockonTarget;
     public GameObject SertchCircle;
-   
+    private const float fixedDistance = 5f;
 
     
     // Start is called before the first frame update
@@ -113,6 +114,14 @@ public class CameraScript : MonoBehaviour
             {
                 nowPos = RockonTarget.transform.position + new Vector3(cx, cy, cz);
             }
+            
+        }
+        else
+        {
+             cx = Mathf.Sin(nowRotAngle * deg) * Mathf.Cos(nowHeightAngle * deg) * fixedDistance;
+             cz = -Mathf.Cos(nowRotAngle * deg) * Mathf.Cos(nowHeightAngle * deg) * fixedDistance;
+             cy = Mathf.Sin(nowHeightAngle * deg) * fixedDistance;
+            transform.position = nowPos + new Vector3(cx, cy, cz);
         }
         transform.position = nowPos + new Vector3(cx, cy, cz);
 
@@ -138,5 +147,16 @@ public class CameraScript : MonoBehaviour
                 rock = true;
             }
         }
+    }
+    public void IsRockon()
+    {
+        rock = false;
+       
+    }
+
+    public void GetRockonTarget(GameObject target)
+    {
+        RockonTarget = target;
+      
     }
 }
