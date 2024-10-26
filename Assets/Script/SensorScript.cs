@@ -44,8 +44,10 @@ public class SensorScript : MonoBehaviour
             }
             enemyList.Remove(other.gameObject);
         }
-       
-            camerascript.IsRockon();
+        else
+        {
+            //camerascript.IsRockon();
+        }
         
     }
 

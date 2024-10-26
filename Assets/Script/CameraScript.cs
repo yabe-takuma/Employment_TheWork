@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.UIElements;
+//using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -39,6 +39,8 @@ public class CameraScript : MonoBehaviour
     public GameObject RockonTarget;
     public GameObject SertchCircle;
     private const float fixedDistance = 5f;
+    [SerializeField]
+    private float distance;
 
     
     // Start is called before the first frame update
@@ -56,6 +58,8 @@ public class CameraScript : MonoBehaviour
         HeightAngle = Mathf.Clamp(HeightAngle, -40.0f, 60.0f);
         Distance = Mathf.Clamp(Distance, 5.0f, 40.0f);
 
+        
+
         //減衰
         if (EnableAtten)
         {
@@ -66,12 +70,14 @@ public class CameraScript : MonoBehaviour
                 if(RockonTarget!=null)
                 {
                     target = RockonTarget.transform.position;
+                    distance = Vector3.Distance(TargetObject.transform.position, RockonTarget.transform.position);
                 }
                 else
                 {
                     rock = false;
                 }
             }
+          
             var halfPoint = (TargetObject.transform.position + target) / 2;
             var deltaPos = halfPoint - prevTargetPos;
             prevTargetPos = halfPoint;
@@ -99,6 +105,10 @@ public class CameraScript : MonoBehaviour
                 Distance = Mathf.Lerp(Distance, dis_mdl * dis / 10, Time.deltaTime);
             }
             else if (HeightAngle < -3)
+            {
+                rock = false;
+            }
+            if(distance>=10)
             {
                 rock = false;
             }
@@ -142,7 +152,7 @@ public class CameraScript : MonoBehaviour
             {
                 rock = false;
             }
-            else
+            else 
             {
                 rock = true;
             }

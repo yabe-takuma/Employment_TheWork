@@ -171,7 +171,7 @@ public class PlayerScript : MonoBehaviour
 
             var dir = camera3D.RockonTarget.transform.position - this.gameObject.transform.position;
             Quaternion targetRotation = Quaternion.LookRotation(dir);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * turnTimeRate);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation,/* Time.deltaTime **/ turnTimeRate);
         }
         else
         {
