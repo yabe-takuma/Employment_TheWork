@@ -10,6 +10,7 @@ public class PlayerScript : MonoBehaviour
     const float moveSpeed = 5.0f;
 
     private CharacterController characterController;
+    [SerializeField]
     private Vector3 velocity;
     [SerializeField]
     private float walkSpeed;
@@ -74,32 +75,33 @@ public class PlayerScript : MonoBehaviour
                     SetState(MyState.Attack);
 
                 }
-                if (Input.GetKey(KeyCode.F))
-                {
-                    animator.SetBool("Jump", true);
-                    velocity.y += jumpPower;
-                }
+               
             }
-            
+            if (Input.GetKey(KeyCode.F))
+            {
+                animator.SetBool("Jump", true);
+                rb.velocity = new Vector3(0, velocity.y + jumpPower, 0);
+            }
         }
+
         Move();
         //velocity.y += Physics.gravity.y * Time.deltaTime;
-        characterController.Move(rb.velocity * walkSpeed * Time.deltaTime);
-      
+        characterController.Move(rb.velocity  * Time.deltaTime);
 
-        if(lockon.isLockon)
-        {
-            Quaternion from = transform.rotation;
-            var dir = lockon.GetLockonCameraLookAtTransform().position - transform.position;
-            dir.y = 0;
-            Quaternion to = Quaternion.LookRotation(dir);
-            transform.rotation = Quaternion.RotateTowards(from, to, RotateSpeedLockon * Time.deltaTime);
-        }
-        else
-        {
-            //Quaternion from = transform.rotation;
-            //Quaternion to = Quaternion.LookRotation(moveSpeed)
-        }
+     
+        //if(lockon.isLockon)
+        //{
+        //    Quaternion from = transform.rotation;
+        //    var dir = lockon.GetLockonCameraLookAtTransform().position - transform.position;
+        //    dir.y = 0;
+        //    Quaternion to = Quaternion.LookRotation(dir);
+        //    transform.rotation = Quaternion.RotateTowards(from, to, RotateSpeedLockon * Time.deltaTime);
+        //}
+        //else
+        //{
+        //    //Quaternion from = transform.rotation;
+        //    //Quaternion to = Quaternion.LookRotation(moveSpeed)
+        //}
     }
 
     public void TakeDamage(Transform enemyTransform,Vector3 attackedPlace,int damage)
@@ -171,7 +173,7 @@ public class PlayerScript : MonoBehaviour
 
             var dir = camera3D.RockonTarget.transform.position - this.gameObject.transform.position;
             Quaternion targetRotation = Quaternion.LookRotation(dir);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation,/* Time.deltaTime **/ turnTimeRate);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * turnTimeRate);
         }
         else
         {
@@ -187,7 +189,7 @@ public class PlayerScript : MonoBehaviour
 
         if(move.magnitude>0)
         {
-            rb.velocity = moveForward * moveSpeed2 * move.magnitude + new Vector3(0, velocity.y, 0);
+            rb.velocity = moveForward * moveSpeed2 * move.magnitude + new Vector3(0, rb.velocity.y, 0);
         }
         else
         {
@@ -205,6 +207,18 @@ public class PlayerScript : MonoBehaviour
         else
         {
             animator.SetFloat("Speed", 0f);
+        }
+
+        if (transform.position.y < 0)
+        {
+            rb.useGravity = false;
+            rb.velocity = moveForward * moveSpeed2 * move.magnitude + new Vector3(0, velocity.y, 0);
+            //animator.SetBool("Jump", false);
+        }
+        else
+        {
+            rb.useGravity = true;
+            rb.velocity = new Vector3(0, -5, 0);
         }
     }
 

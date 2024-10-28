@@ -41,6 +41,7 @@ public class CameraScript : MonoBehaviour
     private const float fixedDistance = 5f;
     [SerializeField]
     private float distance;
+    public GameObject targetIcon;
 
     
     // Start is called before the first frame update
@@ -139,6 +140,8 @@ public class CameraScript : MonoBehaviour
         if (EnableAtten) transform.rotation = rot;
         else transform.rotation = rot;
 
+        TargetIcon();
+
     }
     public void OnCamera(InputAction.CallbackContext context)
     {
@@ -168,5 +171,18 @@ public class CameraScript : MonoBehaviour
     {
         RockonTarget = target;
       
+    }
+
+    private void TargetIcon()
+    {
+        if (rock&&RockonTarget!=null && RockonTarget.transform.GetChild(1)!=null)
+        {
+            targetIcon.SetActive(true);
+            targetIcon.transform.position = new Vector3(RockonTarget.transform.GetChild(1).transform.position.x,3f, RockonTarget.transform.GetChild(1).transform.position.z);
+        }
+        else
+        {
+            targetIcon.SetActive(false);
+        }
     }
 }
