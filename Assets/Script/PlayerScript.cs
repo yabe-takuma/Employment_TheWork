@@ -38,6 +38,14 @@ public class PlayerScript : MonoBehaviour
 
     private CameraScript camera3D;
 
+    //回避
+    [SerializeField]
+    private bool avoid = false;
+    [SerializeField]
+    private bool mov = true;
+    [SerializeField]
+    private bool rotate = true;
+
     public enum MyState
     {
         Normal,
@@ -83,8 +91,17 @@ public class PlayerScript : MonoBehaviour
                 rb.velocity = new Vector3(0, velocity.y + jumpPower, 0);
             }
         }
-
-        Move();
+        if (mov)
+        {
+            Move();
+        }
+        else
+        {
+            if(avoid)
+            {
+                rb.AddForce(-transform.forward * 5.0f, ForceMode.Impulse);
+            }
+        }
         //velocity.y += Physics.gravity.y * Time.deltaTime;
         characterController.Move(rb.velocity  * Time.deltaTime);
 
@@ -168,16 +185,19 @@ public class PlayerScript : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (camera3D.rock)
+        if (rotate)
         {
+            if (camera3D.rock)
+            {
 
-            var dir = camera3D.RockonTarget.transform.position - this.gameObject.transform.position;
-            Quaternion targetRotation = Quaternion.LookRotation(dir);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * turnTimeRate);
-        }
-        else
-        {
-            Rotation();
+                var dir = camera3D.RockonTarget.transform.position - this.gameObject.transform.position;
+                Quaternion targetRotation = Quaternion.LookRotation(dir);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * turnTimeRate);
+            }
+            else
+            {
+                Rotation();
+            }
         }
     }
 
@@ -220,6 +240,15 @@ public class PlayerScript : MonoBehaviour
             rb.useGravity = true;
             rb.velocity = new Vector3(0, -5, 0);
         }
+
+        if(avoid)
+        {
+            if(move.magnitude>0)
+            {
+                rb.AddForce(moveForward * 50.0f, ForceMode.Impulse);
+            }
+        }
+
     }
 
     private void Rotation()
@@ -252,6 +281,34 @@ public class PlayerScript : MonoBehaviour
             SetState(MyState.Attack);
 
         }
+    }
+
+    public void OnMoveOn() { mov = true; }
+    public void OnMoveOff() { mov = false; }
+    public void RotationOn() { rotate = true; }
+    public void RotationOff() { rotate = false; }
+    public void ActionFlagReset() { avoid = false; }
+
+    public void OnAvoid(InputAction.CallbackContext context)
+    {
+        if(context.started)
+        {
+            if(!avoid)
+            {
+                if(move.magnitude>0)
+                {
+
+                }
+                else
+                {
+                    OnMoveOff();
+                    RotationOff();
+                }
+
+                avoid = true;
+            }
+        }
+      
     }
 
 }

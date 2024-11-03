@@ -6,7 +6,8 @@ public class PlayerAttackStateBehaviour : StateMachineBehaviour
 {
     [SerializeField]
     private ProcessCharaAnimEventScript processCharaAnimEvent;
-
+    [SerializeField]
+    private GameObject SwordEffect;
    
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
@@ -26,6 +27,7 @@ public class PlayerAttackStateBehaviour : StateMachineBehaviour
             animator.SetBool("Attack", true);
         }
         processCharaAnimEvent.AttackStart();
+        
     }
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
