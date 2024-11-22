@@ -13,6 +13,8 @@ TagManager:
   - Field
   - Boss
   - wave
+  - Particle
+  - Explocion
   layers:
   - Default
   - TransparentFX

@@ -66,6 +66,9 @@ public class MoveEnemyScript : MonoBehaviour
     [SerializeField]
     private int randam;
 
+    [SerializeField]
+    private float distance;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -118,12 +121,13 @@ public class MoveEnemyScript : MonoBehaviour
                 else if (state == EnemyState.Chase)
                 {
                     //攻撃する距離だったら攻撃
-                    if (Vector3.Distance(transform.position, setPosition.GetDestination()) < 1.35f)
+                    if (Vector3.Distance(transform.position, setPosition.GetDestination()) < 1.25f)
                     {
                         randam = Random.Range(1, 10);
                         SetState(EnemyState.Attack);
+                       
                     }
-                   
+                    distance = Vector3.Distance(transform.position, setPosition.GetDestination());
                 }
             }
            

@@ -10,6 +10,21 @@ public class ReceiveAttackEventScript : MonoBehaviour
     private GameObject shockwavePrefab;
     [SerializeField]
     private Transform createShockwavePoint;
+    //設置物
+    [SerializeField]
+    private GameObject installationsphere;
+    [SerializeField]
+    private TrollScript trollScript;
+
+    //爆発
+    [SerializeField]
+    private GameObject explocion;
+    //アニメーションの一時停止
+    [SerializeField]
+    private Animator animator;
+    [SerializeField]
+    private int EndStop;
+    private bool IsEndStop;
 
     // Start is called before the first frame update
     void Start()
@@ -21,21 +36,56 @@ public class ReceiveAttackEventScript : MonoBehaviour
     public void StartAttack()
     {
         mace.ChangeEnableAttack(true);
+        Debug.Log("メイス攻撃開始");
     }
     //攻撃終了時
     public void EndAttack()
     {
         mace.ChangeEnableAttack(false);
+        Debug.Log("メイス攻撃終了");
+    }
+
+    public void DuringAttack()
+    {
+        if (trollScript.GetExplocion())
+        {
+            IsEndStop = true;
+            animator.SetFloat("MovingSpeed", 0.0f);
+        }
     }
     //衝撃波発生
     public void CreateShockwave()
     {
-        Instantiate(shockwavePrefab, createShockwavePoint.position, shockwavePrefab.transform.rotation);
+        if (trollScript.GetShockwave())
+        {
+            Instantiate(shockwavePrefab, createShockwavePoint.position, shockwavePrefab.transform.rotation);
+            Debug.Log("衝撃波発動");
+        }
+        else if (trollScript.GetInstallation())
+        {
+            Instantiate(installationsphere, createShockwavePoint.position, installationsphere.transform.rotation);
+            Debug.Log("設置物配置完了");
+        }
+        else if (trollScript.GetExplocion())
+        {
+            Instantiate(explocion, createShockwavePoint.position, explocion.transform.rotation);
+            Debug.Log("設置物配置完了");
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if(IsEndStop==true)
+        {
+            EndStop++;
+        }
+
+        if (EndStop >= 500)
+        {
+            animator.SetFloat("MovingSpeed", 1.0f);
+            EndStop = 0;
+            IsEndStop = false;
+        }
     }
 }

@@ -62,7 +62,7 @@ public class ParticleScript : MonoBehaviour
             if(numEnter!=0||numInside !=0)
             {
                 Debug.Log("接触");
-                if(playerScript.GetState()!=PlayerScript.MyState.Damage)
+                if(playerScript.GetState()!=PlayerScript.MyState.Damage&&playerScript.GetAvoid()==false)
                 {
                     playerScript.Damage(1);
                 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Playables;
 
 public class PlayerScript : MonoBehaviour
 {
@@ -45,6 +46,8 @@ public class PlayerScript : MonoBehaviour
     private bool mov = true;
     [SerializeField]
     private bool rotate = true;
+    [SerializeField]
+    private PlayableDirector[] timeline;
 
     public enum MyState
     {
@@ -293,16 +296,20 @@ public class PlayerScript : MonoBehaviour
     {
         if(context.started)
         {
-            if(!avoid)
+            if(!avoid&&state!=MyState.Damage)
             {
                 if(move.magnitude>0)
                 {
-
+                    timeline[0].Play();
+                    RotationOff();
+                    Debug.Log("後ろ回避");
                 }
                 else
                 {
+                    timeline[1].Play();
                     OnMoveOff();
                     RotationOff();
+                    Debug.Log("移動回避");
                 }
 
                 avoid = true;
@@ -310,5 +317,12 @@ public class PlayerScript : MonoBehaviour
         }
       
     }
+
+    public bool GetAvoid()
+    {
+        return avoid;
+    }
+
+    
 
 }

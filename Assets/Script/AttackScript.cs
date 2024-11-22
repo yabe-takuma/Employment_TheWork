@@ -7,6 +7,9 @@ public class AttackScript : MonoBehaviour
     [SerializeField]
     private EnemyStatus enemyStatus;
 
+    [SerializeField]
+    private PlayerScript playerScript;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -21,7 +24,7 @@ public class AttackScript : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (gameObject.CompareTag("Z_Arm") && other.tag == "Player")
+        if (gameObject.CompareTag("Z_Arm") && other.tag == "Player"&&playerScript.GetAvoid()==false)
         {
             Debug.Log("当たり");
             other.GetComponent<PlayerScript>().TakeDamage(transform.root, other.ClosestPoint(transform.position), enemyStatus.GetAttackPower());

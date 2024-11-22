@@ -10,6 +10,8 @@ public class ChaseCharaScript : MonoBehaviour
     [SerializeField]
     private GameObject HPUI;
 
+    private GameObject target;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -27,7 +29,9 @@ public class ChaseCharaScript : MonoBehaviour
         {
             trollScript.SetState(TrollScript.TrollState.chase, other.transform);
             HPUI.SetActive(true);
+            target = other.gameObject;
         }
+       
     }
 
     private void OnTriggerExit(Collider other)
@@ -38,12 +42,19 @@ public class ChaseCharaScript : MonoBehaviour
         {
             trollScript.SetState(TrollScript.TrollState.idle);
             HPUI.SetActive(false);
+            target = null;
         }
+       
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    public GameObject GetTarget()
+    {
+        return this.target;
     }
 }

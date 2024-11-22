@@ -22,7 +22,7 @@ public class SensorScript : MonoBehaviour
 
     void OnTriggerStay(Collider other)
     {
-        if (other.tag == "Enemy" && !enemyList.Contains(other.gameObject))
+        if (other.tag == "Enemy"||other.tag=="Boss" && !enemyList.Contains(other.gameObject))
         {
             enemyList.Add(other.gameObject);
             if (other.tag == null)
@@ -36,7 +36,7 @@ public class SensorScript : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
-        if (other.tag == "Enemy" && !enemyList.Contains(other.gameObject))
+        if (other.tag == "Enemy"||other.tag=="Boss" && !enemyList.Contains(other.gameObject))
         {
             if (other.tag == null)
             {
