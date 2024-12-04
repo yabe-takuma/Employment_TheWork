@@ -69,6 +69,9 @@ public class MoveEnemyScript : MonoBehaviour
     [SerializeField]
     private float distance;
 
+    [SerializeField]
+    private TrollScript trollScript;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -81,89 +84,92 @@ public class MoveEnemyScript : MonoBehaviour
         arrived = false;
         elapsedTime = 0f;
         SetState(EnemyState.Walk);
+        handCollider = GetComponentInChildren<SphereCollider>();
     }
 
     // Update is called once per frame
     void Update()
     {
-
-        //見回りまたはキャラクターを追いかける状態
-        if (state == EnemyState.Walk || state == EnemyState.Chase)
+        if (trollScript.GetState() != TrollScript.TrollState.Dead)
         {
-            if (!arrived)
+            //見回りまたはキャラクターを追いかける状態
+            if (state == EnemyState.Walk || state == EnemyState.Chase)
             {
-                //キャラクターを追いかける状態であればキャラクターの目的地を再設定
-                if (state == EnemyState.Chase)
+                if (!arrived)
                 {
-                    setPosition.SetDestination(playerTransform.position);
-                }
-                if (enemyController.isGrounded)
-                {
-                    velocity = Vector3.zero;
-                    animator.SetFloat("Speed", 2.0f);
-                    direction = (setPosition.GetDestination() - transform.position).normalized;
-                    transform.LookAt(new Vector3(setPosition.GetDestination().x, transform.position.y, setPosition.GetDestination().z));
-                    velocity = direction * walkSpeed;
-                }
-
-                if (state == EnemyState.Walk)
-                {
-
-
-                    //目的地に到着したかどうかの判定
-                    if (Vector3.Distance(transform.position, setPosition.GetDestination()) < 1.7f)
+                    //キャラクターを追いかける状態であればキャラクターの目的地を再設定
+                    if (state == EnemyState.Chase)
                     {
-                        Debug.Log("目的地に着いた");
-                        SetState(EnemyState.Wait);
-                        animator.SetFloat("Speed", 0.0f);
+                        setPosition.SetDestination(playerTransform.position);
+                    }
+                    if (enemyController.isGrounded)
+                    {
+                        velocity = Vector3.zero;
+                        animator.SetFloat("Speed", 2.0f);
+                        direction = (setPosition.GetDestination() - transform.position).normalized;
+                        transform.LookAt(new Vector3(setPosition.GetDestination().x, transform.position.y, setPosition.GetDestination().z));
+                        velocity = direction * walkSpeed;
+                    }
+
+                    if (state == EnemyState.Walk)
+                    {
+
+
+                        //目的地に到着したかどうかの判定
+                        if (Vector3.Distance(transform.position, setPosition.GetDestination()) < 1.7f)
+                        {
+                            Debug.Log("目的地に着いた");
+                            SetState(EnemyState.Wait);
+                            animator.SetFloat("Speed", 0.0f);
+                        }
+                    }
+                    else if (state == EnemyState.Chase)
+                    {
+                        //攻撃する距離だったら攻撃
+                        if (Vector3.Distance(transform.position, setPosition.GetDestination()) < 1.25f)
+                        {
+                            randam = Random.Range(1, 10);
+                            SetState(EnemyState.Attack);
+
+                        }
+                        distance = Vector3.Distance(transform.position, setPosition.GetDestination());
                     }
                 }
-                else if (state == EnemyState.Chase)
+
+            }
+            //到着していたら一定時間待つ
+            else if (state == EnemyState.Wait)
+            {
+                elapsedTime += Time.deltaTime;
+
+                //待ち時間を超えたら次の目的地を設定
+                if (elapsedTime > waitTime)
                 {
-                    //攻撃する距離だったら攻撃
-                    if (Vector3.Distance(transform.position, setPosition.GetDestination()) < 1.25f)
-                    {
-                        randam = Random.Range(1, 10);
-                        SetState(EnemyState.Attack);
-                       
-                    }
-                    distance = Vector3.Distance(transform.position, setPosition.GetDestination());
+                    SetState(EnemyState.Walk);
                 }
             }
-           
-        }
-        //到着していたら一定時間待つ
-        else if (state == EnemyState.Wait)
-        {
-            elapsedTime += Time.deltaTime;
-
-            //待ち時間を超えたら次の目的地を設定
-            if (elapsedTime > waitTime)
+            else if (state == EnemyState.Freeze)
             {
-                SetState(EnemyState.Walk);
-            }
-        }
-        else if(state ==EnemyState.Freeze)
-        {
-            elapsedTime += Time.deltaTime;
+                elapsedTime += Time.deltaTime;
 
-            if (elapsedTime > freezeTime)
-            {
-                SetState(EnemyState.Walk);
+                if (elapsedTime > freezeTime)
+                {
+                    SetState(EnemyState.Walk);
+                }
             }
-        }
             velocity.y += Physics.gravity.y * Time.deltaTime;
             enemyController.Move(velocity * Time.deltaTime);
-        
-        //if (state == EnemyState.Wait)
-        //{
-        //    elapsedTime += Time.deltaTime;
-        //}
 
-        if(Input.GetKey(KeyCode.Space))
-        {
-            animator.SetBool("Attack2", false);
-            animator.SetBool("Attack3", false);
+            //if (state == EnemyState.Wait)
+            //{
+            //    elapsedTime += Time.deltaTime;
+            //}
+
+            if (Input.GetKey(KeyCode.Space))
+            {
+                animator.SetBool("Attack2", false);
+                animator.SetBool("Attack3", false);
+            }
         }
        
     }
@@ -263,6 +269,16 @@ public class MoveEnemyScript : MonoBehaviour
     void Dead()
     {
         SetState(EnemyState.Dead);
+    }
+
+    public void SetDamageEffect(GameObject gameobject)
+    {
+        damageEffect = gameobject;
+    }
+
+    public void SetTrollScript(TrollScript trollscript)
+    {
+        trollScript = trollscript;
     }
 
 }

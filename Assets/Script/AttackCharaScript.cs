@@ -17,6 +17,13 @@ public class AttackCharaScript : MonoBehaviour
     private ChaseCharaScript chaseScript;
     [SerializeField]
     private float distance;
+
+    [SerializeField]
+    private TrollStatus trollstatus;
+
+    [SerializeField]
+    private int hp;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -43,26 +50,26 @@ public class AttackCharaScript : MonoBehaviour
 
             distance = Vector3.Distance(trollScript.transform.position, chaseScript.GetTarget().transform.position);
             //ランダムに攻撃を振り分ける
-            if (/*caunter <= 0.1f*/distance > 9.0f && distance < 10.0f)
+            if (distance > 9.0f && distance < 10.0f && trollstatus.GetHp()>=trollstatus.GetMaxHp()/2)
             {
                 trollScript.SetState(TrollScript.TrollState.attack, other.transform);
                 trollScript.SetState(TrollScript.TrollState.chase, other.transform);
                 Debug.Log("攻撃1");
 
             }
-            else if (/*caunter >= 0.2f&& caunter <= 0.8f*/distance > 6.0f && distance < 8.0f)
+            else if (distance > 6.0f && distance < 8.0f && trollstatus.GetHp() >= trollstatus.GetMaxHp() / 2)
             {
                 trollScript.SetState(TrollScript.TrollState.shockwaveAttack, other.transform);
                 trollScript.SetState(TrollScript.TrollState.chase, other.transform);
                 Debug.Log("攻撃2");
             }
-            else if(distance>3.0f&&distance<5.0f)
+            else if(distance>3.0f&&distance<5.0f && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2)
             {
                 trollScript.SetState(TrollScript.TrollState.installation, other.transform);
                 //trollScript.SetState(TrollScript.TrollState.chase, other.transform);
                 Debug.Log("攻撃3");
             }
-            else if (distance > 11.0f && distance < 15.0f)
+            else if (distance > 11.0f && distance < 15.0f && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2)
             {
                 trollScript.SetState(TrollScript.TrollState.explocion, other.transform);
                 //trollScript.SetState(TrollScript.TrollState.chase, other.transform);
@@ -82,6 +89,6 @@ public class AttackCharaScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-      
+        hp = trollstatus.GetHp();
     }
 }

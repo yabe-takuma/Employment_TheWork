@@ -9,6 +9,8 @@ public class PlayerScript : MonoBehaviour
     public Rigidbody rb;
     public Animator animator;
     const float moveSpeed = 5.0f;
+    [SerializeField]
+    private Vector3 velo;
 
     private CharacterController characterController;
     [SerializeField]
@@ -49,6 +51,13 @@ public class PlayerScript : MonoBehaviour
     [SerializeField]
     private PlayableDirector[] timeline;
 
+    private bool isJump;
+
+    [SerializeField]
+    private GameObject gameoverUI;
+
+    private int startavoidcooltime;
+
     public enum MyState
     {
         Normal,
@@ -69,11 +78,13 @@ public class PlayerScript : MonoBehaviour
         rb = this.gameObject.GetComponent<Rigidbody>();
         //rb.constraints = RigidbodyConstraints.FreezeRotation;
         camera3D = Camera.main.GetComponent<CameraScript>();
+        gameoverUI.SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
+        velo=rb.velocity;
         if (state == MyState.Normal)
         {
             if (characterController.isGrounded)
@@ -86,14 +97,23 @@ public class PlayerScript : MonoBehaviour
                     SetState(MyState.Attack);
 
                 }
+                if (Input.GetKeyDown(KeyCode.F))
+                {
+                    animator.SetBool("Jump", true);
+                    rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+                    rb.velocity = new Vector3(0, rb.velocity.y + jumpPower, 0);
+                    isJump = true;
+                }
+                else
+                {
+                    isJump = false;
+                   
+                }
                
             }
-            if (Input.GetKey(KeyCode.F))
-            {
-                animator.SetBool("Jump", true);
-                rb.velocity = new Vector3(0, velocity.y + jumpPower, 0);
-            }
+            
         }
+        
         if (mov)
         {
             Move();
@@ -105,33 +125,27 @@ public class PlayerScript : MonoBehaviour
                 rb.AddForce(-transform.forward * 5.0f, ForceMode.Impulse);
             }
         }
+
+        if(startavoidcooltime<10)
+        {
+            startavoidcooltime++;
+        }
+
         //velocity.y += Physics.gravity.y * Time.deltaTime;
         characterController.Move(rb.velocity  * Time.deltaTime);
-
-     
-        //if(lockon.isLockon)
-        //{
-        //    Quaternion from = transform.rotation;
-        //    var dir = lockon.GetLockonCameraLookAtTransform().position - transform.position;
-        //    dir.y = 0;
-        //    Quaternion to = Quaternion.LookRotation(dir);
-        //    transform.rotation = Quaternion.RotateTowards(from, to, RotateSpeedLockon * Time.deltaTime);
-        //}
-        //else
-        //{
-        //    //Quaternion from = transform.rotation;
-        //    //Quaternion to = Quaternion.LookRotation(moveSpeed)
-        //}
     }
 
     public void TakeDamage(Transform enemyTransform,Vector3 attackedPlace,int damage)
     {
-        state = MyState.Damage;
-        velocity = Vector3.zero;
-        animator.SetTrigger("Damage");
-        var damageEffectIns = Instantiate<GameObject>(damageEffect, attackedPlace, Quaternion.identity);
-        Destroy(damageEffectIns, 1f);
-        myStatus.SetHp(myStatus.GetHp() - damage);
+        if (state != MyState.Dead)
+        {
+            state = MyState.Damage;
+            velocity = Vector3.zero;
+            animator.SetTrigger("Damage");
+            var damageEffectIns = Instantiate<GameObject>(damageEffect, attackedPlace, Quaternion.identity);
+            Destroy(damageEffectIns, 1f);
+            myStatus.SetHp(myStatus.GetHp() - damage);
+        }
         if(myStatus.GetHp()<=0)
         {
             Dead();
@@ -158,6 +172,7 @@ public class PlayerScript : MonoBehaviour
         }
         else if(tempState == MyState.Dead)
         {
+            state = MyState.Dead;
             animator.SetTrigger("Dead");
             velocity = Vector3.zero;
         }
@@ -165,11 +180,14 @@ public class PlayerScript : MonoBehaviour
     }
 
     public void Damage(int damage)
-    {
-        animator.SetTrigger("Damage");
-        velocity = new Vector3(0f, velocity.y, 0f);
-        state = MyState.Damage;
-        myStatus.SetHp(myStatus.GetHp() - damage);
+    {   
+        if (state != MyState.Dead)
+        {
+            animator.SetTrigger("Damage");
+            velocity = new Vector3(0f, velocity.y, 0f);
+            state = MyState.Damage;
+            myStatus.SetHp(myStatus.GetHp() - damage);
+        }
         if (myStatus.GetHp() <= 0)
         {
             Dead();
@@ -183,7 +201,9 @@ public class PlayerScript : MonoBehaviour
 
     void Dead()
     {
+        gameoverUI.SetActive(true);
         SetState(MyState.Dead);
+        state = MyState.Dead;
     }
 
     void FixedUpdate()
@@ -216,7 +236,7 @@ public class PlayerScript : MonoBehaviour
         }
         else
         {
-            rb.velocity = new Vector3(0, rb.velocity.y, 0);
+            //rb.velocity = new Vector3(0, rb.velocity.y, 0);
         }
         if (move.magnitude > 0
                    && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack1")
@@ -235,16 +255,16 @@ public class PlayerScript : MonoBehaviour
         if (transform.position.y < 0)
         {
             rb.useGravity = false;
-            rb.velocity = moveForward * moveSpeed2 * move.magnitude + new Vector3(0, velocity.y, 0);
-            //animator.SetBool("Jump", false);
+            rb.velocity = moveForward * moveSpeed2 * move.magnitude + new Vector3(0, rb.velocity.y, 0);
+            
         }
         else
         {
             rb.useGravity = true;
-            rb.velocity = new Vector3(0, -5, 0);
+            //rb.velocity = new Vector3(0, -1, 0);
         }
 
-        if(avoid)
+        if (avoid)
         {
             if(move.magnitude>0)
             {

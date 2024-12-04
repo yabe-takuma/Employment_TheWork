@@ -17,12 +17,16 @@ public class ParticleScript : MonoBehaviour
     [SerializeField]
     int numInside;
 
+    [SerializeField]
+    private TrollScript trollScript;
+
     // Start is called before the first frame update
     void Start()
     {
         ps = GetComponent<ParticleSystem>();
         ps.GetComponent<Renderer>().enabled = false;
         playerScript = GameObject.Find("Character_Female_Hotel Owner").GetComponent<PlayerScript>();
+        trollScript = GameObject.Find("GiantTroll").GetComponent<TrollScript>();
         ps.trigger.SetCollider(0, playerScript.transform);
         //MaxParticlesを超えるパーティクルを生成するまでシミュレーションスピードを上げる
         var main = ps.main;
@@ -62,7 +66,8 @@ public class ParticleScript : MonoBehaviour
             if(numEnter!=0||numInside !=0)
             {
                 Debug.Log("接触");
-                if(playerScript.GetState()!=PlayerScript.MyState.Damage&&playerScript.GetAvoid()==false)
+                if(playerScript.GetState()!=PlayerScript.MyState.Damage&&playerScript.GetState()!=PlayerScript.MyState.Dead&&
+                    playerScript.GetAvoid()==false&&trollScript.GetState()!=TrollScript.TrollState.Dead)
                 {
                     playerScript.Damage(1);
                 }

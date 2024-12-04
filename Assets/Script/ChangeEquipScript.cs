@@ -38,7 +38,7 @@ public class ChangeEquipScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown("1")
+        if(Input.GetKeyDown("1")||Input.GetKeyDown(KeyCode.RightShift)
             && playerScript.GetState() == PlayerScript.MyState.Normal)
         {
             InstantiateWepon();

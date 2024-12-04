@@ -49,8 +49,11 @@ public class ProcessCharaAnimEventScript : MonoBehaviour
 
     public void EndDamage()
     {
-        playerscript.SetState(PlayerScript.MyState.Normal);
-        Debug.Log("プレイヤー食らい終わった");
+        if (playerscript.GetState() != PlayerScript.MyState.Dead)
+        {
+            playerscript.SetState(PlayerScript.MyState.Normal);
+            Debug.Log("プレイヤー食らい終わった");
+        }
     }
 
     public void SetCollider(Collider col)

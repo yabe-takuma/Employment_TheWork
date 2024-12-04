@@ -24,13 +24,19 @@ public class AttackScript : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (gameObject.CompareTag("Z_Arm") && other.tag == "Player"&&playerScript.GetAvoid()==false)
+        if (gameObject.CompareTag("Z_Arm") && other.tag == "Player"&&playerScript.GetAvoid()==false&&playerScript.GetState()!=PlayerScript.MyState.Dead)
         {
             Debug.Log("当たり");
             other.GetComponent<PlayerScript>().TakeDamage(transform.root, other.ClosestPoint(transform.position), enemyStatus.GetAttackPower());
 
         }
        
+    }
+
+    public void SetPlayer(PlayerScript player)
+    {
+        playerScript = player;
+        Debug.Log("プレイヤーの情報を渡した。");
     }
 
 }

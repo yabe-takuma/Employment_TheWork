@@ -77,6 +77,9 @@ public class TrollScript : MonoBehaviour
     [SerializeField]
     private bool Isshockwave, Isinstallation,Isexplocion;
 
+    [SerializeField]
+    private GameObject gameclearUI;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -86,11 +89,13 @@ public class TrollScript : MonoBehaviour
         navMeshAgent = GetComponent<NavMeshAgent>();
         setposition1 = GetComponent<SetPosition1>();
         SetRandomDestination();
+        gameclearUI.SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
+        
         //トロールの状態によって処理を変える
         if(trollState == TrollState.idle)
         {
@@ -166,7 +171,14 @@ public class TrollScript : MonoBehaviour
             velocity = new Vector3(0f, velocity.y, 0f);
             animator.SetFloat("WalkSpeed", 0f);
             animator.SetBool("Chase", false);
-            SetRandomDestination();
+            while (true)
+            {
+                if (dis < 100)
+                {
+                    SetRandomDestination();
+                    break;
+                }
+            }
             chargetimer = 0;
             Isshockwave = false;
             Isinstallation = false;
@@ -233,8 +245,8 @@ public class TrollScript : MonoBehaviour
         }
         else if (trollState == TrollState.explocion)
         {
-            attackTargetTransform = playerTransform;
-            attackTargetPos = attackTargetTransform.position;
+            //attackTargetTransform = playerTransform;
+            //attackTargetPos = attackTargetTransform.position;
             velocity = new Vector3(0f, velocity.y, 0f);
             animator.SetTrigger("ShockwaveAttack");
             animator.SetBool("Chase", false);
@@ -242,7 +254,7 @@ public class TrollScript : MonoBehaviour
             Isinstallation = false;
             Isexplocion = true;
             navMeshAgent.isStopped = true;
-            Debug.Log("設置物配置攻撃");
+            Debug.Log("爆発攻撃");
         }
 
         else if(trollState == TrollState.Damage)
@@ -392,8 +404,8 @@ public class TrollScript : MonoBehaviour
     private void Explocion()
     {
         // 攻撃状態になった時のキャラクターの向きを計算し、徐々にそちらの向きに回転させる
-        var targetRot = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(attackTargetPos - transform.position), Time.deltaTime * 2f);
-        transform.rotation = Quaternion.Euler(transform.eulerAngles.x, targetRot.eulerAngles.y, transform.eulerAngles.z);
+        //var targetRot = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(attackTargetPos - transform.position), Time.deltaTime * 2f);
+        //transform.rotation = Quaternion.Euler(transform.eulerAngles.x, targetRot.eulerAngles.y, transform.eulerAngles.z);
 
         //Attackアニメーションが終了したらIdle状態にする
         if (animator.GetCurrentAnimatorStateInfo(0).IsName("ShockwaveAttack")
@@ -421,6 +433,7 @@ public class TrollScript : MonoBehaviour
 
     void Dead()
     {
+        gameclearUI.SetActive(true);
         SetState(TrollState.Dead);
     }
 

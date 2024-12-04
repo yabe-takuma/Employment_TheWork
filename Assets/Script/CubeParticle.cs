@@ -8,23 +8,24 @@ public class CubeParticle : MonoBehaviour
 
     [SerializeField]
     private GameObject particle;
-
+    [SerializeField]
     private int caunter;
 
     // Start is called before the first frame update
     void Start()
     {
         Destroy(this.gameObject, 5f);
+        Instantiate(particle, transform.position, particle.transform.rotation);
     }
 
     // Update is called once per frame
     void Update()
     {
-        caunter++;
-        if(caunter>500)
-        {
-            Instantiate(particle, transform.position, particle.transform.rotation);
-            caunter = 0;
-        }
+        //caunter++;
+        //if(caunter>500)
+        //{
+          
+            //caunter = 0;
+        //}
     }
 }

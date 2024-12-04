@@ -8,7 +8,7 @@ public class TrollStatus : MonoBehaviour
 
     //敵のMaxHP
     [SerializeField]
-    private int maxHp = 300;
+    private int maxHp = 500;
 
     //敵のHP
     [SerializeField]
