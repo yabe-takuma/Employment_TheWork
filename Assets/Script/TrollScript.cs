@@ -29,6 +29,7 @@ public class TrollScript : MonoBehaviour
     [SerializeField]
     private TrollState trollState = TrollState.idle;
     //目的地
+    [SerializeField]
     private Vector3 destination;
     //移動範囲
     [SerializeField]
@@ -100,6 +101,7 @@ public class TrollScript : MonoBehaviour
         if(trollState == TrollState.idle)
         {
             Idle();
+           
         }
         else if(trollState == TrollState.patrol)
         {
@@ -139,7 +141,7 @@ public class TrollScript : MonoBehaviour
         //共通するCharacterControllerの移動処理
         velocity.y += Physics.gravity.y * Time.deltaTime;
         characterController.Move(velocity * Time.deltaTime);
-        
+      
     }
 
     //目的地を設定する
@@ -158,7 +160,7 @@ public class TrollScript : MonoBehaviour
         else
         {
             randomPos = Vector3.zero;
-            destination = Vector3.zero;
+            //destination = Vector3.zero;
         }
     }
 
@@ -171,14 +173,7 @@ public class TrollScript : MonoBehaviour
             velocity = new Vector3(0f, velocity.y, 0f);
             animator.SetFloat("WalkSpeed", 0f);
             animator.SetBool("Chase", false);
-            while (true)
-            {
-                if (dis < 100)
-                {
-                    SetRandomDestination();
-                    break;
-                }
-            }
+            SetRandomDestination();
             chargetimer = 0;
             Isshockwave = false;
             Isinstallation = false;

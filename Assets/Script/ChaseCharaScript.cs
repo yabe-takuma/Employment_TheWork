@@ -25,8 +25,6 @@ public class ChaseCharaScript : MonoBehaviour
             && trollScript.GetState()!= TrollScript.TrollState.chase
             && trollScript.GetState()!= TrollScript.TrollState.attack
             && trollScript.GetState()!= TrollScript.TrollState.shockwaveAttack
-            && trollScript.GetState()!= TrollScript.TrollState.installation
-            && trollScript.GetState()!= TrollScript.TrollState.explocion
             && trollScript.GetState()!= TrollScript.TrollState.Dead)
         {
             trollScript.SetState(TrollScript.TrollState.chase, other.transform);

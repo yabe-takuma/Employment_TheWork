@@ -79,6 +79,8 @@ public class PlayerScript : MonoBehaviour
         //rb.constraints = RigidbodyConstraints.FreezeRotation;
         camera3D = Camera.main.GetComponent<CameraScript>();
         gameoverUI.SetActive(false);
+        timeline[0].Stop();
+        timeline[1].Stop();
     }
 
     // Update is called once per frame
