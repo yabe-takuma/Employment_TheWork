@@ -9,7 +9,8 @@ public class SceneScript : MonoBehaviour
     public PlayerScript playerScript;
     
     public TrollScript trollScript;
-
+    [SerializeField]
+    private GameObject troll;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,7 +24,7 @@ public class SceneScript : MonoBehaviour
         {
             SceneManager.LoadScene("TitleScene");
         }
-        else if (trollScript.GetState() == TrollScript.TrollState.Dead && Input.GetKeyDown("joystick button 3") || Input.GetKeyDown(KeyCode.K))
+        else if (trollScript.GetState() == TrollScript.TrollState.Dead && Input.GetKeyDown("joystick button 3") || Input.GetKeyDown(KeyCode.K)&&troll==null)
         {
             SceneManager.LoadScene("TitleScene");
         }

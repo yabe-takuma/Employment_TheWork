@@ -39,7 +39,7 @@ public class ChangeEquipScript : MonoBehaviour
     void Update()
     {
         if(Input.GetKeyDown("1")||Input.GetKeyDown(KeyCode.RightShift)
-            && playerScript.GetState() == PlayerScript.MyState.Normal)
+           || Input.GetKeyDown("joystick button 5") && playerScript.GetState() == PlayerScript.MyState.Normal)
         {
             InstantiateWepon();
         }

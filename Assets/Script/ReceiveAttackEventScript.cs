@@ -19,11 +19,14 @@ public class ReceiveAttackEventScript : MonoBehaviour
     //爆発
     [SerializeField]
     private GameObject explocion;
+    [SerializeField]
+    private GameObject explocionomen;
     //アニメーションの一時停止
     [SerializeField]
     private Animator animator;
     [SerializeField]
     private int EndStop;
+    [SerializeField]
     private bool IsEndStop;
 
     // Start is called before the first frame update
@@ -51,6 +54,7 @@ public class ReceiveAttackEventScript : MonoBehaviour
         {
             IsEndStop = true;
             animator.SetFloat("MovingSpeed", 0.0f);
+            Instantiate(explocionomen, new Vector3(createShockwavePoint.position.x, 0.3f, createShockwavePoint.position.z), explocionomen.transform.rotation);
         }
     }
     //衝撃波発生
@@ -69,8 +73,10 @@ public class ReceiveAttackEventScript : MonoBehaviour
         else if (trollScript.GetExplocion())
         {
             Instantiate(explocion, createShockwavePoint.position, explocion.transform.rotation);
-            Debug.Log("設置物配置完了");
+         
+            Debug.Log("爆発完了");
         }
+       
     }
 
     // Update is called once per frame
@@ -79,6 +85,7 @@ public class ReceiveAttackEventScript : MonoBehaviour
         if(IsEndStop==true)
         {
             EndStop++;
+          
         }
 
         if (EndStop >= 500)
@@ -86,6 +93,7 @@ public class ReceiveAttackEventScript : MonoBehaviour
             animator.SetFloat("MovingSpeed", 1.0f);
             EndStop = 0;
             IsEndStop = false;
+            //Destroy(explocionomen);
         }
     }
 }

@@ -43,11 +43,15 @@ public class CameraScript : MonoBehaviour
     private float distance;
     public GameObject targetIcon;
 
+    private Vector3 startposition;
+    [SerializeField]
+    private TrollScript trollscript;
     
     // Start is called before the first frame update
     void Start()
     {
         nowPos = TargetObject.transform.position;
+        startposition = transform.localPosition;
     }
 
     // Update is called once per frame
@@ -59,7 +63,16 @@ public class CameraScript : MonoBehaviour
         HeightAngle = Mathf.Clamp(HeightAngle, -40.0f, 60.0f);
         Distance = Mathf.Clamp(Distance, 5.0f, 40.0f);
 
-        
+        if(Physics.CheckSphere(nowPos,0.3f))
+        {
+            transform.position = Vector3.Lerp(transform.position, nowPos, 1);
+        }
+        else
+        {
+            //transform.localPosition = Vector3.Lerp(transform.localPosition, startposition, 1);
+            RotAngle -= speed.x * Time.deltaTime * 50.0f;
+            HeightAngle += speed.z * Time.deltaTime * 20.0f;
+        }
 
         //減衰
         if (EnableAtten)
@@ -129,9 +142,9 @@ public class CameraScript : MonoBehaviour
         }
         else
         {
-             cx = Mathf.Sin(nowRotAngle * deg) * Mathf.Cos(nowHeightAngle * deg) * fixedDistance;
-             cz = -Mathf.Cos(nowRotAngle * deg) * Mathf.Cos(nowHeightAngle * deg) * fixedDistance;
-             cy = Mathf.Sin(nowHeightAngle * deg) * fixedDistance;
+            cx = Mathf.Sin(nowRotAngle * deg) * Mathf.Cos(nowHeightAngle * deg) * fixedDistance;
+            cz = -Mathf.Cos(nowRotAngle * deg) * Mathf.Cos(nowHeightAngle * deg) * fixedDistance;
+            cy = Mathf.Sin(nowHeightAngle * deg) * fixedDistance;
             transform.position = nowPos + new Vector3(cx, cy, cz);
         }
         transform.position = nowPos + new Vector3(cx, cy, cz);
@@ -141,6 +154,11 @@ public class CameraScript : MonoBehaviour
         else transform.rotation = rot;
 
         TargetIcon();
+
+        if(trollscript.GetState()==TrollScript.TrollState.Dead)
+        {
+            transform.position = new Vector3(transform.position.x,3.0f,transform.position.z-5.0f);
+        }
 
     }
     public void OnCamera(InputAction.CallbackContext context)

@@ -78,8 +78,7 @@ public class TrollScript : MonoBehaviour
     [SerializeField]
     private bool Isshockwave, Isinstallation,Isexplocion;
 
-    [SerializeField]
-    private GameObject gameclearUI;
+  
 
     // Start is called before the first frame update
     void Start()
@@ -90,7 +89,6 @@ public class TrollScript : MonoBehaviour
         navMeshAgent = GetComponent<NavMeshAgent>();
         setposition1 = GetComponent<SetPosition1>();
         SetRandomDestination();
-        gameclearUI.SetActive(false);
     }
 
     // Update is called once per frame
@@ -137,6 +135,10 @@ public class TrollScript : MonoBehaviour
         else if(trollState==TrollState.explocion)
         {
             Debug.Log("爆発中");
+        }
+        if (trollStatus.GetHp() <= 0)
+        {
+            Time.timeScale = 0.2f;
         }
         //共通するCharacterControllerの移動処理
         velocity.y += Physics.gravity.y * Time.deltaTime;
@@ -301,6 +303,22 @@ public class TrollScript : MonoBehaviour
             dis = Vector3.Distance(transform.position, destination);
             pos = destination;
         }
+        if(Vector3.Distance(transform.position,new Vector3(884,0,0))<0.5f)
+        {
+            SetState(TrollState.idle);
+        }
+        else if(Vector3.Distance(transform.position, new Vector3(1074, 0, 0)) < 0.5f)
+        {
+            SetState(TrollState.idle);
+        }
+        else if(Vector3.Distance(transform.position, new Vector3(0, 0, 201)) < 0.5f)
+        {
+            SetState(TrollState.idle);
+        }
+        else if(Vector3.Distance(transform.position, new Vector3(0, 0, 14)) < 0.5f)
+        {
+            SetState(TrollState.idle);
+        }
         //目的地に着いたらidle状態にする
         if (Vector3.Distance(transform.position,destination)<0.5f)
         {
@@ -428,7 +446,6 @@ public class TrollScript : MonoBehaviour
 
     void Dead()
     {
-        gameclearUI.SetActive(true);
         SetState(TrollState.Dead);
     }
 

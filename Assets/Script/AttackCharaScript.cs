@@ -43,7 +43,8 @@ public class AttackCharaScript : MonoBehaviour
               && trollScript.GetState() != TrollScript.TrollState.installation
                   && trollScript.GetState() != TrollScript.TrollState.explocion
               && trollScript.GetState() != TrollScript.TrollState.charge
-            && !trollAnimator.GetCurrentAnimatorStateInfo(0).IsName("Charge"))
+            && !trollAnimator.GetCurrentAnimatorStateInfo(0).IsName("Charge")
+            && trollScript.GetState()!=TrollScript.TrollState.Dead)
             
         {
             caunter = Random.value;

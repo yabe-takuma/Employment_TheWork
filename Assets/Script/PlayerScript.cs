@@ -55,8 +55,13 @@ public class PlayerScript : MonoBehaviour
 
     [SerializeField]
     private GameObject gameoverUI;
-
+    [SerializeField]
+    private GameObject gameclearUI;
+    [SerializeField]
+    private GameObject troll;
     private int startavoidcooltime;
+
+   
 
     public enum MyState
     {
@@ -81,6 +86,7 @@ public class PlayerScript : MonoBehaviour
         gameoverUI.SetActive(false);
         timeline[0].Stop();
         timeline[1].Stop();
+        gameclearUI.SetActive(false);
     }
 
     // Update is called once per frame
@@ -99,7 +105,7 @@ public class PlayerScript : MonoBehaviour
                     SetState(MyState.Attack);
 
                 }
-                if (Input.GetKeyDown(KeyCode.F))
+                if (Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown("joystick button 3"))
                 {
                     animator.SetBool("Jump", true);
                     rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
@@ -132,6 +138,13 @@ public class PlayerScript : MonoBehaviour
         {
             startavoidcooltime++;
         }
+
+        if(troll==null)
+        {
+            gameclearUI.SetActive(true);
+        }
+
+      
 
         //velocity.y += Physics.gravity.y * Time.deltaTime;
         characterController.Move(rb.velocity  * Time.deltaTime);
