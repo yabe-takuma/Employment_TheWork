@@ -193,14 +193,14 @@ public class CameraScript : MonoBehaviour
 
     private void TargetIcon()
     {
-        if (rock&&RockonTarget!=null && RockonTarget.transform.GetChild(1)!=null)
-        {
-            targetIcon.SetActive(true);
-            targetIcon.transform.position = new Vector3(RockonTarget.transform.GetChild(1).transform.position.x,3f, RockonTarget.transform.GetChild(1).transform.position.z);
-        }
-        else
-        {
-            targetIcon.SetActive(false);
-        }
+        //if (rock&&RockonTarget!=null && RockonTarget.transform.GetChild(1)!=null)
+        //{
+        //    targetIcon.SetActive(true);
+        //    targetIcon.transform.position = new Vector3(RockonTarget.transform.GetChild(1).transform.position.x,3f, RockonTarget.transform.GetChild(1).transform.position.z);
+        //}
+        //else
+        //{
+        //    targetIcon.SetActive(false);
+        //}
     }
 }

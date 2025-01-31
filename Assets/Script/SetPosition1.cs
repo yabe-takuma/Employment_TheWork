@@ -16,7 +16,7 @@ public class SetPosition1 : MonoBehaviour
     private Transform[] patrolPositions;
 
     //次に巡回する位置
-    private int nowPatrolPosition = 0;
+    private int nowPatrolPosition = 10;
 
     // Start is called before the first frame update
     void Start()

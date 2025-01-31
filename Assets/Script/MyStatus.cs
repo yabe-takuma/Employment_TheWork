@@ -14,9 +14,20 @@ public class MyStatus : MonoBehaviour
     private int power;
     private WeaponStatusScript weaponStatus;
 
+    //LifeGaugeスクリプト
+    [SerializeField]
+    private LifeGauge lifeGauge;
+
+    //BrackLifeスクリプト
+    [SerializeField]
+    private BrackLife bracklife;
+
     public void SetHp(int hp)
     {
         this.hp = hp;
+        //体力ゲージに反映
+        lifeGauge.SetLifeGauge(hp);
+        //bracklife.SetLifeGauge();
     }
 
     public int GetHp()
@@ -54,6 +65,9 @@ public class MyStatus : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //体力ゲージに反映
+        bracklife.SetLifeGauge();
+        lifeGauge.SetLifeGauge(hp);
         
     }
 

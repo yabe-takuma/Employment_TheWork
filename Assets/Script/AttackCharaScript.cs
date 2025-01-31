@@ -40,9 +40,11 @@ public class AttackCharaScript : MonoBehaviour
             && !trollAnimator.GetCurrentAnimatorStateInfo(0).IsName("Attack")
             && trollScript.GetState() != TrollScript.TrollState.shockwaveAttack
             && !trollAnimator.GetCurrentAnimatorStateInfo(0).IsName("ShockwaveAttack")
-              && trollScript.GetState() != TrollScript.TrollState.installation
-                  && trollScript.GetState() != TrollScript.TrollState.explocion
-              && trollScript.GetState() != TrollScript.TrollState.charge
+            && trollScript.GetState() != TrollScript.TrollState.installation
+            && trollScript.GetState() != TrollScript.TrollState.wave
+            && trollScript.GetState() != TrollScript.TrollState.explocion
+            && trollScript.GetState() != TrollScript.TrollState.continuous
+            && trollScript.GetState() != TrollScript.TrollState.charge
             && !trollAnimator.GetCurrentAnimatorStateInfo(0).IsName("Charge")
             && trollScript.GetState()!=TrollScript.TrollState.Dead)
             
@@ -58,10 +60,16 @@ public class AttackCharaScript : MonoBehaviour
                 Debug.Log("攻撃1");
 
             }
-            else if (distance > 6.0f && distance < 8.0f && trollstatus.GetHp() >= trollstatus.GetMaxHp() / 2)
+            else if (distance > 0.0f && distance < 6.0f && trollstatus.GetHp() >= trollstatus.GetMaxHp() / 2)
             {
                 trollScript.SetState(TrollScript.TrollState.shockwaveAttack, other.transform);
                 trollScript.SetState(TrollScript.TrollState.chase, other.transform);
+                Debug.Log("攻撃2");
+            }
+            else if (distance > 6.0f && distance < 9.0f && trollstatus.GetHp() >= trollstatus.GetMaxHp() / 2)
+            {
+                trollScript.SetState(TrollScript.TrollState.wave, other.transform);
+                //trollScript.SetState(TrollScript.TrollState.chase, other.transform);
                 Debug.Log("攻撃2");
             }
             else if(distance>3.0f&&distance<5.0f && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2)
@@ -70,19 +78,20 @@ public class AttackCharaScript : MonoBehaviour
                 //trollScript.SetState(TrollScript.TrollState.chase, other.transform);
                 Debug.Log("攻撃3");
             }
+
+            else if (distance > 5.0f && distance < 11.0f && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2)
+            {
+                trollScript.SetState(TrollScript.TrollState.continuous, other.transform);
+                //trollScript.SetState(TrollScript.TrollState.chase, other.transform);
+                Debug.Log("連続攻撃中");
+            }
+
             else if (distance > 11.0f && distance < 15.0f && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2)
             {
                 trollScript.SetState(TrollScript.TrollState.explocion, other.transform);
                 //trollScript.SetState(TrollScript.TrollState.chase, other.transform);
                 Debug.Log("攻撃3");
             }
-
-            //else
-            //{
-            //    trollScript.SetState(TrollScript.TrollState.charge, other.transform);
-
-            //    Debug.Log("攻撃3");
-            //}
         }
         
     }

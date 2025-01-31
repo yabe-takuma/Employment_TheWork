@@ -65,21 +65,21 @@ public class ChangeEquipScript : MonoBehaviour
             processCharaAnimEvent.SetCollider(weapon.GetComponent<Collider>());
 
             //サンプルの為、直接武器の位置や角度を設定
+            //if(equipment ==0)
+            //{
+            //    weapon.transform.SetParent(equipTransform);
+            //    weapon.transform.localPosition = new Vector3(-0.156f, 0.052f, -0.003f);
+            //    weapon.transform.localEulerAngles = new Vector3(90f, 270f, 0f);
+            //    weapon.transform.localScale = new Vector3(0.05f, 0.1f, 0.05f);
+            //}
             if(equipment ==0)
-            {
-                weapon.transform.SetParent(equipTransform);
-                weapon.transform.localPosition = new Vector3(-0.156f, 0.052f, -0.003f);
-                weapon.transform.localEulerAngles = new Vector3(90f, 270f, 0f);
-                weapon.transform.localScale = new Vector3(0.05f, 0.1f, 0.05f);
-            }
-            else if(equipment ==1)
             {
                 weapon.transform.SetParent(equipTransform);
                 weapon.transform.localPosition = new Vector3(-0.27f, 0.005f, 0.092f);
                 weapon.transform.localEulerAngles = new Vector3(291.87f, 6.4f, 80f);
                 weapon.transform.localScale = new Vector3(1f, 1f, 1f);
             }
-            else
+            else if(equipment==1&&playerScript.SetDeadCaunter()>=1)
             {
                 weapon.transform.SetParent(equipTransform);
                 weapon.transform.localPosition = new Vector3(0.0f, 0.0f, 0.5f);

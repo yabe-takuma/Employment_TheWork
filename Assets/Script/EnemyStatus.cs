@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,19 +9,26 @@ public class EnemyStatus : MonoBehaviour
 
     // 敵のMaxHP
     [SerializeField]
-    private int maxHp = 100;
+    private int maxHp;
     //敵のHP
     [SerializeField]
     private int hp;
     //敵の攻撃力
     [SerializeField]
-    private int attackPower = 1;
+    private int attackPower;
     private MoveEnemyScript enemyscript;
     //HP表示用UI
     [SerializeField]
     private GameObject HPUI;
     //HP表示用スライダー
     private Slider hpSlider;
+    [SerializeField]
+    private string filePath = "Assets/Resources/EnemySetting.asset";
+    [SerializeField]
+    private EnemySetting enemySetting;
+
+
+
 
     public void SetHp(int hp)
     {
@@ -50,6 +58,12 @@ public class EnemyStatus : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //enemySetting = AssetDatabase.LoadAssetAtPath<EnemySetting>(filePath);
+        //enemySetting = Resources.Load<EnemySetting>("EnemySettingObject");
+        //maxHp = enemySetting.DataList[0].MaxHp;
+        //attackPower = enemySetting.DataList[0].Attack;
+        hp = maxHp;
+        attackPower = 1;
         enemyscript = GetComponent<MoveEnemyScript>();
         hp = maxHp;
         hpSlider = HPUI.transform.Find("HPBar").GetComponent<Slider>();

@@ -9,6 +9,7 @@
         _BumpScale("Scale", Float) = 1.0
         [NoScaleOffset] _BumpMap("Normal Map", 2D) = "bump" {}
         _Cutoff("Alpha Cutoff", Range(0.01,1)) = 0.5
+       
     }
     SubShader {
         Tags { "Queue"="AlphaTest" "IgnoreProjector"="True" "RenderType"="TransparentCutout" }
@@ -16,6 +17,7 @@
         LOD 200
         ZWrite Off
         Cull Off
+       
  
         Pass {
             ColorMask 0
@@ -34,6 +36,7 @@
  
             sampler2D _MainTex;
             fixed _Cutoff;
+            
  
             v2f vert (appdata_img v)
             {
@@ -47,6 +50,7 @@
             {
                 fixed4 col = tex2D(_MainTex, i.texcoord);
                 clip(col.a - _Cutoff);
+               
                 return 0;
             }
             ENDCG
@@ -79,12 +83,14 @@
          
             sampler2D _MainTex;
             fixed _Cutoff;
+           
  
             float4 frag(v2f i) : SV_Target
             {
                 fixed4 col = tex2D(_MainTex, i.texcoord);
                 clip(col.a - _Cutoff);
                 SHADOW_CASTER_FRAGMENT(i)
+                
             }
             ENDCG
         }
@@ -127,7 +133,9 @@
             o.Alpha = saturate(c.a / _Cutoff);
  
             o.Normal = UnpackScaleNormal(tex2D(_BumpMap, IN.uv_MainTex), _BumpScale);
- 
+            
+            
+
             if (IN.facing < 0.5)
                 o.Normal *= -1.0;
         }

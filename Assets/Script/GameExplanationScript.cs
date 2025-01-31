@@ -26,14 +26,14 @@ public class GameExplanationScript : MonoBehaviour
             isExplanation = true;
             BackGround.SetActive(true);
             ExplanationUI.SetActive(true);
-            GameUI.SetActive(false);
+            GameUI.SetActive(true);
         }
         else if(Input.GetKeyDown("joystick button 2") && isExplanation == true || Input.GetKeyDown(KeyCode.Y) && isExplanation == true)
         {
             isExplanation = false;
             ExplanationUI.SetActive(false);
             BackGround.SetActive(false);
-            GameUI.SetActive(true);
+            GameUI.SetActive(false);
         }
         if(isExplanation==true)
         {

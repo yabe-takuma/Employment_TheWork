@@ -72,6 +72,9 @@ public class MoveEnemyScript : MonoBehaviour
     [SerializeField]
     private TrollScript trollScript;
 
+    [SerializeField]
+    private PlayerScript playerscript;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -85,6 +88,7 @@ public class MoveEnemyScript : MonoBehaviour
         elapsedTime = 0f;
         SetState(EnemyState.Walk);
         handCollider = GetComponentInChildren<SphereCollider>();
+        playerscript= GameObject.Find("Character_Female_Hotel Owner").GetComponent<PlayerScript>();
     }
 
     // Update is called once per frame
@@ -269,6 +273,7 @@ public class MoveEnemyScript : MonoBehaviour
     void Dead()
     {
         SetState(EnemyState.Dead);
+        playerscript.DeadCaunter(1);
     }
 
     public void SetDamageEffect(GameObject gameobject)

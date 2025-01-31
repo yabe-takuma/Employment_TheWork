@@ -35,7 +35,7 @@ public class ExplocionScript : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.tag=="Player"&&IsOnCollision==false)
+        if(other.tag=="Player"&&IsOnCollision==false&&playerScript.GetAvoid()==false)
         {
             playerScript.Damage(1);
             IsOnCollision = true;

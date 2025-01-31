@@ -2524,8 +2524,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemy: {fileID: 0}
+  spherecollider: {fileID: 0}
   playerScript: {fileID: 0}
-  attackScript: {fileID: 0}
+  damageEffect: {fileID: 0}
+  trollScript: {fileID: 0}
 --- !u!114 &1081153270
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2562,6 +2564,8 @@ MonoBehaviour:
   enemyStatus: {fileID: 1081153281}
   randam: 0
   distance: 0
+  trollScript: {fileID: 0}
+  playerscript: {fileID: 0}
 --- !u!114 &1081153280
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2591,6 +2595,8 @@ MonoBehaviour:
   hp: 20
   attackPower: 1
   HPUI: {fileID: 2122667596}
+  filePath: Assets/Enemy Setting Object.asset
+  enemySetting: {fileID: 11400000, guid: 2865a2b3b751a464baacdd43d9d7f297, type: 2}
 --- !u!114 &1043391981983620759
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2604,8 +2610,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemy: {fileID: 5947541718919637385}
+  spherecollider: {fileID: 0}
   playerScript: {fileID: 0}
-  attackScript: {fileID: 0}
+  damageEffect: {fileID: 0}
+  trollScript: {fileID: 0}
 --- !u!4 &7265063171844709274 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 578376449398627443, guid: 6dc4cf4496348884d8ee27743ae38562, type: 3}

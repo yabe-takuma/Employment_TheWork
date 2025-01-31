@@ -15,6 +15,7 @@ TagManager:
   - wave
   - Particle
   - Explocion
+  - Collision
   layers:
   - Default
   - TransparentFX

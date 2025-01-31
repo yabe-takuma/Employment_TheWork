@@ -61,13 +61,18 @@ public class PlayerScript : MonoBehaviour
     private GameObject troll;
     private int startavoidcooltime;
 
-   
+    //討伐カウンター
+    [SerializeField]
+    private int deadcaunter;
+    [SerializeField]
+    private LifeGauge hpgauge;
 
     public enum MyState
     {
         Normal,
         Damage,
         Attack,
+        SkillAttack,
         Dead
     };
     [SerializeField]
@@ -87,6 +92,7 @@ public class PlayerScript : MonoBehaviour
         timeline[0].Stop();
         timeline[1].Stop();
         gameclearUI.SetActive(false);
+        //hpgauge.SetLifeGauge(myStatus.GetHp());
     }
 
     // Update is called once per frame
@@ -100,10 +106,10 @@ public class PlayerScript : MonoBehaviour
                 //velocity = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
               
 
-                if (Input.GetKey(KeyCode.Space) && !animator.IsInTransition(0) && changeequipscript.GetEquipment() >= 1)
+                if (Input.GetKey(KeyCode.Space) && !animator.IsInTransition(0) /*&& changeequipscript.GetEquipment() >= 1*/)
                 {
                     SetState(MyState.Attack);
-
+                    Time.timeScale = 0.0f;
                 }
                 if (Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown("joystick button 3"))
                 {
@@ -144,7 +150,7 @@ public class PlayerScript : MonoBehaviour
             gameclearUI.SetActive(true);
         }
 
-      
+       
 
         //velocity.y += Physics.gravity.y * Time.deltaTime;
         characterController.Move(rb.velocity  * Time.deltaTime);
@@ -160,6 +166,9 @@ public class PlayerScript : MonoBehaviour
             var damageEffectIns = Instantiate<GameObject>(damageEffect, attackedPlace, Quaternion.identity);
             Destroy(damageEffectIns, 1f);
             myStatus.SetHp(myStatus.GetHp() - damage);
+           
+            hpgauge.SetDamageLifeGauge(damage);
+            
         }
         if(myStatus.GetHp()<=0)
         {
@@ -176,14 +185,18 @@ public class PlayerScript : MonoBehaviour
         {
             velocity = Vector3.zero;
             state = MyState.Attack;
-            if (changeequipscript.GetEquipment() == 1)
+            if (changeequipscript.GetEquipment() == 0)
             {
                 animator.SetTrigger("Attack");
             }
-            else if(changeequipscript.GetEquipment()==2)
+            else if(changeequipscript.GetEquipment()==1)
             {
                 animator.SetTrigger("AxeAttack");
             }
+        }
+        else if(tempState==MyState.SkillAttack)
+        {
+            animator.SetTrigger("AxeSkillAttack");
         }
         else if(tempState == MyState.Dead)
         {
@@ -209,9 +222,19 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
+    public void DeadCaunter(int caunter)
+    {
+        deadcaunter = deadcaunter + caunter;
+    }
+
     public MyState GetState()
     {
         return state;
+    }
+
+    public int SetDeadCaunter()
+    {
+        return deadcaunter;
     }
 
     void Dead()
@@ -219,6 +242,7 @@ public class PlayerScript : MonoBehaviour
         gameoverUI.SetActive(true);
         SetState(MyState.Dead);
         state = MyState.Dead;
+       
     }
 
     void FixedUpdate()
@@ -237,6 +261,7 @@ public class PlayerScript : MonoBehaviour
                 Rotation();
             }
         }
+       
     }
 
     private void Move()
@@ -317,6 +342,15 @@ public class PlayerScript : MonoBehaviour
         if (context.started && !animator.IsInTransition(0) && changeequipscript.GetEquipment() >= 1)
         {
             SetState(MyState.Attack);
+
+        }
+    }
+
+    public void OnSkillAttack(InputAction.CallbackContext context)
+    {
+        if (context.started && !animator.IsInTransition(0) && changeequipscript.GetEquipment() >= 1)
+        {
+            SetState(MyState.SkillAttack);
 
         }
     }

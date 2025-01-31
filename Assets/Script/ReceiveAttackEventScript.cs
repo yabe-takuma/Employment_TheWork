@@ -21,6 +21,11 @@ public class ReceiveAttackEventScript : MonoBehaviour
     private GameObject explocion;
     [SerializeField]
     private GameObject explocionomen;
+
+    //波
+    [SerializeField]
+    private GameObject wave;
+
     //アニメーションの一時停止
     [SerializeField]
     private Animator animator;
@@ -29,10 +34,18 @@ public class ReceiveAttackEventScript : MonoBehaviour
     [SerializeField]
     private bool IsEndStop;
 
+    [SerializeField]
+    private Quaternion rotation;
+
+    private bool isWave;
+
+    private bool iscontinuous;
+
     // Start is called before the first frame update
     void Start()
     {
         mace = GetComponentInChildren<MaceScript>();
+        rotation = new Quaternion(wave.transform.rotation.x, wave.transform.rotation.y + trollScript.GetRotation().y, wave.transform.rotation.z, wave.transform.rotation.w);
     }
 
     //攻撃開始時
@@ -63,20 +76,37 @@ public class ReceiveAttackEventScript : MonoBehaviour
         if (trollScript.GetShockwave())
         {
             Instantiate(shockwavePrefab, createShockwavePoint.position, shockwavePrefab.transform.rotation);
+            isWave = false;
+            iscontinuous = false;
             Debug.Log("衝撃波発動");
         }
         else if (trollScript.GetInstallation())
         {
             Instantiate(installationsphere, createShockwavePoint.position, installationsphere.transform.rotation);
+            isWave = false;
+            iscontinuous = false;
             Debug.Log("設置物配置完了");
         }
         else if (trollScript.GetExplocion())
         {
             Instantiate(explocion, createShockwavePoint.position, explocion.transform.rotation);
-         
+            isWave = false;
+            iscontinuous = false;
             Debug.Log("爆発完了");
         }
-       
+        else if (trollScript.GetWave())
+        {
+            Instantiate(wave, createShockwavePoint.position,wave.transform.rotation );
+            isWave = true;
+            Debug.Log("波完了");
+        }
+        else if (trollScript.GetContinuous())
+        {
+            Instantiate(wave, createShockwavePoint.position, wave.transform.rotation);
+            isWave = true;
+            Debug.Log("波完了");
+        }
+
     }
 
     // Update is called once per frame
@@ -95,5 +125,10 @@ public class ReceiveAttackEventScript : MonoBehaviour
             IsEndStop = false;
             //Destroy(explocionomen);
         }
+    }
+
+    public bool GetIsWave()
+    {
+        return isWave;
     }
 }

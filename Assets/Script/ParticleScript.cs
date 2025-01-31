@@ -48,6 +48,8 @@ public class ParticleScript : MonoBehaviour
             var a = ps.velocityOverLifetime;
             a.radial = 2f;
         }
+
+        
     }
 
     public void OnParticleTrigger()
