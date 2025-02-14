@@ -7,15 +7,20 @@ public class GameExplanationScript : MonoBehaviour
     [SerializeField]
     private bool isExplanation;
     [SerializeField]
+    private bool isKeys;
+    [SerializeField]
     private GameObject ExplanationUI;
     [SerializeField]
     private GameObject BackGround;
+    [SerializeField]
+    private GameObject Keys;
     [SerializeField]
     private GameObject GameUI;
     // Start is called before the first frame update
     void Start()
     {
         isExplanation = false;
+        isKeys = false;
     }
 
     // Update is called once per frame
@@ -34,6 +39,21 @@ public class GameExplanationScript : MonoBehaviour
             ExplanationUI.SetActive(false);
             BackGround.SetActive(false);
             GameUI.SetActive(false);
+            Keys.SetActive(false);
+        }
+        if(Input.GetKeyDown(KeyCode.L))
+        {
+            GameUI.SetActive(true);
+            ExplanationUI.SetActive(true);
+            BackGround.SetActive(false);
+            Keys.SetActive(true);
+        }
+        else if(Input.GetKeyDown(KeyCode.R))
+        {
+            GameUI.SetActive(true);
+            ExplanationUI.SetActive(true);
+            BackGround.SetActive(true);
+            Keys.SetActive(false);
         }
         if(isExplanation==true)
         {
