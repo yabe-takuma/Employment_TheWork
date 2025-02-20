@@ -44,6 +44,7 @@ public class PlayerScript : MonoBehaviour
     //回避
     [SerializeField]
     private bool avoid = false;
+   
     [SerializeField]
     private bool mov = true;
     [SerializeField]
@@ -109,7 +110,7 @@ public class PlayerScript : MonoBehaviour
                 if (Input.GetKey(KeyCode.Space) && !animator.IsInTransition(0) /*&& changeequipscript.GetEquipment() >= 1*/)
                 {
                     SetState(MyState.Attack);
-                    Time.timeScale = 0.0f;
+                    
                 }
                 if (Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown("joystick button 3"))
                 {
@@ -134,13 +135,14 @@ public class PlayerScript : MonoBehaviour
         }
         else
         {
-            if(avoid)
+            if (avoid)
             {
                 rb.AddForce(-transform.forward * 5.0f, ForceMode.Impulse);
             }
+
         }
 
-        if(startavoidcooltime<10)
+        if (startavoidcooltime<10)
         {
             startavoidcooltime++;
         }
@@ -306,9 +308,9 @@ public class PlayerScript : MonoBehaviour
 
         if (avoid)
         {
-            if(move.magnitude>0)
+            if (move.magnitude > 0)
             {
-                rb.AddForce(moveForward * 50.0f, ForceMode.Impulse);
+                rb.AddForce(moveForward * 10.0f, ForceMode.Impulse);
             }
         }
 
@@ -372,6 +374,7 @@ public class PlayerScript : MonoBehaviour
                     timeline[0].Play();
                     RotationOff();
                     Debug.Log("後ろ回避");
+
                 }
                 else
                 {
@@ -380,8 +383,8 @@ public class PlayerScript : MonoBehaviour
                     RotationOff();
                     Debug.Log("移動回避");
                 }
-
                 avoid = true;
+               
             }
         }
       

@@ -31,26 +31,28 @@ public class ChangeEquipScript : MonoBehaviour
         processCharaAnimEvent = transform.root.GetComponent<ProcessCharaAnimEventScript>();
 
         //初期装備設定
-        equipment = -1;
-        
+        equipment = 0;
+        StartWepon();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown("1")||Input.GetKeyDown(KeyCode.RightShift)
-           || Input.GetKeyDown("joystick button 5") && playerScript.GetState() == PlayerScript.MyState.Normal)
+        if(Input.GetKeyDown("1")||Input.GetKeyDown(KeyCode.RightShift) && playerScript.SetDeadCaunter() >= 1
+           || Input.GetKeyDown("joystick button 5") && playerScript.GetState() == PlayerScript.MyState.Normal
+           && playerScript.SetDeadCaunter() >= 1)
         {
             InstantiateWepon();
+            
         }
     }
 
     void InstantiateWepon()
     {
         equipment++;
-        if(equipment>=weapons.Length)
+        if (equipment>=weapons.Length)
         {
-            equipment = -1;
+            equipment = 0;
         }
         //今装備している武器を削除
         if (equipTransform.childCount != 0)
@@ -91,6 +93,18 @@ public class ChangeEquipScript : MonoBehaviour
         }
 
         
+    }
+
+    void StartWepon()
+    {
+        var weapon = Instantiate<GameObject>(weapons[equipment]);
+        processCharaAnimEvent.SetCollider(weapon.GetComponent<Collider>());
+
+        weapon.transform.SetParent(equipTransform);
+        weapon.transform.localPosition = new Vector3(-0.27f, 0.005f, 0.092f);
+        weapon.transform.localEulerAngles = new Vector3(291.87f, 6.4f, 80f);
+        weapon.transform.localScale = new Vector3(1f, 1f, 1f);
+        myStatus.SetEquip(weapon);
     }
 
 }

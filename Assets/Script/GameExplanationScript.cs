@@ -7,8 +7,6 @@ public class GameExplanationScript : MonoBehaviour
     [SerializeField]
     private bool isExplanation;
     [SerializeField]
-    private bool isKeys;
-    [SerializeField]
     private GameObject ExplanationUI;
     [SerializeField]
     private GameObject BackGround;
@@ -16,11 +14,20 @@ public class GameExplanationScript : MonoBehaviour
     private GameObject Keys;
     [SerializeField]
     private GameObject GameUI;
+    [SerializeField]
+    private GameObject LevelUpUI;
+    private int leveluptimer;
+    private bool islevelup;
+    [SerializeField]
+    private PlayerScript playerScript;
+    [SerializeField]
+    private GrayScaleSprict grayscript;
     // Start is called before the first frame update
     void Start()
     {
         isExplanation = false;
-        isKeys = false;
+        leveluptimer = 0;
+        islevelup = false;
     }
 
     // Update is called once per frame
@@ -55,13 +62,30 @@ public class GameExplanationScript : MonoBehaviour
             BackGround.SetActive(true);
             Keys.SetActive(false);
         }
-        if(isExplanation==true)
+       
+       
+
+        if (isExplanation==true|| grayscript.enabled==true)
         {
             Time.timeScale = 0;
+        }
+        else if (playerScript.SetDeadCaunter() == 1 && !Input.GetKeyDown(KeyCode.J)&&islevelup==false)
+        {
+            LevelUpUI.SetActive(true);
+            Time.timeScale = 0;
+            Debug.Log("レベルが2になった");
+        }
+        else if (playerScript.SetDeadCaunter() == 1 && Input.GetKeyDown(KeyCode.J))
+        {
+            LevelUpUI.SetActive(false);
+            Time.timeScale = 0;
+            islevelup = true;
         }
         else
         {
             Time.timeScale = 1;
         }
+        
+       
     }
 }

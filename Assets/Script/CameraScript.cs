@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+
 //using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -46,6 +48,8 @@ public class CameraScript : MonoBehaviour
     private Vector3 startposition;
     [SerializeField]
     private TrollScript trollscript;
+    [SerializeField]
+    private LayerMask obstacleLayer;
     
     // Start is called before the first frame update
     void Start()
@@ -60,18 +64,23 @@ public class CameraScript : MonoBehaviour
         nowPos = TargetObject.transform.position;
         RotAngle -= speed.x * Time.deltaTime * 50.0f;
         HeightAngle += speed.z * Time.deltaTime * 20.0f;
+     
         HeightAngle = Mathf.Clamp(HeightAngle, -40.0f, 60.0f);
         Distance = Mathf.Clamp(Distance, 5.0f, 40.0f);
 
         if(Physics.CheckSphere(nowPos,0.3f))
         {
-            transform.position = Vector3.Lerp(transform.position, nowPos, 1);
+            transform.position = Vector3.Lerp(transform.position, nowPos,1);
         }
         else
         {
             //transform.localPosition = Vector3.Lerp(transform.localPosition, startposition, 1);
             RotAngle -= speed.x * Time.deltaTime * 50.0f;
             HeightAngle += speed.z * Time.deltaTime * 20.0f;
+        }
+        if(transform.rotation.x<0)
+        {
+            transform.position = new Vector3(0,30,0);
         }
 
         //減衰
@@ -154,12 +163,19 @@ public class CameraScript : MonoBehaviour
         else transform.rotation = rot;
 
         TargetIcon();
-
-        if(trollscript.GetState()==TrollScript.TrollState.Dead)
+        RaycastHit hit;
+        if (trollscript.GetState() == TrollScript.TrollState.Dead)
         {
-            transform.position = new Vector3(transform.position.x,3.0f,transform.position.z-5.0f);
+            transform.position = new Vector3(transform.position.x, 3.0f, transform.position.z - 5.0f);
         }
-
+        if(Physics.Linecast(TargetObject.transform.position,transform.position,out hit,obstacleLayer))
+        {
+            transform.position = Vector3.zero;
+        }
+        //if (transform.rotation.x == 0)
+        //{
+        //    transform.rotation = new Quaternion(0,transform.rotation.y,transform.rotation.z,transform.rotation.w); 
+        //}
     }
     public void OnCamera(InputAction.CallbackContext context)
     {
