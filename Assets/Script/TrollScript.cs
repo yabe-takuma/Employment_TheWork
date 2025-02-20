@@ -111,7 +111,7 @@ public class TrollScript : MonoBehaviour
         {
             Patrol();
         }
-        else if(trollState == TrollState.chase)
+        else if(trollState == TrollState.chase && Isexplocion==false)
         {
             Chase();
         }
@@ -269,7 +269,7 @@ public class TrollScript : MonoBehaviour
             Isexplocion = true;
             Iswave = false;
             Iscontinuous = false;
-            navMeshAgent.isStopped = true;
+            //navMeshAgent.isStopped = true;
             Debug.Log("爆発攻撃");
         }
         else if(trollState==TrollState.wave)
@@ -558,6 +558,11 @@ public class TrollScript : MonoBehaviour
             isCollision = false;
             collisiontimer = 0;
         }
+    }
+
+    public Vector3 GetPosition()
+    {
+        return transform.position;
     }
 
 }

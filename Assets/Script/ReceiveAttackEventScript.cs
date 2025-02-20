@@ -67,7 +67,7 @@ public class ReceiveAttackEventScript : MonoBehaviour
         {
             IsEndStop = true;
             animator.SetFloat("MovingSpeed", 0.0f);
-            Instantiate(explocionomen, new Vector3(createShockwavePoint.position.x, 0.3f, createShockwavePoint.position.z), explocionomen.transform.rotation);
+            Instantiate(explocionomen, new Vector3(trollScript.GetPosition().x, 0.3f, trollScript.GetPosition().z), explocionomen.transform.rotation);
         }
     }
     //衝撃波発生

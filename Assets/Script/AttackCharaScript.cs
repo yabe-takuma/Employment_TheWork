@@ -69,27 +69,26 @@ public class AttackCharaScript : MonoBehaviour
             else if (distance > 6.0f && distance < 9.0f && trollstatus.GetHp() >= trollstatus.GetMaxHp() / 2)
             {
                 trollScript.SetState(TrollScript.TrollState.wave, other.transform);
-                //trollScript.SetState(TrollScript.TrollState.chase, other.transform);
+                trollScript.SetState(TrollScript.TrollState.chase, other.transform);
                 Debug.Log("攻撃2");
             }
             else if(distance>3.0f&&distance<5.0f && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2)
             {
                 trollScript.SetState(TrollScript.TrollState.installation, other.transform);
-                //trollScript.SetState(TrollScript.TrollState.chase, other.transform);
+                trollScript.SetState(TrollScript.TrollState.chase, other.transform);
                 Debug.Log("攻撃3");
             }
 
-            else if (distance > 5.0f && distance < 11.0f && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2)
-            {
-                trollScript.SetState(TrollScript.TrollState.continuous, other.transform);
-                //trollScript.SetState(TrollScript.TrollState.chase, other.transform);
-                Debug.Log("連続攻撃中");
-            }
-
-            else if (distance > 11.0f && distance < 15.0f && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2)
+            else if (distance > 5.0f && distance < 8.0f && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2)
             {
                 trollScript.SetState(TrollScript.TrollState.explocion, other.transform);
-                //trollScript.SetState(TrollScript.TrollState.chase, other.transform);
+                trollScript.SetState(TrollScript.TrollState.chase, other.transform);
+            }
+
+            else if (distance > 8.0f && distance < 15.0f && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2)
+            {
+                trollScript.SetState(TrollScript.TrollState.continuous, other.transform);
+                trollScript.SetState(TrollScript.TrollState.chase, other.transform);
                 Debug.Log("攻撃3");
             }
         }
