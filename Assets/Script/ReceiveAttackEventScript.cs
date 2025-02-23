@@ -40,24 +40,37 @@ public class ReceiveAttackEventScript : MonoBehaviour
     private bool isWave;
 
     private bool iscontinuous;
+    //攻撃制御
+    [SerializeField]
+    private bool isAttack;
 
+    //アニメーションを一定時間止める
+    [SerializeField]
+    private bool isAttackStop;
+    private int Attacktimer;
     // Start is called before the first frame update
     void Start()
     {
         mace = GetComponentInChildren<MaceScript>();
         rotation = new Quaternion(wave.transform.rotation.x, wave.transform.rotation.y + trollScript.GetRotation().y, wave.transform.rotation.z, wave.transform.rotation.w);
+        isAttack = true;
     }
 
     //攻撃開始時
     public void StartAttack()
     {
         mace.ChangeEnableAttack(true);
+        isAttack = true;
         Debug.Log("メイス攻撃開始");
     }
     //攻撃終了時
     public void EndAttack()
     {
         mace.ChangeEnableAttack(false);
+        isAttack = false;
+        isAttackStop = true;
+        animator.SetFloat("MovingSpeed", 0.0f);
+        trollScript.SetVelocity(Vector3.zero);
         Debug.Log("メイス攻撃終了");
     }
 
@@ -68,6 +81,7 @@ public class ReceiveAttackEventScript : MonoBehaviour
             IsEndStop = true;
             animator.SetFloat("MovingSpeed", 0.0f);
             Instantiate(explocionomen, new Vector3(trollScript.GetPosition().x, 0.3f, trollScript.GetPosition().z), explocionomen.transform.rotation);
+            Debug.Log("踏みとどまる");
         }
     }
     //衝撃波発生
@@ -125,10 +139,27 @@ public class ReceiveAttackEventScript : MonoBehaviour
             IsEndStop = false;
             //Destroy(explocionomen);
         }
+        if(isAttackStop==true)
+        {
+            Attacktimer++;
+        }
+        if(Attacktimer>=700)
+        {
+            animator.SetFloat("MovingSpeed", 1.0f);
+            isAttackStop = false;
+            Attacktimer = 0;
+            trollScript.SetVelocity(Vector3.zero);
+        }
+       
     }
 
     public bool GetIsWave()
     {
         return isWave;
+    }
+
+    public bool GetIsAttack()
+    {
+        return isAttack;
     }
 }

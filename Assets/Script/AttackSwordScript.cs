@@ -7,13 +7,16 @@ public class AttackSwordScript : MonoBehaviour
 {
 
     private MyStatus myStatus;
+    private PlayerScript playerscript;
     [SerializeField]
     private GameObject sworddamageUI;
+    private bool isAttack;
 
     // Start is called before the first frame update
     private void Start()
     {
         myStatus = transform.root.GetComponent<MyStatus>();
+        playerscript = transform.root.GetComponent<PlayerScript>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -33,11 +36,12 @@ public class AttackSwordScript : MonoBehaviour
         if(other.tag=="Boss")
         {
             var trollScript = other.GetComponentInParent<TrollScript>();
-            if(trollScript.GetState()!=TrollScript.TrollState.Dead)
+            if(trollScript.GetState()!=TrollScript.TrollState.Dead&&isAttack==false)
             {
                 other.GetComponentInParent<TrollScript>().TakeDamage(myStatus.GetAttackPower(), other.ClosestPointOnBounds(transform.position));
                 var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y-4.0f, other.bounds.center.z), Quaternion.identity);
                 swordobj.transform.SetParent(other.transform);
+                isAttack = true;
                 Debug.Log("ボスに当たった");
             }
         }
@@ -46,6 +50,14 @@ public class AttackSwordScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(playerscript.GetState()!=PlayerScript.MyState.Attack)
+        {
+            isAttack = false;
+        }
+    }
+
+    public bool IsAttack()
+    {
+        return isAttack;
     }
 }

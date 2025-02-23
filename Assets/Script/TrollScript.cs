@@ -70,14 +70,10 @@ public class TrollScript : MonoBehaviour
     private SetPosition1 setposition1;
 
     //ステージの端っこに行ってしまった時の処理
-    private bool isCollision;
-    private int collisiontimer;
-
     [SerializeField]
-    private Vector3 pos;
+    private int collisiontimer;
     [SerializeField]
     private float dis;
-
     //突進時間
     [SerializeField]
     private int chargetimer;
@@ -140,6 +136,7 @@ public class TrollScript : MonoBehaviour
         }
         else if(trollState==TrollState.explocion)
         {
+            Explocion();
             Debug.Log("爆発中");
         }
         else if(trollState==TrollState.wave)
@@ -155,7 +152,7 @@ public class TrollScript : MonoBehaviour
         {
             Time.timeScale = 0.2f;
         }
-        //共通するCharacterControllerの移動処理
+        //移動処理
         velocity.y += Physics.gravity.y * Time.deltaTime;
         characterController.Move(velocity * Time.deltaTime);
       
@@ -173,6 +170,10 @@ public class TrollScript : MonoBehaviour
         if (Physics.Raycast(ray, out hit, 100f, LayerMask.GetMask("Field")))
         {
             destination = hit.point;
+        }
+        else
+        {
+            SetRandomDestination();
         }
     }
 
@@ -242,7 +243,7 @@ public class TrollScript : MonoBehaviour
         {
             animator.SetTrigger("Jump");
         }
-        else if(trollState == TrollState.installation)
+        else if(trollState == TrollState.installation&& trollState != TrollState.explocion)
         {
             attackTargetTransform = playerTransform;
             attackTargetPos = attackTargetTransform.position;
@@ -261,8 +262,10 @@ public class TrollScript : MonoBehaviour
         {
             //attackTargetTransform = playerTransform;
             //attackTargetPos = attackTargetTransform.position;
+            animator.ResetTrigger("ShockwaveAttack");
+            animator.ResetTrigger("ContinuousAttack");
             velocity = new Vector3(0f, velocity.y, 0f);
-            animator.SetTrigger("ShockwaveAttack");
+            animator.SetTrigger("Explocion");
             animator.SetBool("Chase", false);
             Isshockwave = false;
             Isinstallation = false;
@@ -286,7 +289,7 @@ public class TrollScript : MonoBehaviour
             Debug.Log("爆発攻撃");
         }
 
-        else if (trollState == TrollState.continuous)
+        else if (trollState == TrollState.continuous && trollState != TrollState.explocion)
         {
             attackTargetTransform = playerTransform;
             attackTargetPos = attackTargetTransform.position;
@@ -349,11 +352,11 @@ public class TrollScript : MonoBehaviour
             transform.rotation = Quaternion.Euler(transform.eulerAngles.x, targetRot.eulerAngles.y, transform.eulerAngles.z);
             velocity = transform.forward * walkSpeed;
             dis = Vector3.Distance(transform.position, destination);
-            pos = destination;
+            //pos = destination;
         }
         
         //目的地に着いたらidle状態にする
-        if (Vector3.Distance(transform.position,destination)<1.5f||isCollision==true&&collisiontimer>=10)
+        if (Vector3.Distance(transform.position,destination)<2.0f/*||isCollision==true*//*&&collisiontimer>=10*/)
         {
             SetState(TrollState.idle);
            
@@ -454,7 +457,7 @@ public class TrollScript : MonoBehaviour
         //transform.rotation = Quaternion.Euler(transform.eulerAngles.x, targetRot.eulerAngles.y, transform.eulerAngles.z);
 
         //Attackアニメーションが終了したらIdle状態にする
-        if (animator.GetCurrentAnimatorStateInfo(0).IsName("ShockwaveAttack")
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName("Explocion")
             && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
         {
             SetState(TrollState.idle);
@@ -543,11 +546,18 @@ public class TrollScript : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if(other.tag=="Collision")
+        if(other.tag=="Collision"&&collisiontimer< 10)
         {
             trollState = TrollState.idle;
-            isCollision = true;
             collisiontimer++;
+            
+        }
+        else if(other.tag == "Collision" && collisiontimer > 10 )
+        {
+            trollState = TrollState.patrol;
+            //isCollision = false;
+            //collisiontimer = 0;
+            
         }
     }
 
@@ -555,7 +565,6 @@ public class TrollScript : MonoBehaviour
     {
         if(other.tag=="Collision")
         {
-            isCollision = false;
             collisiontimer = 0;
         }
     }
@@ -563,6 +572,11 @@ public class TrollScript : MonoBehaviour
     public Vector3 GetPosition()
     {
         return transform.position;
+    }
+
+    public void SetVelocity(Vector3 velo)
+    {
+        velocity = velo;
     }
 
 }

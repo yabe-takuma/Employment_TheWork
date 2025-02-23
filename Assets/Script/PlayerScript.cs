@@ -61,12 +61,17 @@ public class PlayerScript : MonoBehaviour
     [SerializeField]
     private GameObject troll;
     private int startavoidcooltime;
+    //多段ヒット防止
+    private AttackSwordScript attacksowrdscript;
 
     //討伐カウンター
     [SerializeField]
     private int deadcaunter;
     [SerializeField]
     private LifeGauge hpgauge;
+    //ゲームオーバーフラグ
+    [SerializeField]
+    private bool isGameOver;
 
     public enum MyState
     {
@@ -93,6 +98,7 @@ public class PlayerScript : MonoBehaviour
         timeline[0].Stop();
         timeline[1].Stop();
         gameclearUI.SetActive(false);
+        isGameOver = false;
         //hpgauge.SetLifeGauge(myStatus.GetHp());
     }
 
@@ -112,23 +118,26 @@ public class PlayerScript : MonoBehaviour
                     SetState(MyState.Attack);
                     
                 }
-                if (Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown("joystick button 3"))
-                {
-                    animator.SetBool("Jump", true);
-                    rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
-                    rb.velocity = new Vector3(0, rb.velocity.y + jumpPower, 0);
-                    isJump = true;
-                }
-                else
-                {
-                    isJump = false;
-                   
-                }
+               
+              
                
             }
             
         }
-        
+
+        if (Input.GetKeyDown(KeyCode.F) && transform.position.y < 0 || Input.GetKeyDown("joystick button 3")&&transform.position.y<0 )
+        {
+            animator.SetBool("Jump", true);
+            rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+            rb.velocity = new Vector3(0, rb.velocity.y + jumpPower, 0);
+            isJump = true;
+        }
+        else
+        {
+            isJump = false;
+            animator.SetBool("Jump", false);
+        }
+
         if (mov)
         {
             Move();
@@ -244,7 +253,10 @@ public class PlayerScript : MonoBehaviour
         gameoverUI.SetActive(true);
         SetState(MyState.Dead);
         state = MyState.Dead;
-       
+        if(animator.GetBool("Dead")==true)
+        {
+            isGameOver = true;
+        }
     }
 
     void FixedUpdate()
@@ -393,6 +405,11 @@ public class PlayerScript : MonoBehaviour
     public bool GetAvoid()
     {
         return avoid;
+    }
+
+    public bool IsGameOver()
+    {
+        return isGameOver;
     }
 
     

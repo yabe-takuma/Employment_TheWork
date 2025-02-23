@@ -78,10 +78,7 @@ public class CameraScript : MonoBehaviour
             RotAngle -= speed.x * Time.deltaTime * 50.0f;
             HeightAngle += speed.z * Time.deltaTime * 20.0f;
         }
-        if(transform.rotation.x<0)
-        {
-            transform.position = new Vector3(0,30,0);
-        }
+       
 
         //減衰
         if (EnableAtten)

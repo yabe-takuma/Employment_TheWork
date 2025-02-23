@@ -26,6 +26,12 @@ public class PlayerAttackStateBehaviour : StateMachineBehaviour
         {
             animator.SetBool("Attack", true);
         }
+        else if(animator.GetBool("Jump")==true)
+        {
+            animator.SetBool("Jump", true);
+            //animator.SetBool("Attack", false);
+            animator.ResetTrigger("Attack");
+        }
         processCharaAnimEvent.AttackStart();
         
     }

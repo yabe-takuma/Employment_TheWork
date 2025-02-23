@@ -77,14 +77,14 @@ public class ChangeEquipScript : MonoBehaviour
             if(equipment ==0)
             {
                 weapon.transform.SetParent(equipTransform);
-                weapon.transform.localPosition = new Vector3(-0.27f, 0.005f, 0.092f);
+                weapon.transform.localPosition = new Vector3(-0.24f, 0.03f, 0f);
                 weapon.transform.localEulerAngles = new Vector3(291.87f, 6.4f, 80f);
                 weapon.transform.localScale = new Vector3(1f, 1f, 1f);
             }
             else if(equipment==1&&playerScript.SetDeadCaunter()>=1)
             {
                 weapon.transform.SetParent(equipTransform);
-                weapon.transform.localPosition = new Vector3(0.0f, 0.0f, 0.5f);
+                weapon.transform.localPosition = new Vector3(-0.1f, 0.05f, 0.5f);
                 weapon.transform.localEulerAngles = new Vector3(90.0f, 0.0f, 0.0f);
                 weapon.transform.localScale = new Vector3(1f, 1f, 1f);
             }
@@ -101,7 +101,7 @@ public class ChangeEquipScript : MonoBehaviour
         processCharaAnimEvent.SetCollider(weapon.GetComponent<Collider>());
 
         weapon.transform.SetParent(equipTransform);
-        weapon.transform.localPosition = new Vector3(-0.27f, 0.005f, 0.092f);
+        weapon.transform.localPosition = new Vector3(-0.24f, 0.03f, 0f);
         weapon.transform.localEulerAngles = new Vector3(291.87f, 6.4f, 80f);
         weapon.transform.localScale = new Vector3(1f, 1f, 1f);
         myStatus.SetEquip(weapon);

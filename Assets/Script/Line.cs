@@ -29,7 +29,7 @@ public class Line : MonoBehaviour
 
         //頂点を設定
         renderer[0].SetPosition(0, new Vector3(170f, 100f, 0f));
-        renderer[0].SetPosition(1, new Vector3(200f, 100f, -300f));
+        renderer[0].SetPosition(1, new Vector3(240f, 50f, -300f));
         //renderer[1].SetPosition(0, new Vector3(-150f, 70f, 0f));
         //renderer[1].SetPosition(1, new Vector3(-200f, 100f, -300f));
         //renderer.SetPosition(1, poss[1]);

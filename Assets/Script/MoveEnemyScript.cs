@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using static TrollScript;
 
 public class MoveEnemyScript : MonoBehaviour
 {
@@ -74,6 +75,9 @@ public class MoveEnemyScript : MonoBehaviour
 
     [SerializeField]
     private PlayerScript playerscript;
+
+    [SerializeField]
+    private int collisiontimer;
 
     // Start is called before the first frame update
     void Start()
@@ -284,6 +288,28 @@ public class MoveEnemyScript : MonoBehaviour
     public void SetTrollScript(TrollScript trollscript)
     {
         trollScript = trollscript;
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.tag == "Collision" && collisiontimer < 10 && state != EnemyState.Wait)
+        {
+            state = EnemyState.Wait;
+            collisiontimer++;
+        }
+        else if (other.tag == "Collision" && collisiontimer > 10)
+        {
+            state = EnemyState.Walk;
+
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "Collision")
+        {
+            collisiontimer = 0;
+        }
     }
 
 }

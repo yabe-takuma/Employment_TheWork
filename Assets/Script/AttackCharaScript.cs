@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static TrollScript;
 
 public class AttackCharaScript : MonoBehaviour
 {
@@ -23,12 +24,18 @@ public class AttackCharaScript : MonoBehaviour
 
     [SerializeField]
     private int hp;
+    //ボスの攻撃を終了を検知
+    [SerializeField]
+    private bool isAttack;
+    [SerializeField]
+    private ReceiveAttackEventScript receiveAttackEventScript;
 
     // Start is called before the first frame update
     void Start()
     {
         trollScript = GetComponentInParent<TrollScript>();
         trollAnimator = trollScript.GetComponent<Animator>();
+        receiveAttackEventScript = GetComponentInParent<ReceiveAttackEventScript>();
     }
 
     private void OnTriggerStay(Collider other)
@@ -53,46 +60,55 @@ public class AttackCharaScript : MonoBehaviour
 
             distance = Vector3.Distance(trollScript.transform.position, chaseScript.GetTarget().transform.position);
             //ランダムに攻撃を振り分ける
-            if (distance > 9.0f && distance < 10.0f && trollstatus.GetHp()>=trollstatus.GetMaxHp()/2)
+            if (distance > 9.0f && distance < 10.0f && isAttack==false&& trollstatus.GetHp()>=trollstatus.GetMaxHp()/2)
             {
                 trollScript.SetState(TrollScript.TrollState.attack, other.transform);
                 trollScript.SetState(TrollScript.TrollState.chase, other.transform);
                 Debug.Log("攻撃1");
-
+                isAttack = true;
             }
-            else if (distance > 0.0f && distance < 6.0f && trollstatus.GetHp() >= trollstatus.GetMaxHp() / 2)
+            else if (distance > 0.0f && distance < 6.0f && isAttack == false && trollstatus.GetHp() >= trollstatus.GetMaxHp() / 2)
             {
                 trollScript.SetState(TrollScript.TrollState.shockwaveAttack, other.transform);
                 trollScript.SetState(TrollScript.TrollState.chase, other.transform);
                 Debug.Log("攻撃2");
+                isAttack = true;
             }
-            else if (distance > 6.0f && distance < 9.0f && trollstatus.GetHp() >= trollstatus.GetMaxHp() / 2)
+            else if (distance > 6.0f && distance < 9.0f && isAttack == false && trollstatus.GetHp() >= trollstatus.GetMaxHp() / 2)
             {
                 trollScript.SetState(TrollScript.TrollState.wave, other.transform);
                 trollScript.SetState(TrollScript.TrollState.chase, other.transform);
                 Debug.Log("攻撃2");
+                isAttack = true;
             }
-            else if(distance>3.0f&&distance<5.0f && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2)
+            else if(distance>3.0f&&distance<5.0f && isAttack == false && trollAnimator.GetBool("Explocion") == false && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2)
             {
                 trollScript.SetState(TrollScript.TrollState.installation, other.transform);
                 trollScript.SetState(TrollScript.TrollState.chase, other.transform);
                 Debug.Log("攻撃3");
+                isAttack = true;
             }
 
-            else if (distance > 5.0f && distance < 8.0f && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2)
+            else if (distance > 5.0f && distance < 8.0f && isAttack == false && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2)
             {
                 trollScript.SetState(TrollScript.TrollState.explocion, other.transform);
                 trollScript.SetState(TrollScript.TrollState.chase, other.transform);
+                isAttack = true;
             }
 
-            else if (distance > 8.0f && distance < 15.0f && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2)
+            else if (distance > 8.0f && distance < 15.0f && isAttack == false && trollAnimator.GetBool("Explocion") == false && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2)
             {
                 trollScript.SetState(TrollScript.TrollState.continuous, other.transform);
                 trollScript.SetState(TrollScript.TrollState.chase, other.transform);
                 Debug.Log("攻撃3");
+                isAttack = true;
+            }
+            if(receiveAttackEventScript.GetIsAttack()==false)
+            {
+                isAttack = false;
             }
         }
-        
+       
     }
 
     // Update is called once per frame

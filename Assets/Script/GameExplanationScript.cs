@@ -48,14 +48,14 @@ public class GameExplanationScript : MonoBehaviour
             GameUI.SetActive(false);
             Keys.SetActive(false);
         }
-        if(Input.GetKeyDown(KeyCode.L))
+        if(Input.GetKeyDown(KeyCode.L)|| Input.GetKeyDown("joystick button 5"))
         {
             GameUI.SetActive(true);
             ExplanationUI.SetActive(true);
             BackGround.SetActive(false);
             Keys.SetActive(true);
         }
-        else if(Input.GetKeyDown(KeyCode.R))
+        else if(Input.GetKeyDown(KeyCode.R) || Input.GetKeyDown("joystick button 6"))
         {
             GameUI.SetActive(true);
             ExplanationUI.SetActive(true);
@@ -65,7 +65,7 @@ public class GameExplanationScript : MonoBehaviour
        
        
 
-        if (isExplanation==true|| grayscript.enabled==true)
+        if (isExplanation==true|| grayscript.enabled==true&&playerScript.IsGameOver())
         {
             Time.timeScale = 0;
         }

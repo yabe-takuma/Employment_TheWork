@@ -6,17 +6,20 @@ public class AttackAxe : MonoBehaviour
 {
     // Start is called before the first frame update
     private MyStatus myStatus;
+    private PlayerScript playerscript;
     [SerializeField]
     private GameObject weakUI;
     [SerializeField]
     private GameObject axedamageUI;
     [SerializeField]
     private GameObject axenormaldamageUI;
+    private bool isAttack;
 
     // Start is called before the first frame update
     private void Start()
     {
         myStatus = transform.root.GetComponent<MyStatus>();
+        playerscript = transform.root.GetComponent<PlayerScript>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -36,13 +39,14 @@ public class AttackAxe : MonoBehaviour
         if (other.tag == "Boss")
         {
             var trollScript = other.GetComponentInParent<TrollScript>();
-            if (trollScript.GetState() != TrollScript.TrollState.Dead)
+            if (trollScript.GetState() != TrollScript.TrollState.Dead && isAttack == false)
             {
                 other.GetComponentInParent<TrollScript>().TakeDamage(myStatus.GetAxeAttackPower()*2, other.ClosestPointOnBounds(transform.position));
                 var weakobj = Instantiate(weakUI, new Vector3(other.bounds.center.x,other.bounds.center.y-2.0f,other.bounds.center.z), Quaternion.identity);
                 weakobj.transform.SetParent(other.transform);
                 var axedamageobj = Instantiate(axedamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 4.0f, other.bounds.center.z), Quaternion.identity);
                 axedamageobj.transform.SetParent(other.transform);
+                isAttack = true;
                 Debug.Log("ボスに当たった");
             }
         }
@@ -51,6 +55,9 @@ public class AttackAxe : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (playerscript.GetState() != PlayerScript.MyState.Attack)
+        {
+            isAttack = false;
+        }
     }
 }
