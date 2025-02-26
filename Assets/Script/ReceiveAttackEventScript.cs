@@ -143,7 +143,7 @@ public class ReceiveAttackEventScript : MonoBehaviour
         {
             Attacktimer++;
         }
-        if(Attacktimer>=700)
+        if(Attacktimer>=300)
         {
             animator.SetFloat("MovingSpeed", 1.0f);
             isAttackStop = false;

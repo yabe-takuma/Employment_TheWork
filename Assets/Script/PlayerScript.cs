@@ -144,10 +144,10 @@ public class PlayerScript : MonoBehaviour
         }
         else
         {
-            if (avoid)
-            {
-                rb.AddForce(-transform.forward * 5.0f, ForceMode.Impulse);
-            }
+            //if (avoid)
+            //{
+            //    rb.AddForce(-transform.forward * 5.0f, ForceMode.Impulse);
+            //}
 
         }
 

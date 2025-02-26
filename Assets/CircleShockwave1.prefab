@@ -4829,3 +4829,4 @@ MonoBehaviour:
   playerScript: {fileID: 0}
   numEnter: 0
   numInside: 0
+  trollScript: {fileID: 0}

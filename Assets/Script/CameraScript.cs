@@ -65,7 +65,7 @@ public class CameraScript : MonoBehaviour
         RotAngle -= speed.x * Time.deltaTime * 50.0f;
         HeightAngle += speed.z * Time.deltaTime * 20.0f;
      
-        HeightAngle = Mathf.Clamp(HeightAngle, -40.0f, 60.0f);
+        HeightAngle = Mathf.Clamp(HeightAngle, 4.7f, 60.0f);
         Distance = Mathf.Clamp(Distance, 5.0f, 40.0f);
 
         if(Physics.CheckSphere(nowPos,0.3f))

@@ -81,7 +81,7 @@ public class AttackCharaScript : MonoBehaviour
                 Debug.Log("攻撃2");
                 isAttack = true;
             }
-            else if(distance>3.0f&&distance<5.0f && isAttack == false && trollAnimator.GetBool("Explocion") == false && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2)
+            else if(distance>3.0f&&distance<7.0f && isAttack == false && trollAnimator.GetBool("Explocion") == false && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2)
             {
                 trollScript.SetState(TrollScript.TrollState.installation, other.transform);
                 trollScript.SetState(TrollScript.TrollState.chase, other.transform);
@@ -89,14 +89,14 @@ public class AttackCharaScript : MonoBehaviour
                 isAttack = true;
             }
 
-            else if (distance > 5.0f && distance < 8.0f && isAttack == false && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2)
+            else if (distance > 7.0f && distance < 10.0f && isAttack == false && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2)
             {
                 trollScript.SetState(TrollScript.TrollState.explocion, other.transform);
                 trollScript.SetState(TrollScript.TrollState.chase, other.transform);
                 isAttack = true;
             }
 
-            else if (distance > 8.0f && distance < 15.0f && isAttack == false && trollAnimator.GetBool("Explocion") == false && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2)
+            else if (distance > 10.0f && distance < 15.0f && isAttack == false && trollAnimator.GetBool("Explocion") == false && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2)
             {
                 trollScript.SetState(TrollScript.TrollState.continuous, other.transform);
                 trollScript.SetState(TrollScript.TrollState.chase, other.transform);
