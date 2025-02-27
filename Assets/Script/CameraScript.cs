@@ -43,7 +43,8 @@ public class CameraScript : MonoBehaviour
     private const float fixedDistance = 5f;
     [SerializeField]
     private float distance;
-    public GameObject targetIcon;
+    [SerializeField]
+    private GameObject targetIcon;
 
     private Vector3 startposition;
     [SerializeField]
@@ -206,14 +207,14 @@ public class CameraScript : MonoBehaviour
 
     private void TargetIcon()
     {
-        //if (rock&&RockonTarget!=null && RockonTarget.transform.GetChild(1)!=null)
-        //{
-        //    targetIcon.SetActive(true);
-        //    targetIcon.transform.position = new Vector3(RockonTarget.transform.GetChild(1).transform.position.x,3f, RockonTarget.transform.GetChild(1).transform.position.z);
-        //}
-        //else
-        //{
-        //    targetIcon.SetActive(false);
-        //}
+        if (rock && RockonTarget != null && RockonTarget.transform.GetChild(1) != null&&RockonTarget.tag=="Enemy")
+        {
+            targetIcon.SetActive(true);
+            targetIcon.transform.position = RockonTarget.transform.GetChild(1).position;/*new Vector3(RockonTarget.transform.GetChild(1).transform.position.x, 5f, RockonTarget.transform.GetChild(1).transform.position.z);*/
+        }
+        else
+        {
+            targetIcon.SetActive(false);
+        }
     }
 }

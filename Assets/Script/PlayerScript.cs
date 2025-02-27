@@ -106,24 +106,6 @@ public class PlayerScript : MonoBehaviour
     void Update()
     {
         velo=rb.velocity;
-        if (state == MyState.Normal)
-        {
-            if (characterController.isGrounded)
-            {
-                //velocity = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
-              
-
-                if (Input.GetKey(KeyCode.Space) && !animator.IsInTransition(0) /*&& changeequipscript.GetEquipment() >= 1*/)
-                {
-                    SetState(MyState.Attack);
-                    
-                }
-               
-              
-               
-            }
-            
-        }
 
         if (Input.GetKeyDown(KeyCode.F) && transform.position.y < 0 || Input.GetKeyDown("joystick button 3")&&transform.position.y<0 )
         {
@@ -142,28 +124,11 @@ public class PlayerScript : MonoBehaviour
         {
             Move();
         }
-        else
-        {
-            //if (avoid)
-            //{
-            //    rb.AddForce(-transform.forward * 5.0f, ForceMode.Impulse);
-            //}
 
-        }
-
-        if (startavoidcooltime<10)
-        {
-            startavoidcooltime++;
-        }
-
-        if(troll==null)
+        if (troll==null)
         {
             gameclearUI.SetActive(true);
         }
-
-       
-
-        //velocity.y += Physics.gravity.y * Time.deltaTime;
         characterController.Move(rb.velocity  * Time.deltaTime);
     }
 
@@ -225,6 +190,8 @@ public class PlayerScript : MonoBehaviour
             animator.SetTrigger("Damage");
             velocity = new Vector3(0f, velocity.y, 0f);
             state = MyState.Damage;
+            var damageEffectIns = Instantiate<GameObject>(damageEffect, new Vector3(transform.position.x,transform.position.y-1,transform.position.z), Quaternion.identity);
+            Destroy(damageEffectIns, 1f);
             myStatus.SetHp(myStatus.GetHp() - damage);
         }
         if (myStatus.GetHp() <= 0)
@@ -288,10 +255,7 @@ public class PlayerScript : MonoBehaviour
         {
             rb.velocity = moveForward * moveSpeed2 * move.magnitude + new Vector3(0, rb.velocity.y, 0);
         }
-        else
-        {
-            //rb.velocity = new Vector3(0, rb.velocity.y, 0);
-        }
+       
         if (move.magnitude > 0
                    && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack1")
                    && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack2")
@@ -315,16 +279,9 @@ public class PlayerScript : MonoBehaviour
         else
         {
             rb.useGravity = true;
-            //rb.velocity = new Vector3(0, -1, 0);
         }
 
-        if (avoid)
-        {
-            if (move.magnitude > 0)
-            {
-                rb.AddForce(moveForward * 10.0f, ForceMode.Impulse);
-            }
-        }
+       
 
     }
 
@@ -353,10 +310,12 @@ public class PlayerScript : MonoBehaviour
 
     public void OnAttack(InputAction.CallbackContext context)
     {
-        if (context.started && !animator.IsInTransition(0) && changeequipscript.GetEquipment() >= 1)
+        if (characterController.isGrounded)
         {
-            SetState(MyState.Attack);
-
+            if (context.started && !animator.IsInTransition(0) && changeequipscript.GetEquipment() >= 0)
+            {
+                SetState(MyState.Attack);
+            }
         }
     }
 

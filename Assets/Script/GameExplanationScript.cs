@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class GameExplanationScript : MonoBehaviour
@@ -22,6 +23,8 @@ public class GameExplanationScript : MonoBehaviour
     private PlayerScript playerScript;
     [SerializeField]
     private GrayScaleSprict grayscript;
+    [SerializeField]
+    private GameObject textmeshpro;
     // Start is called before the first frame update
     void Start()
     {
@@ -39,6 +42,7 @@ public class GameExplanationScript : MonoBehaviour
             BackGround.SetActive(true);
             ExplanationUI.SetActive(true);
             GameUI.SetActive(true);
+            textmeshpro.SetActive(false);
         }
         else if(Input.GetKeyDown("joystick button 2") && isExplanation == true || Input.GetKeyDown(KeyCode.Y) && isExplanation == true)
         {
@@ -47,15 +51,16 @@ public class GameExplanationScript : MonoBehaviour
             BackGround.SetActive(false);
             GameUI.SetActive(false);
             Keys.SetActive(false);
+            textmeshpro.SetActive(true);
         }
-        if(Input.GetKeyDown(KeyCode.L)|| Input.GetKeyDown("joystick button 5"))
+        if(Input.GetKeyDown(KeyCode.L)|| Input.GetKeyDown("joystick button 5") && isExplanation == true)
         {
             GameUI.SetActive(true);
             ExplanationUI.SetActive(true);
             BackGround.SetActive(false);
             Keys.SetActive(true);
         }
-        else if(Input.GetKeyDown(KeyCode.R) || Input.GetKeyDown("joystick button 6"))
+        else if(Input.GetKeyDown(KeyCode.R) || Input.GetKeyDown("joystick button 4") && isExplanation == true)
         {
             GameUI.SetActive(true);
             ExplanationUI.SetActive(true);

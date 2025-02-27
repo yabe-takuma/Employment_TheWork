@@ -22,7 +22,8 @@ public class SensorScript : MonoBehaviour
 
     void OnTriggerStay(Collider other)
     {
-        if (other.tag=="Boss" && !enemyList.Contains(other.gameObject))
+        string layerName = LayerMask.LayerToName(other.gameObject.layer);
+        if (other.tag=="Boss" &&layerName=="Enemy"&& !enemyList.Contains(other.gameObject)|| other.tag == "Enemy" && !enemyList.Contains(other.gameObject))
         {
             enemyList.Add(other.gameObject);
             if (other.tag == null)
@@ -32,22 +33,21 @@ public class SensorScript : MonoBehaviour
             }
         }
         camerascript.GetRockonTarget(nowTarget);
+        Debug.Log("リストの中に入れた");
     }
 
     void OnTriggerExit(Collider other)
     {
-        if (other.tag=="Boss" && !enemyList.Contains(other.gameObject))
+        if (other.tag=="Boss" && enemyList.Contains(other.gameObject) || other.tag == "Enemy" && enemyList.Contains(other.gameObject))
         {
             if (other.tag == null)
             {
                 nowTarget = null;
             }
             enemyList.Remove(other.gameObject);
+            Debug.Log("リストの中を削除");
         }
-        else
-        {
-            //camerascript.IsRockon();
-        }
+       
         
     }
 
@@ -63,6 +63,13 @@ public class SensorScript : MonoBehaviour
         else if(enemyList.Count!=0&&nowTarget==null)
         {
             SetNowTarget();
+        }
+        for(int index =0;index<enemyList.Count;index++) //nullのオブジェクトから消す
+        {
+            if (enemyList[index]==null)
+            {
+                enemyList.Remove(enemyList[index]);
+            }
         }
     }
 
