@@ -91,6 +91,7 @@ public class TrollScript : MonoBehaviour
         navMeshAgent = GetComponent<NavMeshAgent>();
         setposition1 = GetComponent<SetPosition1>();
         SetRandomDestination();
+        //SetState(TrollState.idle);
     }
 
     // Update is called once per frame
@@ -169,6 +170,11 @@ public class TrollScript : MonoBehaviour
         //目的地が地面になるように再設定
         if (Physics.Raycast(ray, out hit, 100f, LayerMask.GetMask("Field")))
         {
+            if (navMeshAgent.pathStatus != NavMeshPathStatus.PathInvalid)
+            {
+                //navMeshAgent.SetDestination(hit.point);
+                
+            }
             destination = hit.point;
         }
         else
@@ -206,7 +212,10 @@ public class TrollScript : MonoBehaviour
             velocity = new Vector3(0f, velocity.y, 0f);
             animator.SetTrigger("Attack");
             animator.SetBool("Chase", false);
-            navMeshAgent.isStopped = true;
+            //if (navMeshAgent.pathStatus != NavMeshPathStatus.PathInvalid)
+            //{
+            //    navMeshAgent.isStopped = true;
+            //}
             Debug.Log("通常攻撃");
         }
         else if(trollState == TrollState.shockwaveAttack)
@@ -221,7 +230,7 @@ public class TrollScript : MonoBehaviour
             Isexplocion = false;
             Iswave = false;
             Iscontinuous = false;
-            navMeshAgent.isStopped = true;
+            //navMeshAgent.isStopped = true;
             Debug.Log("衝撃波攻撃");
         }
         else if(trollState == TrollState.charge)
@@ -234,9 +243,11 @@ public class TrollScript : MonoBehaviour
         {
             animator.SetBool("Chase", true);
             attackTargetTransform = playerTransform;
-            navMeshAgent.SetDestination(attackTargetTransform.position);
-            navMeshAgent.isStopped = false;
-           
+            //if (navMeshAgent.pathStatus != NavMeshPathStatus.PathInvalid)
+            //{
+            //    navMeshAgent.SetDestination(attackTargetTransform.position);
+            //    navMeshAgent.isStopped = false;
+            //}
             Debug.Log("チェイス");
         }
         else if(trollState == TrollState.Jump)
@@ -255,7 +266,7 @@ public class TrollScript : MonoBehaviour
             Isexplocion = false;
             Iswave = false;
             Iscontinuous = false;
-            navMeshAgent.isStopped = true;
+            //navMeshAgent.isStopped = true;
             Debug.Log("設置物配置攻撃");
         }
         else if (trollState == TrollState.explocion)
@@ -285,7 +296,7 @@ public class TrollScript : MonoBehaviour
             Isexplocion = false;
             Iswave = true;
             Iscontinuous = false;
-            navMeshAgent.isStopped = true;
+            //navMeshAgent.isStopped = true;
             Debug.Log("爆発攻撃");
         }
 
@@ -301,7 +312,7 @@ public class TrollScript : MonoBehaviour
             Isexplocion = false;
             Iswave = false;
             Iscontinuous = true;
-            navMeshAgent.isStopped = true;
+            //navMeshAgent.isStopped = true;
             Debug.Log("爆発攻撃");
         }
 
@@ -315,9 +326,9 @@ public class TrollScript : MonoBehaviour
         else if(trollState == TrollState.Dead)
         {
             animator.SetTrigger("Dead");
-            Destroy(this.gameObject, 3f);
+            Destroy(this.gameObject, 2f);
             velocity = Vector3.zero;
-            navMeshAgent.isStopped = true;
+            //navMeshAgent.isStopped = true;
         }
     }
 
@@ -502,7 +513,7 @@ public class TrollScript : MonoBehaviour
         //WeakUIをインスタンス化。登場位置はコライダの中心からカメラの方向に少し寄せた位置
       
         trollStatus.SetHp(trollStatus.GetHp() - damage);
-        navMeshAgent.isStopped = true;
+        //navMeshAgent.isStopped = true;
         if (trollStatus.GetHp()<=0)
         {
             Dead();
@@ -558,6 +569,19 @@ public class TrollScript : MonoBehaviour
             //isCollision = false;
             //collisiontimer = 0;
             
+        }
+        if (other.tag == "Tree" && collisiontimer < 10)
+        {
+            trollState = TrollState.idle;
+            collisiontimer++;
+            Debug.Log("木にぶつかった");
+        }
+        else if (other.tag == "Tree" && collisiontimer > 10)
+        {
+            trollState = TrollState.patrol;
+            //isCollision = false;
+            //collisiontimer = 0;
+
         }
     }
 

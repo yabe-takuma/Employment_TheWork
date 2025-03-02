@@ -26,11 +26,13 @@ public class PlayerScript : MonoBehaviour
     private float jumpPower = 5f;
 
     private ChangeEquipScript changeequipscript;
+    //ロックオン
     [SerializeField]
     private PlayerLockon lockon;
     private const float RotateSpeed = 900f;
     private const float RotateSpeedLockon = 500f;
-
+    //ロックオン状態の時に代入する変数
+    private Quaternion rotation;
 
     private Vector3 move;
     private Vector3 moveForward;
@@ -236,6 +238,7 @@ public class PlayerScript : MonoBehaviour
                 var dir = camera3D.RockonTarget.transform.position - this.gameObject.transform.position;
                 Quaternion targetRotation = Quaternion.LookRotation(dir);
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * turnTimeRate);
+                //transform.rotation = new Quaternion(transform.rotation.x, rotation.y, transform.rotation.z, transform.rotation.w);
             }
             else
             {

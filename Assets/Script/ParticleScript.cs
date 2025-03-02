@@ -52,7 +52,7 @@ public class ParticleScript : MonoBehaviour
         
     }
 
-    public void OnParticleTrriger()
+    public void OnParticleTrigger()
     {
         if(ps != null&&flag)
         {

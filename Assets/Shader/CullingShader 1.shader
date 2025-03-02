@@ -3,17 +3,8 @@ Shader "Unlit/CullingShader"
    
     Properties
     {
-       
+        _MaskTex("MaskTex",2D)="white"{}
         _Dissolve("Dissolve",Range(-0.01,1.01))=0.0
-        _Color ("Color", Color) = (1,1,1,1)
-        [NoScaleOffset] _MainTex ("Albedo (RGB)", 2D) = "white" {}
-        [Toggle] _UseMetallicMap ("Use Metallic Map", Float) = 0.0
-        [NoScaleOffset] _MetallicGlossMap("Metallic", 2D) = "black" {}
-        [Gamma] _Metallic ("Metallic", Range(0,1)) = 0.0
-        _Glossiness ("Smoothness", Range(0,1)) = 0.5
-        _BumpScale("Scale", Float) = 1.0
-        [NoScaleOffset] _BumpMap("Normal Map", 2D) = "bump" {}
-        _Cutoff("Alpha Cutoff", Range(0.01,1)) = 0.5
     }
 
     SubShader

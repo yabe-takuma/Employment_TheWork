@@ -17,7 +17,7 @@ public class CameraScript : MonoBehaviour
     public float Distance = 5.0f;
     public float RotAngle = 0.0f;
     public float HeightAngle = 10.0f;
-    public float dis_min = 5.0f;
+    public float dis_min = 2.0f;
     public float dis_mdl = 10.0f;
     [SerializeField]
     private Vector3 nowPos;
@@ -26,7 +26,7 @@ public class CameraScript : MonoBehaviour
 
     //減衰挙動
     public bool EnableAtten = true;
-    public float AttenRate = 3.0f;
+    public float AttenRate = 1.0f;
     public float ForwardDistance = 2.0f;
     private Vector3 addForward;
     [SerializeField]
@@ -56,36 +56,38 @@ public class CameraScript : MonoBehaviour
     void Start()
     {
         nowPos = TargetObject.transform.position;
-        startposition = transform.localPosition;
+        //startposition = transform.localPosition;
     }
 
     // Update is called once per frame
     void LateUpdate()
     {
-        nowPos = TargetObject.transform.position;
+        //nowPos = TargetObject.transform.position;
         RotAngle -= speed.x * Time.deltaTime * 50.0f;
         HeightAngle += speed.z * Time.deltaTime * 20.0f;
      
-        HeightAngle = Mathf.Clamp(HeightAngle, 4.7f, 60.0f);
-        Distance = Mathf.Clamp(Distance, 5.0f, 40.0f);
+        HeightAngle = Mathf.Clamp(HeightAngle, 3.7f, 60.0f);
+        Distance = Mathf.Clamp(Distance, 5.0f, 10.0f);
 
-        if(Physics.CheckSphere(nowPos,0.3f))
-        {
-            transform.position = Vector3.Lerp(transform.position, nowPos,1);
-        }
-        else
-        {
-            //transform.localPosition = Vector3.Lerp(transform.localPosition, startposition, 1);
-            RotAngle -= speed.x * Time.deltaTime * 50.0f;
-            HeightAngle += speed.z * Time.deltaTime * 20.0f;
-        }
+        RockonTarget = SertchCircle.GetComponent<SensorScript>().nowTarget;
+
+        //if (Physics.CheckSphere(nowPos,0.3f))
+        //{
+        //    transform.position = Vector3.Lerp(transform.position, nowPos,1);
+        //}
+        //else
+        //{
+        //    //transform.localPosition = Vector3.Lerp(transform.localPosition, startposition, 1);
+        //    RotAngle -= speed.x * Time.deltaTime * 50.0f;
+        //    HeightAngle += speed.z * Time.deltaTime * 20.0f;
+        //}
        
 
         //減衰
         if (EnableAtten)
         {
             var target = TargetObject.transform.position;
-
+            
             if(rock)
             {
                 if(RockonTarget!=null)
@@ -107,6 +109,7 @@ public class CameraScript : MonoBehaviour
             addForward += deltaPos * Time.deltaTime * 20.0f;
             addForward = Vector3.Lerp(addForward, Vector3.zero, Time.deltaTime * AttenRate);
 
+            nowPos = Vector3.Lerp(nowPos, halfPoint + Vector3.up * Height + addForward, Mathf.Clamp01(Time.deltaTime * AttenRate));
         }
         else nowPos = TargetObject.transform.position + Vector3.up * Height;
         if (EnableAtten) nowRotAngle = Mathf.Lerp(nowRotAngle, RotAngle, Time.deltaTime * RotAngleAttenRate);
@@ -129,47 +132,63 @@ public class CameraScript : MonoBehaviour
             {
                 rock = false;
             }
-            if(distance>=10)
+            //if (distance >= 10)
+            //{
+            //    rock = false;
+            //}
+        }
+        else
+        {
+            if(HeightAngle>30)
             {
-                rock = false;
+                Distance = Mathf.Lerp(Distance, 5.0f * HeightAngle / 30.0f, Time.deltaTime);
+            }
+            else if(HeightAngle<=30&&HeightAngle>=-3)
+            {
+                Distance = Mathf.Lerp(Distance, 5.0f, Time.deltaTime);
+            }
+            else if(HeightAngle<-3)
+            {
+                Distance = Mathf.Lerp(Distance,dis_min,Time.deltaTime);
             }
         }
-
         var deg = Mathf.Deg2Rad;
         var cx = Mathf.Sin(nowRotAngle * deg) * Mathf.Cos(nowHeightAngle * deg) * Distance;
         var cz = -Mathf.Cos(nowRotAngle * deg) * Mathf.Cos(nowHeightAngle * deg) * Distance;
         var cy = Mathf.Sin(nowHeightAngle * deg) * Distance;
-        if (rock)
-        {
-            if (RockonTarget != null)
-            {
-                nowPos = RockonTarget.transform.position + new Vector3(cx, cy, cz);
-            }
-            
-        }
-        else
-        {
-            cx = Mathf.Sin(nowRotAngle * deg) * Mathf.Cos(nowHeightAngle * deg) * fixedDistance;
-            cz = -Mathf.Cos(nowRotAngle * deg) * Mathf.Cos(nowHeightAngle * deg) * fixedDistance;
-            cy = Mathf.Sin(nowHeightAngle * deg) * fixedDistance;
-            transform.position = nowPos + new Vector3(cx, cy, cz);
-        }
         transform.position = nowPos + new Vector3(cx, cy, cz);
+
+        //if (rock)
+        //{
+        //    //if (RockonTarget != null)
+        //    //{
+        //    //    nowPos = RockonTarget.transform.position + new Vector3(cx, cy, cz);
+        //    //}
+
+        //}
+        //else
+        //{
+        //    cx = Mathf.Sin(nowRotAngle * deg) * Mathf.Cos(nowHeightAngle * deg) * Distance;
+        //    cz = -Mathf.Cos(nowRotAngle * deg) * Mathf.Cos(nowHeightAngle * deg) * Distance;
+        //    cy = Mathf.Sin(nowHeightAngle * deg) * Distance;
+        //    transform.position = nowPos + new Vector3(cx, cy, cz);
+        //}
+
 
         var rot = Quaternion.LookRotation((nowPos - transform.position).normalized);
         if (EnableAtten) transform.rotation = rot;
         else transform.rotation = rot;
 
         TargetIcon();
-        RaycastHit hit;
+        //RaycastHit hit;
         if (trollscript.GetState() == TrollScript.TrollState.Dead)
         {
             transform.position = new Vector3(transform.position.x, 3.0f, transform.position.z - 5.0f);
         }
-        if(Physics.Linecast(TargetObject.transform.position,transform.position,out hit,obstacleLayer))
-        {
-            transform.position = Vector3.zero;
-        }
+        //if(Physics.Linecast(TargetObject.transform.position,transform.position,out hit,obstacleLayer))
+        //{
+        //    transform.position = Vector3.zero;
+        //}
         //if (transform.rotation.x == 0)
         //{
         //    transform.rotation = new Quaternion(0,transform.rotation.y,transform.rotation.z,transform.rotation.w); 
@@ -207,14 +226,14 @@ public class CameraScript : MonoBehaviour
 
     private void TargetIcon()
     {
-        if (rock && RockonTarget != null && RockonTarget.transform.GetChild(1) != null&&RockonTarget.tag=="Enemy")
-        {
-            targetIcon.SetActive(true);
-            targetIcon.transform.position = RockonTarget.transform.GetChild(1).position;/*new Vector3(RockonTarget.transform.GetChild(1).transform.position.x, 5f, RockonTarget.transform.GetChild(1).transform.position.z);*/
-        }
-        else
-        {
-            targetIcon.SetActive(false);
-        }
+        //if (rock && RockonTarget != null && RockonTarget.transform.GetChild(1) != null&&RockonTarget.tag=="Enemy")
+        //{
+        //    targetIcon.SetActive(true);
+        //    targetIcon.transform.position = /*RockonTarget.transform.GetChild(1).position; */new Vector3(RockonTarget.transform.GetChild(1).transform.position.x, 5f, RockonTarget.transform.GetChild(1).transform.position.z);
+        //}
+        //else
+        //{
+        //    targetIcon.SetActive(false);
+        //}
     }
 }

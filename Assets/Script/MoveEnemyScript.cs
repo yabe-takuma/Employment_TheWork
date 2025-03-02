@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AI;
 using static TrollScript;
 
 public class MoveEnemyScript : MonoBehaviour
@@ -25,6 +26,10 @@ public class MoveEnemyScript : MonoBehaviour
 
     //目的地
     //private Vector3 destination;
+    [SerializeField]
+    private NavMeshAgent navMeshAgent;
+    [SerializeField]
+    private float rotateSpeed=45f;
     [SerializeField]
     private float walkSpeed = 1.0f;
     //速度
@@ -90,9 +95,11 @@ public class MoveEnemyScript : MonoBehaviour
         velocity = Vector3.zero;
         arrived = false;
         elapsedTime = 0f;
-        SetState(EnemyState.Walk);
+        //SetState(EnemyState.Walk);
         handCollider = GetComponentInChildren<SphereCollider>();
         playerscript= GameObject.Find("Character_Female_Hotel Owner").GetComponent<PlayerScript>();
+        navMeshAgent = GetComponent<NavMeshAgent>();
+        SetState(EnemyState.Wait);
     }
 
     // Update is called once per frame
@@ -109,38 +116,42 @@ public class MoveEnemyScript : MonoBehaviour
                     if (state == EnemyState.Chase)
                     {
                         setPosition.SetDestination(playerTransform.position);
+                        navMeshAgent.SetDestination(setPosition.GetDestination());
                     }
-                    if (enemyController.isGrounded)
-                    {
-                        velocity = Vector3.zero;
-                        animator.SetFloat("Speed", 2.0f);
-                        direction = (setPosition.GetDestination() - transform.position).normalized;
-                        transform.LookAt(new Vector3(setPosition.GetDestination().x, transform.position.y, setPosition.GetDestination().z));
-                        velocity = direction * walkSpeed;
-                    }
+                    animator.SetFloat("Speed", navMeshAgent.desiredVelocity.magnitude);
+                    //if (enemyController.isGrounded)
+                    //{
+                    //    velocity = Vector3.zero;
+                    //    animator.SetFloat("Speed", 2.0f);
+                    //    direction = (setPosition.GetDestination() - transform.position).normalized;
+                    //    transform.LookAt(new Vector3(setPosition.GetDestination().x, transform.position.y, setPosition.GetDestination().z));
+                    //    velocity = direction * walkSpeed;
+                    //}
 
                     if (state == EnemyState.Walk)
                     {
 
-
-                        //目的地に到着したかどうかの判定
-                        if (Vector3.Distance(transform.position, setPosition.GetDestination()) < 1.7f)
+                        if (navMeshAgent.pathStatus != NavMeshPathStatus.PathInvalid)
                         {
-                            Debug.Log("目的地に着いた");
-                            SetState(EnemyState.Wait);
-                            animator.SetFloat("Speed", 0.0f);
+                            //目的地に到着したかどうかの判定
+                            if (navMeshAgent.remainingDistance < 0.1f)
+                            {
+                                Debug.Log("目的地に着いた");
+                                SetState(EnemyState.Wait);
+                                animator.SetFloat("Speed", 0.0f);
+                            }
                         }
                     }
                     else if (state == EnemyState.Chase)
                     {
                         //攻撃する距離だったら攻撃
-                        if (Vector3.Distance(transform.position, setPosition.GetDestination()) < 1.25f)
+                        if (navMeshAgent.remainingDistance<1.2f)
                         {
                             randam = Random.Range(1, 10);
                             SetState(EnemyState.Attack);
 
                         }
-                        distance = Vector3.Distance(transform.position, setPosition.GetDestination());
+                        distance = navMeshAgent.remainingDistance;
                     }
                 }
 
@@ -165,19 +176,28 @@ public class MoveEnemyScript : MonoBehaviour
                     SetState(EnemyState.Walk);
                 }
             }
+            else if(state==EnemyState.Attack)
+            {
+                //プレイヤーの方向を取得
+                var playerDirection = new Vector3(playerTransform.position.x, transform.position.y, playerTransform.position.z) - transform.position;
+                //敵の向きをプレイヤーの向きに少しづつ変える
+                var dir = Vector3.RotateTowards(transform.forward, playerDirection, rotateSpeed * Time.deltaTime, 0f);
+                //算出した方向の角度を敵の角度に設定
+                transform.rotation = Quaternion.LookRotation(dir);
+            }
             velocity.y += Physics.gravity.y * Time.deltaTime;
-            enemyController.Move(velocity * Time.deltaTime);
+            //enemyController.Move(velocity * Time.deltaTime);
 
             //if (state == EnemyState.Wait)
             //{
             //    elapsedTime += Time.deltaTime;
             //}
 
-            if (Input.GetKey(KeyCode.Space))
-            {
-                animator.SetBool("Attack2", false);
-                animator.SetBool("Attack3", false);
-            }
+            //if (Input.GetKey(KeyCode.Space))
+            //{
+            //    animator.SetBool("Attack2", false);
+            //    animator.SetBool("Attack3", false);
+            //}
         }
        
     }
@@ -187,12 +207,18 @@ public class MoveEnemyScript : MonoBehaviour
     public void SetState(EnemyState tempState, Transform targetObj = null)
     {
         state = tempState;
-        if(tempState==EnemyState.Walk)
+        velocity = Vector3.zero;
+        if (tempState==EnemyState.Walk)
         {
             arrived = false;
             elapsedTime = 0f;
-            state = tempState;
+            //state = tempState;
             setPosition.CreateRandomPosition();
+            if (navMeshAgent.pathStatus != NavMeshPathStatus.PathInvalid)
+            {
+                navMeshAgent.SetDestination(setPosition.GetDestination());
+                navMeshAgent.isStopped = false;
+            }
         }
         else if(tempState == EnemyState.Chase)
         { 
@@ -200,11 +226,13 @@ public class MoveEnemyScript : MonoBehaviour
             arrived = false;
             //追いかける対象をセット
             playerTransform = targetObj;
+            navMeshAgent.SetDestination(playerTransform.position);
+            navMeshAgent.isStopped = false;
         } 
         else if(tempState ==EnemyState.Wait)
         {
             elapsedTime = 0f;
-            state = tempState;
+            //state = tempState;
             arrived = true;
             velocity = Vector3.zero;
             animator.SetFloat("Speed", 0f);
@@ -215,6 +243,7 @@ public class MoveEnemyScript : MonoBehaviour
             animator.SetFloat("Speed", 0f);
             animator.SetBool("Attack", true);
             randam = 0;
+            navMeshAgent.isStopped = true;
         }
         else if(tempState == EnemyState.Freeze)
         {
@@ -232,12 +261,14 @@ public class MoveEnemyScript : MonoBehaviour
             animator.ResetTrigger("Attack2");
             animator.ResetTrigger("Attack3");
             animator.SetTrigger("Damage");
+            navMeshAgent.isStopped = true;
         }
         else if(tempState == EnemyState.Dead)
         {
             animator.SetTrigger("Dead");
             Destroy(this.gameObject, 3f);
             velocity = Vector3.zero;
+            navMeshAgent.isStopped = true;
         }
         else if(tempState ==EnemyState.Attack2)
         {
@@ -245,6 +276,7 @@ public class MoveEnemyScript : MonoBehaviour
             animator.SetFloat("Speed", 0f);
             animator.SetBool("Attack2", true);
             randam = 0;
+            navMeshAgent.isStopped = true;
         }
         else if(tempState == EnemyState.Attack3)
         {
@@ -252,6 +284,7 @@ public class MoveEnemyScript : MonoBehaviour
             animator.SetFloat("Speed", 0f);
             animator.SetBool("Attack3", true);
             randam = 0;
+            navMeshAgent.isStopped = true;
         }
     }
     //敵キャラクターの状態取得メソッド
