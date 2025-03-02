@@ -30,7 +30,7 @@ public class EnemyGeneretor : MonoBehaviour
         enemytransform[0] = new Vector3(974.509f, 0.999f, 51.15654f);
         enemytransform[1] = new Vector3(904.509f, 0.999f, 51.15654f);
         enemytransform[2] = new Vector3(1015.5f, 0.999f, 51.15654f);
-        enemytransform[3] = new Vector3(1060f, 0.999f, 51.15654f);
+        enemytransform[3] = new Vector3(910f, 0.999f, 121.15654f);
         enemytransform[4] = new Vector3(1026.4f, 0.999f, 110.9f);
        
         enemycaunter = 0;

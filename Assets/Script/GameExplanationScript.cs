@@ -74,23 +74,23 @@ public class GameExplanationScript : MonoBehaviour
         {
             Time.timeScale = 0;
         }
-        else if (playerScript.SetDeadCaunter() == 1 && !Input.GetKeyDown(KeyCode.J)&&islevelup==false)
+        else if (playerScript.SetDeadCaunter() == 1 && islevelup==false)
         {
             LevelUpUI.SetActive(true);
             Time.timeScale = 0;
             Debug.Log("レベルが2になった");
         }
-        else if (playerScript.SetDeadCaunter() == 1 && Input.GetKeyDown(KeyCode.J))
-        {
-            LevelUpUI.SetActive(false);
-            Time.timeScale = 0;
-            islevelup = true;
-        }
         else
         {
             Time.timeScale = 1;
         }
-        
-       
+        if (Input.GetKeyDown(KeyCode.J) && playerScript.SetDeadCaunter() == 1)
+        {
+            LevelUpUI.SetActive(false);
+            Time.timeScale = 0;
+            Debug.Log("レベル説明終了");
+            islevelup = true;
+        }
+
     }
 }

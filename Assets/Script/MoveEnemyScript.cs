@@ -118,6 +118,7 @@ public class MoveEnemyScript : MonoBehaviour
                         setPosition.SetDestination(playerTransform.position);
                         navMeshAgent.SetDestination(setPosition.GetDestination());
                     }
+
                     animator.SetFloat("Speed", navMeshAgent.desiredVelocity.magnitude);
                     //if (enemyController.isGrounded)
                     //{
