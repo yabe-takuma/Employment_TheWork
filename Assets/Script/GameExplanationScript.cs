@@ -84,7 +84,8 @@ public class GameExplanationScript : MonoBehaviour
         {
             Time.timeScale = 1;
         }
-        if (Input.GetKeyDown(KeyCode.J) && playerScript.SetDeadCaunter() == 1)
+        if (Input.GetKeyDown(KeyCode.J) && playerScript.SetDeadCaunter() == 1
+            || Input.GetKeyDown("joystick button 4") && playerScript.SetDeadCaunter() == 1)
         {
             LevelUpUI.SetActive(false);
             Time.timeScale = 0;
