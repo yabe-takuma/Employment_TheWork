@@ -412,7 +412,7 @@ LineRenderer:
   m_SortingOrder: 0
   m_Positions:
   - {x: 380, y: -100, z: 0}
-  - {x: 440, y: -175, z: -300}
+  - {x: 440, y: -115, z: -300}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.1
@@ -562,7 +562,7 @@ LineRenderer:
   m_SortingOrder: 0
   m_Positions:
   - {x: 130, y: 200, z: 0}
-  - {x: 150, y: 200, z: -300}
+  - {x: 150, y: 230, z: -300}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.1
@@ -1147,7 +1147,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -1750,7 +1750,7 @@ LineRenderer:
   m_SortingOrder: 0
   m_Positions:
   - {x: -50, y: -210, z: 0}
-  - {x: -60, y: -270, z: -300}
+  - {x: -60, y: -210, z: -300}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.1
@@ -1886,7 +1886,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -2156,8 +2156,8 @@ LineRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Positions:
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 1}
+  - {x: 180, y: 110, z: 0}
+  - {x: 240, y: 110, z: -300}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.1
@@ -2220,7 +2220,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 333420332}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1c2d40a431c69294080866114e4bd81a, type: 3}
   m_Name: 
@@ -2908,7 +2908,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -3598,7 +3598,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u6575\u30921\u4F53\u5012\u3057\u305F\u3053\u3068\u3067\u65A7\u3092\u4F7F\u3048\u308B\u3088\u3046\u306B\u306A\u3063\u305F\nRShift\u30AD\u30FC\u307E\u305F\u306F\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\u30FC\u306F\nRB\u30DC\u30BF\u30F3\u3067\u6B66\u5668\u3092\u5909\u66F4\u3067\u304D\u308B\u305E\uFF01\nJ\u30AD\u30FC\u3067\u30B2\u30FC\u30E0\u753B\u9762\u306B\u623B\u308B"
+  m_text: "\u6575\u30921\u4F53\u5012\u3057\u305F\u3053\u3068\u3067\u65A7\u3092\u4F7F\u3048\u308B\u3088\u3046\u306B\u306A\u3063\u305F\nRShift\u30AD\u30FC\u307E\u305F\u306F\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\u30FC\u306F\nRB\u30DC\u30BF\u30F3\u3067\u6B66\u5668\u3092\u5909\u66F4\u3067\u304D\u308B\u305E\uFF01\nJ\u30AD\u30FC\u307E\u305F\u306FLB\u30DC\u30BF\u30F3\u3067\u30B2\u30FC\u30E0\u753B\u9762\u306B\u623B\u308B"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3c3579ed987915241acbf2d6f951d6c3, type: 2}
   m_sharedMaterial: {fileID: 2006669298148341980, guid: 3c3579ed987915241acbf2d6f951d6c3, type: 2}
@@ -3986,7 +3986,7 @@ LineRenderer:
   m_SortingOrder: 0
   m_Positions:
   - {x: 70, y: 0, z: 0}
-  - {x: 250, y: -120, z: -300}
+  - {x: 250, y: -60, z: -300}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.1
@@ -4262,7 +4262,7 @@ MonoBehaviour:
   m_text: "\u77E2\u5370\u30AD\u30FC:\u30AB\u30E1\u30E9\u56DE\u8EE2"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3c3579ed987915241acbf2d6f951d6c3, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2006669298148341980, guid: 3c3579ed987915241acbf2d6f951d6c3, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -4281,7 +4281,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -4449,7 +4449,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -4647,7 +4647,7 @@ LineRenderer:
   m_SortingOrder: 0
   m_Positions:
   - {x: 370, y: -210, z: 0}
-  - {x: 350, y: -270, z: -300}
+  - {x: 350, y: -210, z: -300}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.1
@@ -5307,7 +5307,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -5979,7 +5979,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -6114,7 +6114,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -6571,7 +6571,7 @@ SphereCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 60
-  m_Center: {x: 0, y: -129.2, z: 0}
+  m_Center: {x: 0, y: -229.2, z: 0}
 --- !u!136 &1355940146
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -6581,7 +6581,7 @@ CapsuleCollider:
   m_GameObject: {fileID: 1355940142}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   m_Radius: 30
   m_Height: 330
   m_Direction: 1
@@ -11737,7 +11737,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -11903,7 +11903,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -12038,7 +12038,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -12353,7 +12353,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -12484,7 +12484,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -12719,7 +12719,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -13034,7 +13034,7 @@ LineRenderer:
   m_SortingOrder: 0
   m_Positions:
   - {x: -130, y: -50, z: 0}
-  - {x: -100, y: 190, z: -300}
+  - {x: -100, y: 230, z: -300}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.1
@@ -13184,7 +13184,7 @@ LineRenderer:
   m_SortingOrder: 0
   m_Positions:
   - {x: 130, y: 130, z: 0}
-  - {x: 240, y: 130, z: -300}
+  - {x: 240, y: 200, z: -300}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.1
@@ -13546,7 +13546,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -13752,7 +13752,7 @@ LineRenderer:
   m_SortingOrder: 0
   m_Positions:
   - {x: 70, y: 0, z: 0}
-  - {x: 40, y: -220, z: -300}
+  - {x: 40, y: -160, z: -300}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.1
@@ -13983,7 +13983,7 @@ MonoBehaviour:
   m_text: "RB\u30DC\u30BF\u30F3\u2192\nL\u30AD\u30FC\u2192"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3c3579ed987915241acbf2d6f951d6c3, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2006669298148341980, guid: 3c3579ed987915241acbf2d6f951d6c3, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -14002,7 +14002,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -14544,7 +14544,7 @@ LineRenderer:
   m_SortingOrder: 0
   m_Positions:
   - {x: 130, y: 60, z: 0}
-  - {x: 240, y: -20, z: -300}
+  - {x: 240, y: 40, z: -300}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.1
@@ -14977,7 +14977,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -15156,7 +15156,7 @@ LineRenderer:
   m_SortingOrder: 0
   m_Positions:
   - {x: 400, y: -20, z: 0}
-  - {x: 410, y: -70, z: -300}
+  - {x: 400, y: -10, z: -300}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.1
@@ -15412,7 +15412,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2

@@ -20,11 +20,13 @@ public class SceneScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (playerScript.GetState() == PlayerScript.MyState.Dead && Input.GetKeyDown("joystick button 3") || Input.GetKeyDown(KeyCode.K))
+        if (playerScript.GetState() == PlayerScript.MyState.Dead && Input.GetKeyDown("joystick button 3") || 
+            Input.GetKeyDown(KeyCode.K)&& playerScript.GetState() == PlayerScript.MyState.Dead)
         {
             SceneManager.LoadScene("TitleScene");
         }
-        else if (trollScript.GetState() == TrollScript.TrollState.Dead && Input.GetKeyDown("joystick button 3") || Input.GetKeyDown(KeyCode.K)&&troll==null)
+        else if (trollScript.GetState() == TrollScript.TrollState.Dead && Input.GetKeyDown("joystick button 3") && troll == null || 
+            Input.GetKeyDown(KeyCode.K)&& trollScript.GetState() == TrollScript.TrollState.Dead&&troll == null)
         {
             SceneManager.LoadScene("TitleScene");
         }
