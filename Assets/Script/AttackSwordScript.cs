@@ -10,6 +10,8 @@ public class AttackSwordScript : MonoBehaviour
     private PlayerScript playerscript;
     [SerializeField]
     private GameObject sworddamageUI;
+    [SerializeField]
+    private GameObject damageEffect;
     private bool isAttack;
 
     // Start is called before the first frame update
@@ -41,6 +43,8 @@ public class AttackSwordScript : MonoBehaviour
                 other.GetComponentInParent<TrollScript>().TakeDamage(myStatus.GetAttackPower(), other.ClosestPointOnBounds(transform.position));
                 var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y-4.0f, other.bounds.center.z), Quaternion.identity);
                 swordobj.transform.SetParent(other.transform);
+                var damageobj = Instantiate(damageEffect, new Vector3(other.bounds.center.x, other.bounds.center.y, other.bounds.center.z), Quaternion.identity);
+                damageobj.transform.SetParent(other.transform);
                 isAttack = true;
                 Debug.Log("ボスに当たった");
             }

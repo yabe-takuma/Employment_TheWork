@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.UI;
 using UnityEngine.AI;
+using Unity.VisualScripting.Dependencies.Sqlite;
 public class TrollScript : MonoBehaviour
 {
 
@@ -68,6 +69,19 @@ public class TrollScript : MonoBehaviour
     private NavMeshAgent navMeshAgent;
 
     private SetPosition1 setposition1;
+
+    //壁との接触を判定するレイを飛ばす場所
+    [SerializeField]
+    private Transform rayTransform;
+    //レイを飛ばす距離
+    [SerializeField]
+    private float rayDistance = 3f;
+    //最初に壁に衝突してから経過時間
+    [SerializeField]
+    private float elapsedCollisionWall = Mathf.Infinity;
+    //最初に壁に衝突してから次に判定するまでの時間
+    [SerializeField]
+    private float avoidanceTimeCollisionWall = 5f;
 
     //ステージの端っこに行ってしまった時の処理
     [SerializeField]
@@ -170,11 +184,6 @@ public class TrollScript : MonoBehaviour
         //目的地が地面になるように再設定
         if (Physics.Raycast(ray, out hit, 100f, LayerMask.GetMask("Field")))
         {
-            if (navMeshAgent.pathStatus != NavMeshPathStatus.PathInvalid)
-            {
-                //navMeshAgent.SetDestination(hit.point);
-                
-            }
             destination = hit.point;
         }
         else
@@ -330,6 +339,12 @@ public class TrollScript : MonoBehaviour
             velocity = Vector3.zero;
             //navMeshAgent.isStopped = true;
         }
+        //レイを視覚化して表示
+        Debug.DrawLine(rayTransform.position, rayTransform.position + rayTransform.forward * rayDistance, Color.red);
+        Debug.DrawLine(rayTransform.position, rayTransform.position + (rayTransform.forward + rayTransform.right).normalized * rayDistance, Color.blue);
+        Debug.DrawLine(rayTransform.position, rayTransform.position + (rayTransform.forward - rayTransform.right).normalized * rayDistance, Color.yellow);
+        //ボスキャラから目的地までのレイを表示
+        Debug.DrawLine(rayTransform.position, destination, Color.green);
     }
 
     //状態取得メソッド
@@ -371,6 +386,25 @@ public class TrollScript : MonoBehaviour
         {
             SetState(TrollState.idle);
            
+        }
+
+        if(elapsedCollisionWall>=avoidanceTimeCollisionWall)
+        {
+            if (Physics.Linecast(rayTransform.position, rayTransform.position + rayTransform.forward * rayDistance, LayerMask.GetMask("Field"))
+                ||Physics.Linecast(rayTransform.position,rayTransform.position+(rayTransform.forward+rayTransform.right).normalized*rayDistance,LayerMask.GetMask("Field"))
+                ||Physics.Linecast(rayTransform.position,rayTransform.position+(rayTransform.forward-rayTransform.right).normalized*rayDistance,LayerMask.GetMask("Field"))
+                )
+            {
+                Debug.Log("壁と接触");
+                elapsedCollisionWall = 0f;
+                SetState(TrollState.idle);
+            }
+        }
+        //一旦目的地を再設定したら一定の回避時間を設ける
+        elapsedCollisionWall += Time.deltaTime;
+        if(elapsedCollisionWall >= avoidanceTimeCollisionWall)
+        {
+            elapsedCollisionWall = avoidanceTimeCollisionWall;
         }
     }
     //Chase状態の時の処理

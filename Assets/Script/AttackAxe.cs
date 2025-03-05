@@ -13,6 +13,8 @@ public class AttackAxe : MonoBehaviour
     private GameObject axedamageUI;
     [SerializeField]
     private GameObject axenormaldamageUI;
+    [SerializeField]
+    private GameObject damageEffect;
     private bool isAttack;
 
     // Start is called before the first frame update
@@ -24,6 +26,7 @@ public class AttackAxe : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        //敵に当たった時ダメージを表示するUIやエフェクトなどを表示しています。
         if (other.tag == "Enemy")
         {
 
@@ -36,6 +39,7 @@ public class AttackAxe : MonoBehaviour
                 Debug.Log("敵に当たった");
             }
         }
+        //ボスに当たった時ダメージを表示するUIやエフェクトなどを表示しています。
         if (other.tag == "Boss")
         {
             var trollScript = other.GetComponentInParent<TrollScript>();
@@ -46,6 +50,8 @@ public class AttackAxe : MonoBehaviour
                 weakobj.transform.SetParent(other.transform);
                 var axedamageobj = Instantiate(axedamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 4.0f, other.bounds.center.z), Quaternion.identity);
                 axedamageobj.transform.SetParent(other.transform);
+                var damageobj = Instantiate(damageEffect, new Vector3(other.bounds.center.x, other.bounds.center.y, other.bounds.center.z), Quaternion.identity);
+                damageobj.transform.SetParent(other.transform);
                 isAttack = true;
                 Debug.Log("ボスに当たった");
             }

@@ -123,6 +123,37 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 23800000, guid: 456b8c34abf8fad46a9555bb50b11aa3, type: 2}
+--- !u!1 &46756721
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 46756722}
+  m_Layer: 3
+  m_Name: RayTransform
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &46756722
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 46756721}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.918, z: 0.412}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 994710116}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &72488672
 GameObject:
   m_ObjectHideFlags: 0
@@ -8379,7 +8410,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u6575\u30921\u4F53\u5012\u3057\u305F\u3053\u3068\u3067\u65A7\u3092\u4F7F\u3048\u308B\u3088\u3046\u306B\u306A\u3063\u305F\nRShift\u30AD\u30FC\u307E\u305F\u306F\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\u30FC\u306F\nRB\u30DC\u30BF\u30F3\u3067\u6B66\u5668\u3092\u5909\u66F4\u3067\u304D\u308B\u305E\uFF01"
+  m_text: "\u6575\u30921\u4F53\u5012\u3057\u305F\u3053\u3068\u3067\u65A7\u3092\u4F7F\u3048\u308B\u3088\u3046\u306B\u306A\u3063\u305F\nRShift\u30AD\u30FC\u307E\u305F\u306F\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\u30FC\u306F\nRB\u30DC\u30BF\u30F3\u3067\u6B66\u5668\u3092\u5909\u66F4\u3067\u304D\u308B\u305E\uFF01\nJ\u30AD\u30FC\u3067\u30B2\u30FC\u30E0\u753B\u9762\u306B\u623B\u308B"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3c3579ed987915241acbf2d6f951d6c3, type: 2}
   m_sharedMaterial: {fileID: 2006669298148341980, guid: 3c3579ed987915241acbf2d6f951d6c3, type: 2}
@@ -10188,6 +10219,9 @@ MonoBehaviour:
   trollStatus: {fileID: 994710117}
   maceCapsuleCollider: {fileID: 1355940146}
   maceSphereCollider: {fileID: 1355940145}
+  rayTransform: {fileID: 0}
+  rayDistance: 2
+  avoidanceTimeCollisionWall: 5
   collisiontimer: 0
   dis: 0
   chargetimer: 0
@@ -10221,7 +10255,6 @@ MonoBehaviour:
   IsEndStop: 0
   rotation: {x: 0, y: 0, z: 0, w: 0}
   isAttack: 0
-  isAttackStop: 0
 --- !u!4 &994710116 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4876443625621520, guid: 4a2995c2dfa5ee447bb99406df3fd57e, type: 3}

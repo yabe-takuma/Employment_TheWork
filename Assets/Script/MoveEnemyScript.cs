@@ -187,18 +187,7 @@ public class MoveEnemyScript : MonoBehaviour
                 transform.rotation = Quaternion.LookRotation(dir);
             }
             velocity.y += Physics.gravity.y * Time.deltaTime;
-            //enemyController.Move(velocity * Time.deltaTime);
-
-            //if (state == EnemyState.Wait)
-            //{
-            //    elapsedTime += Time.deltaTime;
-            //}
-
-            //if (Input.GetKey(KeyCode.Space))
-            //{
-            //    animator.SetBool("Attack2", false);
-            //    animator.SetBool("Attack3", false);
-            //}
+           
         }
        
     }
@@ -213,7 +202,6 @@ public class MoveEnemyScript : MonoBehaviour
         {
             arrived = false;
             elapsedTime = 0f;
-            //state = tempState;
             setPosition.CreateRandomPosition();
             if (navMeshAgent.pathStatus != NavMeshPathStatus.PathInvalid)
             {
@@ -233,7 +221,6 @@ public class MoveEnemyScript : MonoBehaviour
         else if(tempState ==EnemyState.Wait)
         {
             elapsedTime = 0f;
-            //state = tempState;
             arrived = true;
             velocity = Vector3.zero;
             animator.SetFloat("Speed", 0f);

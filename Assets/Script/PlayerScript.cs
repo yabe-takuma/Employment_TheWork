@@ -131,7 +131,9 @@ public class PlayerScript : MonoBehaviour
         {
             gameclearUI.SetActive(true);
         }
-        characterController.Move(rb.velocity  * Time.deltaTime);
+       
+        characterController.Move(rb.velocity * Time.deltaTime);
+        
     }
 
     public void TakeDamage(Transform enemyTransform,Vector3 attackedPlace,int damage)
@@ -163,6 +165,7 @@ public class PlayerScript : MonoBehaviour
         {
             velocity = Vector3.zero;
             state = MyState.Attack;
+
             if (changeequipscript.GetEquipment() == 0)
             {
                 animator.SetTrigger("Attack");
@@ -250,39 +253,44 @@ public class PlayerScript : MonoBehaviour
 
     private void Move()
     {
-        Vector3 cameraForward = Vector3.Scale(Camera.main.transform.forward, new Vector3(1, 0, 1).normalized);
-        moveForward = cameraForward * move.z + Camera.main.transform.right * move.x;
-        moveForward = moveForward.normalized;
+      
 
-        if(move.magnitude>0)
-        {
-            rb.velocity = moveForward * moveSpeed2 * move.magnitude + new Vector3(0, rb.velocity.y, 0);
-        }
-       
-        if (move.magnitude > 0
-                   && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack1")
-                   && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack2")
-                   && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack03"))
-        {
-            animator.SetFloat("Speed", rb.velocity.magnitude);
-            transform.LookAt(transform.position + velocity);
 
-        }
-        else
-        {
-            animator.SetFloat("Speed", 0f);
-        }
+            Vector3 cameraForward = Vector3.Scale(Camera.main.transform.forward, new Vector3(1, 0, 1).normalized);
+            moveForward = cameraForward * move.z + Camera.main.transform.right * move.x;
+            moveForward = moveForward.normalized;
 
-        if (transform.position.y < 0)
-        {
-            rb.useGravity = false;
-            rb.velocity = moveForward * moveSpeed2 * move.magnitude + new Vector3(0, rb.velocity.y, 0);
-            
-        }
-        else
-        {
-            rb.useGravity = true;
-        }
+            if (move.magnitude > 0)
+            {
+                rb.velocity = moveForward * moveSpeed2 * move.magnitude + new Vector3(0, rb.velocity.y, 0);
+            }
+
+            if (move.magnitude > 0
+                       && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack1")
+                       && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack2")
+                       && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack03"))
+            {
+                animator.SetFloat("Speed", rb.velocity.magnitude);
+                transform.LookAt(transform.position + velocity);
+
+            }
+            else
+            {
+                animator.SetFloat("Speed", 0f);
+            }
+
+
+            if (transform.position.y < 0)
+            {
+                rb.useGravity = false;
+                rb.velocity = moveForward * moveSpeed2 * move.magnitude + new Vector3(0, rb.velocity.y, 0);
+
+            }
+            else
+            {
+                rb.useGravity = true;
+            }
+        
 
        
 

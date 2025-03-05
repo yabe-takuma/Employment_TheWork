@@ -67,7 +67,7 @@ public class CameraScript : MonoBehaviour
         HeightAngle += speed.z * Time.deltaTime * 20.0f;
      
         HeightAngle = Mathf.Clamp(HeightAngle, 3.7f, 60.0f);
-        Distance = Mathf.Clamp(Distance, 5.0f, 10.0f);
+        Distance = Mathf.Clamp(Distance, 5.0f, 15.0f);
 
         RockonTarget = SertchCircle.GetComponent<SensorScript>().nowTarget;
 

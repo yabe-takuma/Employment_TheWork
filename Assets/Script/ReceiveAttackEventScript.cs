@@ -4,21 +4,26 @@ using UnityEngine;
 
 public class ReceiveAttackEventScript : MonoBehaviour
 {
+    //メイスのプレハブ
     [SerializeField]
     private MaceScript mace;
+    //衝撃波のプレハブ
     [SerializeField]
     private GameObject shockwavePrefab;
+    //衝撃波や爆発などを生成する座標
     [SerializeField]
     private Transform createShockwavePoint;
     //設置物
     [SerializeField]
     private GameObject installationsphere;
+    //GiantTrollのスクリプト
     [SerializeField]
     private TrollScript trollScript;
 
     //爆発
     [SerializeField]
     private GameObject explocion;
+    //爆発の範囲を可視化するプレハブ
     [SerializeField]
     private GameObject explocionomen;
 
@@ -34,20 +39,15 @@ public class ReceiveAttackEventScript : MonoBehaviour
     [SerializeField]
     private bool IsEndStop;
 
+    //波生成時の角度調整
     [SerializeField]
     private Quaternion rotation;
-
     private bool isWave;
-
     private bool iscontinuous;
+
     //攻撃制御
     [SerializeField]
     private bool isAttack;
-
-    //アニメーションを一定時間止める
-    [SerializeField]
-    private bool isAttackStop;
-    private int Attacktimer;
     // Start is called before the first frame update
     void Start()
     {
@@ -59,6 +59,7 @@ public class ReceiveAttackEventScript : MonoBehaviour
     //攻撃開始時
     public void StartAttack()
     {
+        //攻撃終了時メイスのコライダーを有効化する処理
         mace.ChangeEnableAttack(true);
         isAttack = true;
         Debug.Log("メイス攻撃開始");
@@ -66,16 +67,15 @@ public class ReceiveAttackEventScript : MonoBehaviour
     //攻撃終了時
     public void EndAttack()
     {
+        //攻撃終了時メイスのコライダーを無効化する処理
         mace.ChangeEnableAttack(false);
         isAttack = false;
-        isAttackStop = true;
-        animator.SetFloat("MovingSpeed", 0.0f);
-        trollScript.SetVelocity(Vector3.zero);
         Debug.Log("メイス攻撃終了");
     }
 
     public void DuringAttack()
     {
+        //爆発攻撃の際にアニメーションを止める処理
         if (trollScript.GetExplocion())
         {
             IsEndStop = true;
@@ -84,7 +84,7 @@ public class ReceiveAttackEventScript : MonoBehaviour
             Debug.Log("踏みとどまる");
         }
     }
-    //衝撃波発生
+    //衝撃波や波や設置物などの発生処理
     public void CreateShockwave()
     {
         if (trollScript.GetShockwave())
@@ -92,33 +92,28 @@ public class ReceiveAttackEventScript : MonoBehaviour
             Instantiate(shockwavePrefab, createShockwavePoint.position, shockwavePrefab.transform.rotation);
             isWave = false;
             iscontinuous = false;
-            Debug.Log("衝撃波発動");
         }
         else if (trollScript.GetInstallation())
         {
             Instantiate(installationsphere, createShockwavePoint.position, installationsphere.transform.rotation);
             isWave = false;
             iscontinuous = false;
-            Debug.Log("設置物配置完了");
         }
         else if (trollScript.GetExplocion())
         {
             Instantiate(explocion, createShockwavePoint.position, explocion.transform.rotation);
             isWave = false;
             iscontinuous = false;
-            Debug.Log("爆発完了");
         }
         else if (trollScript.GetWave())
         {
             Instantiate(wave, createShockwavePoint.position,wave.transform.rotation );
             isWave = true;
-            Debug.Log("波完了");
         }
         else if (trollScript.GetContinuous())
         {
             Instantiate(wave, createShockwavePoint.position, wave.transform.rotation);
             isWave = true;
-            Debug.Log("波完了");
         }
 
     }
@@ -126,31 +121,19 @@ public class ReceiveAttackEventScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //爆発攻撃時アニメーションを一時止める処理
         if(IsEndStop==true)
         {
             EndStop++;
           
         }
-
         if (EndStop >= 500)
         {
             animator.SetFloat("MovingSpeed", 1.0f);
             EndStop = 0;
             IsEndStop = false;
-            //Destroy(explocionomen);
         }
-        if(isAttackStop==true)
-        {
-            Attacktimer++;
-        }
-        if(Attacktimer>=300)
-        {
-            animator.SetFloat("MovingSpeed", 1.0f);
-            isAttackStop = false;
-            Attacktimer = 0;
-            trollScript.SetVelocity(Vector3.zero);
-        }
-       
+
     }
 
     public bool GetIsWave()
