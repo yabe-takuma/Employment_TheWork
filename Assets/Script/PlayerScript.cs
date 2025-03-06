@@ -75,6 +75,8 @@ public class PlayerScript : MonoBehaviour
     [SerializeField]
     private bool isGameOver;
 
+    //プレイヤースクリプトに敵のスプリクトを格納
+    private MoveEnemyScript MoveEnemyScript;
     public enum MyState
     {
         Normal,
@@ -165,7 +167,7 @@ public class PlayerScript : MonoBehaviour
         {
             velocity = Vector3.zero;
             state = MyState.Attack;
-
+            move = Vector3.zero;
             if (changeequipscript.GetEquipment() == 0)
             {
                 animator.SetTrigger("Attack");
@@ -177,6 +179,8 @@ public class PlayerScript : MonoBehaviour
         }
         else if(tempState==MyState.SkillAttack)
         {
+            state = MyState.SkillAttack;
+            move = Vector3.zero;
             animator.SetTrigger("AxeSkillAttack");
         }
         else if(tempState == MyState.Dead)
@@ -253,47 +257,40 @@ public class PlayerScript : MonoBehaviour
 
     private void Move()
     {
-      
+        Vector3 cameraForward = Vector3.Scale(Camera.main.transform.forward, new Vector3(1, 0, 1).normalized);
+        moveForward = cameraForward * move.z + Camera.main.transform.right * move.x;
+        moveForward = moveForward.normalized;
+
+        if (move.magnitude > 0)
+        {
+            rb.velocity = moveForward * moveSpeed2 * move.magnitude + new Vector3(0, rb.velocity.y, 0);
+        }
+
+        if (move.magnitude > 0
+                   && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack1")
+                   && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack2")
+                   && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack03"))
+        {
+            animator.SetFloat("Speed", rb.velocity.magnitude);
+            transform.LookAt(transform.position + velocity);
+
+        }
+        else
+        {
+            animator.SetFloat("Speed", 0f);
+        }
 
 
-            Vector3 cameraForward = Vector3.Scale(Camera.main.transform.forward, new Vector3(1, 0, 1).normalized);
-            moveForward = cameraForward * move.z + Camera.main.transform.right * move.x;
-            moveForward = moveForward.normalized;
+        if (transform.position.y < 0)
+        {
+            rb.useGravity = false;
+            rb.velocity = moveForward * moveSpeed2 * move.magnitude + new Vector3(0, rb.velocity.y, 0);
 
-            if (move.magnitude > 0)
-            {
-                rb.velocity = moveForward * moveSpeed2 * move.magnitude + new Vector3(0, rb.velocity.y, 0);
-            }
-
-            if (move.magnitude > 0
-                       && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack1")
-                       && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack2")
-                       && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack03"))
-            {
-                animator.SetFloat("Speed", rb.velocity.magnitude);
-                transform.LookAt(transform.position + velocity);
-
-            }
-            else
-            {
-                animator.SetFloat("Speed", 0f);
-            }
-
-
-            if (transform.position.y < 0)
-            {
-                rb.useGravity = false;
-                rb.velocity = moveForward * moveSpeed2 * move.magnitude + new Vector3(0, rb.velocity.y, 0);
-
-            }
-            else
-            {
-                rb.useGravity = true;
-            }
-        
-
-       
-
+        }
+        else
+        {
+            rb.useGravity = true;
+        }
     }
 
     private void Rotation()
@@ -381,7 +378,14 @@ public class PlayerScript : MonoBehaviour
     {
         return isGameOver;
     }
+    public void SetEnemyScript(MoveEnemyScript moveEnemyScript)
+    {
+        MoveEnemyScript = moveEnemyScript;
+    }
 
-    
+    public MoveEnemyScript GetEnemyScript()
+    {
+        return MoveEnemyScript;
+    }
 
 }

@@ -31,7 +31,7 @@ public class AttackAxe : MonoBehaviour
         {
 
             var enemyScript = other.GetComponent<MoveEnemyScript>();
-            if (/*enemyScript.GetState() != MoveEnemyScript.EnemyState.Damage &&*/ enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead)
+            if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead)
             {
                 other.GetComponent<MoveEnemyScript>().TakeDamage(myStatus.GetAxeAttackPower(), other.ClosestPointOnBounds(transform.position));
                 var axedamageobj = Instantiate(axenormaldamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y, other.bounds.center.z), Quaternion.identity);

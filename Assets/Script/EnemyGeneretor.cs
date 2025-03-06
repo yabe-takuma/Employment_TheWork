@@ -49,6 +49,7 @@ public class EnemyGeneretor : MonoBehaviour
                 moveEnemyScript = enemys.GetComponent<MoveEnemyScript>();
                 moveEnemyScript.SetDamageEffect(damageEffect);
                 moveEnemyScript.SetTrollScript(trollScript);
+                playerScript.SetEnemyScript(moveEnemyScript);
                 enemycaunter += 1;
             }
         }
