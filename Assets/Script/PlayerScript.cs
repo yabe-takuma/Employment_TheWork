@@ -77,6 +77,7 @@ public class PlayerScript : MonoBehaviour
 
     //プレイヤースクリプトに敵のスプリクトを格納
     private MoveEnemyScript MoveEnemyScript;
+
     public enum MyState
     {
         Normal,
@@ -96,14 +97,12 @@ public class PlayerScript : MonoBehaviour
 
         lockon = GetComponent<PlayerLockon>();
         rb = this.gameObject.GetComponent<Rigidbody>();
-        //rb.constraints = RigidbodyConstraints.FreezeRotation;
         camera3D = Camera.main.GetComponent<CameraScript>();
         gameoverUI.SetActive(false);
         timeline[0].Stop();
         timeline[1].Stop();
         gameclearUI.SetActive(false);
         isGameOver = false;
-        //hpgauge.SetLifeGauge(myStatus.GetHp());
     }
 
     // Update is called once per frame
@@ -245,7 +244,6 @@ public class PlayerScript : MonoBehaviour
                 var dir = camera3D.RockonTarget.transform.position - this.gameObject.transform.position;
                 Quaternion targetRotation = Quaternion.LookRotation(dir);
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * turnTimeRate);
-                //transform.rotation = new Quaternion(transform.rotation.x, rotation.y, transform.rotation.z, transform.rotation.w);
             }
             else
             {
@@ -386,6 +384,16 @@ public class PlayerScript : MonoBehaviour
     public MoveEnemyScript GetEnemyScript()
     {
         return MoveEnemyScript;
+    }
+
+    public Vector3 GetPosition()
+    {
+        return transform.position;
+    }
+
+    public Quaternion GetRotation()
+    {
+        return transform.rotation;
     }
 
 }

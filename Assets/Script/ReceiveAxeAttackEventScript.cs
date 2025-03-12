@@ -7,9 +7,7 @@ public class ReceiveAxeAttackEventScript : MonoBehaviour
 
     [SerializeField]
     private GameObject particle;
-    [SerializeField]
-    private Transform createShockwavePoint;
-
+   
     // Start is called before the first frame update
     void Start()
     {

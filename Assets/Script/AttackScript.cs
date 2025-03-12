@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class AttackScript : MonoBehaviour
 {
+    //敵の攻撃力のための変数やプレイヤーにアニメーションをするために変数を用意しています。
     [SerializeField]
     private EnemyStatus enemyStatus;
 
@@ -21,7 +22,7 @@ public class AttackScript : MonoBehaviour
     {
         
     }
-
+    //雑魚敵の攻撃がプレイヤーに当たった時の処理
     private void OnTriggerEnter(Collider other)
     {
         if (gameObject.CompareTag("Z_Arm") && other.tag == "Player"&&playerScript.GetAvoid()==false&&playerScript.GetState()!=PlayerScript.MyState.Dead)
@@ -32,7 +33,7 @@ public class AttackScript : MonoBehaviour
         }
        
     }
-
+    //プレイヤーの情報を他のスクリプトに渡す関数
     public void SetPlayer(PlayerScript player)
     {
         playerScript = player;

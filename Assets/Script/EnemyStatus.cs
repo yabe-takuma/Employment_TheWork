@@ -58,10 +58,6 @@ public class EnemyStatus : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //enemySetting = AssetDatabase.LoadAssetAtPath<EnemySetting>(filePath);
-        //enemySetting = Resources.Load<EnemySetting>("EnemySettingObject");
-        //maxHp = enemySetting.DataList[0].MaxHp;
-        //attackPower = enemySetting.DataList[0].Attack;
         hp = maxHp;
         attackPower = 1;
         enemyscript = GetComponent<MoveEnemyScript>();

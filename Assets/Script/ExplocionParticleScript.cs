@@ -54,6 +54,7 @@ public class ExplocionParticleScript : MonoBehaviour
 
     public void OnParticleCollision(GameObject other)
     {
+        //爆発が当たったオブジェクトに応じてダメージを変える処理
         if(other.tag=="Player"&& playerScript.GetState() != PlayerScript.MyState.Damage && playerScript.GetState() != PlayerScript.MyState.Dead &&
            playerScript.GetAvoid() == false && trollScript.GetState() == TrollScript.TrollState.explocion && trollScript.GetState() != TrollScript.TrollState.Dead)
         {
@@ -62,12 +63,12 @@ public class ExplocionParticleScript : MonoBehaviour
         if(other.tag=="Boss"&&playerScript.GetState()==PlayerScript.MyState.SkillAttack
             &&trollScript.GetState()!=TrollScript.TrollState.Dead)
         {
-            trollScript.TakeDamage(2, other.transform.position);
+            trollScript.TakeDamage(5, other.transform.position);
         }
         if(other.tag=="Enemy" && playerScript.GetState() == PlayerScript.MyState.SkillAttack
             &&moveEnemyScript.GetState()!=MoveEnemyScript.EnemyState.Damage && moveEnemyScript.GetState() != MoveEnemyScript.EnemyState.Dead)
         {
-            other.GetComponent<MoveEnemyScript>().TakeDamage(2, other.transform.position);
+            other.GetComponent<MoveEnemyScript>().TakeDamage(5, other.transform.position);
         }
     }
 }

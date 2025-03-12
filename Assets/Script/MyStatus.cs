@@ -18,10 +18,6 @@ public class MyStatus : MonoBehaviour
     [SerializeField]
     private LifeGauge lifeGauge;
 
-    //BrackLifeスクリプト
-    [SerializeField]
-    private BrackLife bracklife;
-
     public void SetHp(int hp)
     {
         this.hp = hp;
@@ -66,7 +62,6 @@ public class MyStatus : MonoBehaviour
     void Start()
     {
         //体力ゲージに反映
-        bracklife.SetLifeGauge();
         lifeGauge.SetLifeGauge(hp);
         
     }

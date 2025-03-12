@@ -38,6 +38,7 @@ public class ChangeEquipScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //特定のキーやボタンを押したら武器切り替える処理
         if(Input.GetKeyDown("1")||Input.GetKeyDown(KeyCode.RightShift) && playerScript.SetDeadCaunter() >= 1
            || Input.GetKeyDown("joystick button 5") && playerScript.GetState() == PlayerScript.MyState.Normal
            && playerScript.SetDeadCaunter() >= 1)
@@ -50,6 +51,7 @@ public class ChangeEquipScript : MonoBehaviour
     void InstantiateWepon()
     {
         equipment++;
+        //持っている武器以上の数値になったら0にする処理
         if (equipment>=weapons.Length)
         {
             equipment = 0;
@@ -66,14 +68,7 @@ public class ChangeEquipScript : MonoBehaviour
             var weapon = Instantiate<GameObject>(weapons[equipment]);
             processCharaAnimEvent.SetCollider(weapon.GetComponent<Collider>());
 
-            //サンプルの為、直接武器の位置や角度を設定
-            //if(equipment ==0)
-            //{
-            //    weapon.transform.SetParent(equipTransform);
-            //    weapon.transform.localPosition = new Vector3(-0.156f, 0.052f, -0.003f);
-            //    weapon.transform.localEulerAngles = new Vector3(90f, 270f, 0f);
-            //    weapon.transform.localScale = new Vector3(0.05f, 0.1f, 0.05f);
-            //}
+            //武器の位置や角度を設定
             if(equipment ==0)
             {
                 weapon.transform.SetParent(equipTransform);

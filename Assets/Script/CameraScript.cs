@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor.Rendering;
+
 
 //using UnityEditor.UIElements;
 using UnityEngine;
@@ -46,61 +48,57 @@ public class CameraScript : MonoBehaviour
     [SerializeField]
     private GameObject targetIcon;
 
+    [SerializeField]
+    private GameObject rockonplayer;
+
     private Vector3 startposition;
     [SerializeField]
     private TrollScript trollscript;
     [SerializeField]
     private LayerMask obstacleLayer;
-    
+
+    private PlayerScript playerScript;
+   
+    [SerializeField]
+    private GameObject rockonposition;
+
     // Start is called before the first frame update
     void Start()
     {
         nowPos = TargetObject.transform.position;
-        //startposition = transform.localPosition;
+        playerScript = GameObject.Find("Character_Female_Hotel Owner").GetComponent<PlayerScript>();
     }
 
     // Update is called once per frame
     void LateUpdate()
     {
-        //nowPos = TargetObject.transform.position;
         RotAngle -= speed.x * Time.deltaTime * 50.0f;
-        HeightAngle += speed.z * Time.deltaTime * 20.0f;
+        HeightAngle += speed.z * Time.deltaTime * 50.0f;
      
         HeightAngle = Mathf.Clamp(HeightAngle, 3.7f, 60.0f);
         Distance = Mathf.Clamp(Distance, 5.0f, 15.0f);
 
         RockonTarget = SertchCircle.GetComponent<SensorScript>().nowTarget;
-
-        //if (Physics.CheckSphere(nowPos,0.3f))
-        //{
-        //    transform.position = Vector3.Lerp(transform.position, nowPos,1);
-        //}
-        //else
-        //{
-        //    //transform.localPosition = Vector3.Lerp(transform.localPosition, startposition, 1);
-        //    RotAngle -= speed.x * Time.deltaTime * 50.0f;
-        //    HeightAngle += speed.z * Time.deltaTime * 20.0f;
-        //}
-       
-
         //減衰
         if (EnableAtten)
         {
             var target = TargetObject.transform.position;
-            
-            if(rock)
+            //敵が一定範囲にいてrockフラグが経つと敵の座標などを渡す処理
+            if (rock)
             {
-                if(RockonTarget!=null)
+                if (RockonTarget != null)
                 {
                     target = RockonTarget.transform.position;
                     distance = Vector3.Distance(TargetObject.transform.position, RockonTarget.transform.position);
+                   
                 }
                 else
                 {
                     rock = false;
                 }
+               
             }
-          
+            //減衰処理
             var halfPoint = (TargetObject.transform.position + target) / 2;
             var deltaPos = halfPoint - prevTargetPos;
             prevTargetPos = halfPoint;
@@ -116,13 +114,13 @@ public class CameraScript : MonoBehaviour
         else nowRotAngle = RotAngle;
         if (EnableAtten) nowHeightAngle = Mathf.Lerp(nowHeightAngle, HeightAngle, Time.deltaTime * RotAngleAttenRate);
         else nowHeightAngle = HeightAngle;
-
+        //プレイヤーとカメラの距離を調整する処理
         if (rock)
         {
             var dis = Vector3.Distance(TargetObject.transform.position, RockonTarget.transform.position);
             if (HeightAngle > 30)
             {
-                Distance = Mathf.Lerp(Distance, dis_mdl*dis/10 * HeightAngle / 30.0f, Time.deltaTime);
+                Distance = Mathf.Lerp(Distance, dis_mdl * dis / 10 * HeightAngle / 30.0f, Time.deltaTime);
             }
             else if (HeightAngle <= 30 && HeightAngle >= 3)
             {
@@ -132,67 +130,53 @@ public class CameraScript : MonoBehaviour
             {
                 rock = false;
             }
-            //if (distance >= 10)
-            //{
-            //    rock = false;
-            //}
         }
         else
         {
-            if(HeightAngle>30)
+            if (HeightAngle > 30)
             {
                 Distance = Mathf.Lerp(Distance, 5.0f * HeightAngle / 30.0f, Time.deltaTime);
             }
-            else if(HeightAngle<=30&&HeightAngle>=-3)
+            else if (HeightAngle <= 30 && HeightAngle >= -3)
             {
                 Distance = Mathf.Lerp(Distance, 5.0f, Time.deltaTime);
             }
-            else if(HeightAngle<-3)
+            else if (HeightAngle < -3)
             {
-                Distance = Mathf.Lerp(Distance,dis_min,Time.deltaTime);
+                Distance = Mathf.Lerp(Distance, dis_min, Time.deltaTime);
             }
         }
         var deg = Mathf.Deg2Rad;
         var cx = Mathf.Sin(nowRotAngle * deg) * Mathf.Cos(nowHeightAngle * deg) * Distance;
         var cz = -Mathf.Cos(nowRotAngle * deg) * Mathf.Cos(nowHeightAngle * deg) * Distance;
         var cy = Mathf.Sin(nowHeightAngle * deg) * Distance;
-        transform.position = nowPos + new Vector3(cx, cy, cz);
-
-        //if (rock)
-        //{
-        //    //if (RockonTarget != null)
-        //    //{
-        //    //    nowPos = RockonTarget.transform.position + new Vector3(cx, cy, cz);
-        //    //}
-
-        //}
-        //else
-        //{
-        //    cx = Mathf.Sin(nowRotAngle * deg) * Mathf.Cos(nowHeightAngle * deg) * Distance;
-        //    cz = -Mathf.Cos(nowRotAngle * deg) * Mathf.Cos(nowHeightAngle * deg) * Distance;
-        //    cy = Mathf.Sin(nowHeightAngle * deg) * Distance;
-        //    transform.position = nowPos + new Vector3(cx, cy, cz);
-        //}
-
-
+        //ロックオンじゃない時のカメラの座標
+        if(!rock)
+        {
+            transform.position = nowPos + new Vector3(cx, cy, cz);
+        }
+        //ロックオンじゃない時のカメラの回転
         var rot = Quaternion.LookRotation((nowPos - transform.position).normalized);
-        if (EnableAtten) transform.rotation = rot;
-        else transform.rotation = rot;
-
+        if (!rock) transform.rotation = rot;
+        //ロックオン時のカメラの座標と回転
+        if (rock)
+        {
+            transform.rotation = rockonposition.transform.rotation;
+            transform.position = rockonposition.transform.position;
+        }
+        //ロックオンの時アイコンを表示する関数
         TargetIcon();
-        //RaycastHit hit;
+        //ボスが倒された時特定の座標に行く処理
         if (trollscript.GetState() == TrollScript.TrollState.Dead)
         {
             transform.position = new Vector3(transform.position.x, 3.0f, transform.position.z - 5.0f);
         }
-        //if(Physics.Linecast(TargetObject.transform.position,transform.position,out hit,obstacleLayer))
-        //{
-        //    transform.position = Vector3.zero;
-        //}
-        //if (transform.rotation.x == 0)
-        //{
-        //    transform.rotation = new Quaternion(0,transform.rotation.y,transform.rotation.z,transform.rotation.w); 
-        //}
+       
+    }
+
+    void Update()
+    {
+        
     }
     public void OnCamera(InputAction.CallbackContext context)
     {
@@ -200,7 +184,7 @@ public class CameraScript : MonoBehaviour
     }
     public void OnRockon(InputAction.CallbackContext context)
     {
-        if(context.started)
+        if(context.started&& RockonTarget != null)
         {
             if(rock)
             {
@@ -223,17 +207,22 @@ public class CameraScript : MonoBehaviour
         RockonTarget = target;
       
     }
-
+    //ロックオンされた敵に応じてアイコンの位置を変える処理
     private void TargetIcon()
     {
-        //if (rock && RockonTarget != null && RockonTarget.transform.GetChild(1) != null&&RockonTarget.tag=="Enemy")
-        //{
-        //    targetIcon.SetActive(true);
-        //    targetIcon.transform.position = /*RockonTarget.transform.GetChild(1).position; */new Vector3(RockonTarget.transform.GetChild(1).transform.position.x, 5f, RockonTarget.transform.GetChild(1).transform.position.z);
-        //}
-        //else
-        //{
-        //    targetIcon.SetActive(false);
-        //}
+        if (rock && RockonTarget != null && RockonTarget.transform.GetChild(1) != null && RockonTarget.tag == "Enemy")
+        {
+            targetIcon.SetActive(true);
+            targetIcon.transform.position = new Vector3(RockonTarget.transform.position.x,RockonTarget.transform.position.y+2.0f,RockonTarget.transform.position.z);
+        }
+        else if (rock && RockonTarget != null && RockonTarget.transform.GetChild(1) != null && RockonTarget.tag == "Boss")
+        {
+            targetIcon.SetActive(true);
+            targetIcon.transform.position = new Vector3(RockonTarget.transform.position.x, RockonTarget.transform.position.y + 2.0f, RockonTarget.transform.position.z);
+        }
+        else
+        {
+            targetIcon.SetActive(false);
+        }
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class AttackSwordScript : MonoBehaviour
 {
-
+    //敵の攻撃力やプレイヤーにアニメーションをするためやUIやエフェクトなどの変数です。
     private MyStatus myStatus;
     private PlayerScript playerscript;
     [SerializeField]
@@ -23,6 +23,7 @@ public class AttackSwordScript : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        //剣が雑魚敵に当たった時の処理
         if(other.tag=="Enemy")
         {
            
@@ -35,6 +36,7 @@ public class AttackSwordScript : MonoBehaviour
                 Debug.Log("敵に当たった");
             }
         }
+        //剣がボスに当たった時の処理
         if(other.tag=="Boss")
         {
             var trollScript = other.GetComponentInParent<TrollScript>();
@@ -54,12 +56,13 @@ public class AttackSwordScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //プレイヤーが攻撃のアニメーションをしていないときはダメージを表示しないフラグ
         if(playerscript.GetState()!=PlayerScript.MyState.Attack)
         {
             isAttack = false;
         }
     }
-
+    //他のスクリプトに参照できるようにする関数です。
     public bool IsAttack()
     {
         return isAttack;

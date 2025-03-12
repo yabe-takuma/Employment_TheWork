@@ -26,12 +26,8 @@ public class LifeGauge : MonoBehaviour
         for (int i=0;i<hp;i++)
         {
             Instantiate<GameObject>(hpObj, transform);
-            //Instantiate<GameObject>(brackhpObj, transform);
         }
-        //for (int i = 0; i < 10; i++)
-        //{
-        //    Instantiate<GameObject>(brackhpObj, transform);
-        //}
+       
         Hp = hp;
     }
     //ダメージ分だけ削除

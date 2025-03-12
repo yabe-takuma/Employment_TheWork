@@ -21,11 +21,6 @@ public class CubeParticle : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //caunter++;
-        //if(caunter>500)
-        //{
-          
-            //caunter = 0;
-        //}
+       
     }
 }

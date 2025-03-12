@@ -59,7 +59,7 @@ public class AttackCharaScript : MonoBehaviour
             caunter = Random.value;
 
             distance = Vector3.Distance(trollScript.transform.position, chaseScript.GetTarget().transform.position);
-            //ランダムに攻撃を振り分ける
+            //ボスと敵の距離で攻撃を振り分ける
             if (distance > 9.0f && distance < 10.0f && isAttack==false&& trollstatus.GetHp()>=trollstatus.GetMaxHp()/2)
             {
                 trollScript.SetState(TrollScript.TrollState.attack, other.transform);
@@ -103,6 +103,8 @@ public class AttackCharaScript : MonoBehaviour
                 Debug.Log("攻撃3");
                 isAttack = true;
             }
+            //アタックのアニメーションが終わったらフラグをfalseにすることで
+            //変な挙動になっても問題ないようにしています。
             if(receiveAttackEventScript.GetIsAttack()==false)
             {
                 isAttack = false;

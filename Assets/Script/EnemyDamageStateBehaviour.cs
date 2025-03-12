@@ -22,10 +22,7 @@ public class EnemyDamageStateBehaviour : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        //if(processEnemyAnimEvent != null)
-        //{
-            processEnemyAnimEvent = animator.transform.GetComponent<ProcessEnemyAnimEventScript>();
-        //}
+        processEnemyAnimEvent = animator.transform.GetComponent<ProcessEnemyAnimEventScript>();
         processEnemyAnimEvent.EndDamage();
     }
 

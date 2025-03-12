@@ -21,10 +21,6 @@ public class CollisionShockwave : MonoBehaviour
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        //if (hit.collider.tag == "Field")
-        //{
-        //    Debug.Log("接触");
-        //}
         if (hit.collider.tag == "wave" && playerScript.GetState() != PlayerScript.MyState.Damage
             &&playerScript.GetState()!=PlayerScript.MyState.Dead)
         {

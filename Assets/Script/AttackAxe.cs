@@ -5,6 +5,8 @@ using UnityEngine;
 public class AttackAxe : MonoBehaviour
 {
     // Start is called before the first frame update
+    // 斧の攻撃力や特定の敵に当たった時だけダメージが変わるUI
+    // や通常時のダメージUIやエフェクトなどの変数を用意しています。
     private MyStatus myStatus;
     private PlayerScript playerscript;
     [SerializeField]
