@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class CollisionShockwave : MonoBehaviour
 {
+    //プレイヤーに必要な変数
     [SerializeField]
     private PlayerScript playerScript;
     [SerializeField]
     private CharacterController characterController;
+    //------------//
+    //トロルの攻撃力を参照するための変数
     [SerializeField]
     private TrollStatus trollStatus;
 
@@ -21,6 +24,7 @@ public class CollisionShockwave : MonoBehaviour
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
+        //ボスが特定の行動をしたらダメージを当てる処理
         if (hit.collider.tag == "wave" && playerScript.GetState() != PlayerScript.MyState.Damage
             &&playerScript.GetState()!=PlayerScript.MyState.Dead)
         {

@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class ProcessCharaAnimEventScript : MonoBehaviour
 {
-    private PlayerScript playerscript;
+    private PlayerScript playerscript;  //プレイヤーの行動などがあるスクリプト
     [SerializeField]
-    private Collider weaponCollider;
+    private Collider weaponCollider;  //武器のコライダー
     //装備品の親のTransform
     [SerializeField]
     private Transform equip;
@@ -21,13 +21,10 @@ public class ProcessCharaAnimEventScript : MonoBehaviour
 
     public void AttackStart()
     {
+        //武器のコライダーがなかったらコライダーを表示させる処理
         if (weaponCollider != null)
         {
             weaponCollider.enabled = true;
-            //if(equip.GetChild(0).CompareTag("Sword"))
-            //{
-            //    audioSorce.PlayOueShot(attackSound);
-            //}
             Debug.Log("攻撃開始");
         }
        
@@ -35,13 +32,14 @@ public class ProcessCharaAnimEventScript : MonoBehaviour
 
     public void AttackEnd()
     {
+        //攻撃アニメーションが終わったらコライダーを非表示にする処理
         if (weaponCollider != null)
         {
             weaponCollider.enabled = false;
         }
         
     }
-
+    //アニメーションが終わったら待機状態に戻る関数
     public void StateEnd()
     {
         playerscript.SetState(PlayerScript.MyState.Normal);
@@ -49,13 +47,14 @@ public class ProcessCharaAnimEventScript : MonoBehaviour
 
     public void EndDamage()
     {
+        //ダメージアニメーションが終わったら待機状態に戻る関数
         if (playerscript.GetState() != PlayerScript.MyState.Dead)
         {
             playerscript.SetState(PlayerScript.MyState.Normal);
             Debug.Log("プレイヤー食らい終わった");
         }
     }
-
+    //複数の武器のコライダーを格納するための関数
     public void SetCollider(Collider col)
     {
         weaponCollider = col;

@@ -16,6 +16,7 @@ public class TitleScript : MonoBehaviour
         material.SetFloat("_Threshold", 1.0f);
         colorcounter = 1.0f;
         isInput = false;
+        Time.timeScale = 1.0f;
     }
 
     // Update is called once per frame

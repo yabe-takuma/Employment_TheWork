@@ -69,11 +69,9 @@ public class MoveEnemyScript : MonoBehaviour
     //敵のステータス管理スプリクト
     [SerializeField]
     private EnemyStatus enemyStatus;
+    //敵が別の攻撃をする変数(まだ未実装)
     [SerializeField]
     private int randam;
-
-    [SerializeField]
-    private float distance;
 
     [SerializeField]
     private TrollScript trollScript;
@@ -120,15 +118,7 @@ public class MoveEnemyScript : MonoBehaviour
                     }
 
                     animator.SetFloat("Speed", navMeshAgent.desiredVelocity.magnitude);
-                    //if (enemyController.isGrounded)
-                    //{
-                    //    velocity = Vector3.zero;
-                    //    animator.SetFloat("Speed", 2.0f);
-                    //    direction = (setPosition.GetDestination() - transform.position).normalized;
-                    //    transform.LookAt(new Vector3(setPosition.GetDestination().x, transform.position.y, setPosition.GetDestination().z));
-                    //    velocity = direction * walkSpeed;
-                    //}
-
+               
                     if (state == EnemyState.Walk)
                     {
 
@@ -148,11 +138,9 @@ public class MoveEnemyScript : MonoBehaviour
                         //攻撃する距離だったら攻撃
                         if (navMeshAgent.remainingDistance<1.2f)
                         {
-                            randam = Random.Range(1, 10);
                             SetState(EnemyState.Attack);
 
                         }
-                        distance = navMeshAgent.remainingDistance;
                     }
                 }
 
@@ -220,21 +208,25 @@ public class MoveEnemyScript : MonoBehaviour
         } 
         else if(tempState ==EnemyState.Wait)
         {
+            //待っている時間をリセット
             elapsedTime = 0f;
+            //待機状態にする
             arrived = true;
+            //スピードやアニメーションもゼロにする
             velocity = Vector3.zero;
             animator.SetFloat("Speed", 0f);
         }
         else if(tempState ==EnemyState.Attack)
         {
+            //攻撃時は歩かないようにする
             velocity = Vector3.zero;
             animator.SetFloat("Speed", 0f);
             animator.SetBool("Attack", true);
-            randam = 0;
             navMeshAgent.isStopped = true;
         }
         else if(tempState == EnemyState.Freeze)
         {
+            //フリーズ時も歩かないようにする
             elapsedTime = 0f;
             velocity = Vector3.zero;
             animator.SetFloat("Speed", 0f);
@@ -244,6 +236,7 @@ public class MoveEnemyScript : MonoBehaviour
         }
         else if(tempState==EnemyState.Damage)
         {
+            //ダメージ時も歩かないようにするさらに攻撃もやめる
             velocity = Vector3.zero;
             animator.ResetTrigger("Attack");
             animator.ResetTrigger("Attack2");
@@ -253,17 +246,18 @@ public class MoveEnemyScript : MonoBehaviour
         }
         else if(tempState == EnemyState.Dead)
         {
+            //倒されるときアニメーションをして消滅をする
             animator.SetTrigger("Dead");
             Destroy(this.gameObject, 3f);
             velocity = Vector3.zero;
             navMeshAgent.isStopped = true;
         }
+        //敵が別の攻撃をする処理(まだ未実装)
         else if(tempState ==EnemyState.Attack2)
         {
             velocity = Vector3.zero;
             animator.SetFloat("Speed", 0f);
             animator.SetBool("Attack2", true);
-            randam = 0;
             navMeshAgent.isStopped = true;
         }
         else if(tempState == EnemyState.Attack3)
@@ -271,9 +265,9 @@ public class MoveEnemyScript : MonoBehaviour
             velocity = Vector3.zero;
             animator.SetFloat("Speed", 0f);
             animator.SetBool("Attack3", true);
-            randam = 0;
             navMeshAgent.isStopped = true;
         }
+        //----------------------//
     }
     //敵キャラクターの状態取得メソッド
     public EnemyState GetState()
@@ -283,12 +277,15 @@ public class MoveEnemyScript : MonoBehaviour
 
     public void TakeDamage(int damage,Vector3 attackedPlace)
     {
+        //ダメージを受ける時攻撃用のコライダーを非表示にし、エフェクトを生成
+        //さらに体力を減らす処理
         SetState(EnemyState.Damage);
         handCollider.enabled = false;
         var damageEffectIns = Instantiate<GameObject>(damageEffect);
         damageEffectIns.transform.position = attackedPlace;
         Destroy(damageEffectIns, 1f);
         enemyStatus.SetHp(enemyStatus.GetHp() - damage);
+        //体力が0になると倒される処理
         if(enemyStatus.GetHp()<=0)
         {
             Dead();
@@ -297,15 +294,16 @@ public class MoveEnemyScript : MonoBehaviour
 
     void Dead()
     {
+        //倒す行動とプレイヤーに何体倒したか分かるようにする
         SetState(EnemyState.Dead);
         playerscript.DeadCaunter(1);
     }
-
+    //他のスクリプトからもらってきたデータを格納するための関数
     public void SetDamageEffect(GameObject gameobject)
     {
         damageEffect = gameobject;
     }
-
+    //他のスクリプトからもらってきたデータを格納するための関数
     public void SetTrollScript(TrollScript trollscript)
     {
         trollScript = trollscript;
@@ -313,6 +311,7 @@ public class MoveEnemyScript : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
+        //ステージ外に行ったらまたとどまりまた違う目的地に行ってもらうための処理
         if (other.tag == "Collision" && collisiontimer < 10 && state != EnemyState.Wait)
         {
             state = EnemyState.Wait;
@@ -324,7 +323,7 @@ public class MoveEnemyScript : MonoBehaviour
 
         }
     }
-
+    //ステージ外じゃなかったら変数を0にして普通通りの行動をする処理
     private void OnTriggerExit(Collider other)
     {
         if (other.tag == "Collision")

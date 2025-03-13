@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class ChaseCharaScript : MonoBehaviour
 {
-   
+    //トロルの行動などがあるスクリプト
     private TrollScript trollScript;
     //HPUI
     [SerializeField]
     private GameObject HPUI;
 
+    //プレイヤーが来るのを検知する変数
     private GameObject target;
 
     // Start is called before the first frame update
@@ -55,7 +56,7 @@ public class ChaseCharaScript : MonoBehaviour
     {
         
     }
-
+    //他のスクリプトに参照するための変数
     public GameObject GetTarget()
     {
         return this.target;

@@ -12,12 +12,13 @@ public class TitlePlayerScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        velocity = new Vector3(0, -1, 0);
+        velocity = new Vector3(0, -1, 1);
     }
 
     // Update is called once per frame
     void Update()
     {
+        //プレイヤーが指定した座標まで自動で向かう処理
         if (characterController.isGrounded)
         {
             if (transform.position.z < 192)

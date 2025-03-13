@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
+//敵のステータスを1箇所で作ることが出来る処理
 [Serializable]
 public class EnemyData
 {

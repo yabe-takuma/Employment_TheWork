@@ -6,11 +6,11 @@ using UnityEngine.SceneManagement;
 public class SceneScript : MonoBehaviour
 {
     
-    public PlayerScript playerScript;
+    public PlayerScript playerScript;  //プレイヤーの行動があるスクリプト
     
-    public TrollScript trollScript;
+    public TrollScript trollScript;  //ボスの行動があるスクリプト
     [SerializeField]
-    private GameObject troll;
+    private GameObject troll; //ボスのオブジェクト
     // Start is called before the first frame update
     void Start()
     {
@@ -20,6 +20,7 @@ public class SceneScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //ゲームオーバーになった時やゲームクリアになった時キーやボタンを押したらタイトルシーンに行くための処理
         if (playerScript.GetState() == PlayerScript.MyState.Dead && Input.GetKeyDown("joystick button 3") || 
             Input.GetKeyDown(KeyCode.K)&& playerScript.GetState() == PlayerScript.MyState.Dead)
         {

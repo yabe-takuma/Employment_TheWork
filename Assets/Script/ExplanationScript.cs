@@ -5,10 +5,11 @@ using UnityEngine.SceneManagement;
 
 public class ExplanationScript : MonoBehaviour
 {
+    
     [SerializeField]
-    private Material material;
-    private float colorcounter;
-    private bool isInput;
+    private Material material;　　　//シェーダーを参照するための変数
+    private float colorcounter;     //ディゾルブするために必要な変数
+    private bool isInput;           //ボタンを押したかを検知する変数
     // Start is called before the first frame update
     void Start()
     {
@@ -25,6 +26,7 @@ public class ExplanationScript : MonoBehaviour
         {
             isInput = true;
         }
+        //押していないときは徐々に消えていく処理
         if (!isInput)
         {
             colorcounter += 0.001f;
@@ -33,6 +35,7 @@ public class ExplanationScript : MonoBehaviour
                 material.SetFloat("_Threshold", colorcounter);
             }
         }
+        //押したときは徐々に画面を見えなくして次のシーンに行くための処理
         else
         {
             colorcounter -= 0.001f;

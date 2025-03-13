@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EnemyDamageStateBehaviour : StateMachineBehaviour
 {
-
+    //アニメーションが終わったらスムーズに行動するのに必要な変数
     private ProcessEnemyAnimEventScript processEnemyAnimEvent;
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
@@ -22,6 +22,7 @@ public class EnemyDamageStateBehaviour : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        //ダメージアニメーションが終わった後歩くアニメーションにスムーズに移行する処理
         processEnemyAnimEvent = animator.transform.GetComponent<ProcessEnemyAnimEventScript>();
         processEnemyAnimEvent.EndDamage();
     }

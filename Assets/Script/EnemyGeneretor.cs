@@ -4,25 +4,27 @@ using UnityEngine;
 
 public class EnemyGeneretor : MonoBehaviour
 {
-
+    //プレハブ化した敵の情報
     [SerializeField]
     private GameObject enemy;
+    //敵の攻撃に必要なコライダー
     [SerializeField]
-    private SphereCollider spherecollider;
+    private SphereCollider spherecollider;  //敵のコライダー
+    //プレハブ化した敵に渡すスクリプトたち
     [SerializeField]
-    private PlayerScript playerScript;
-   
-    private AttackScript attackScript;
+    private PlayerScript playerScript;      //プレイヤー
+    private AttackScript attackScript;      //敵の攻撃
     [SerializeField]
-    private GameObject damageEffect;
-    private MoveEnemyScript moveEnemyScript;
+    private GameObject damageEffect;        //敵のエフェクト
+    private MoveEnemyScript moveEnemyScript; //敵の行動
     [SerializeField]
-    private TrollScript trollScript;
+    private TrollScript trollScript;         //ボスの行動
+    //------------------------------//
 
-    private Vector3[] enemytransform=new Vector3[5];
+    private Vector3[] enemytransform=new Vector3[5];  //複数の敵の座標
   
 
-    private int enemycaunter;
+    private int enemycaunter;  //一つ一つの敵にスクリプトを渡す為の変数
 
     // Start is called before the first frame update
     void Start()

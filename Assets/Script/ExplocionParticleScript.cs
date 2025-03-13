@@ -10,17 +10,13 @@ public class ExplocionParticleScript : MonoBehaviour
     private ParticleSystem ps;
 
     private bool flag;
-    //経過時間
-    private float elapsedTime;
-    [SerializeField]
-    int numEnter;
-    [SerializeField]
-    int numInside;
-
+   
+    //敵やボスにダメージを与えるのに必要な変数
     [SerializeField]
     private TrollScript trollScript;
     [SerializeField]
     private MoveEnemyScript moveEnemyScript;
+    //--------------------//
     // Start is called before the first frame update
     void Start()
     {
@@ -32,14 +28,13 @@ public class ExplocionParticleScript : MonoBehaviour
         //MaxParticlesを超えるパーティクルを生成するまでシミュレーションスピードを上げる
         var main = ps.main;
         main.simulationSpeed = 10f;
+        //プレハブ化しているため他のスクリプトからデータをもらう処理
         moveEnemyScript = playerScript.GetEnemyScript();
     }
 
     // Update is called once per frame
     void Update()
     {
-        elapsedTime += Time.deltaTime;
-
         //現在のパーティクル数がMaxParticlesを超えたらパーティクルを移動させる
         if (!flag && ps.particleCount >= ps.main.maxParticles)
         {

@@ -4,19 +4,20 @@ using UnityEngine;
 
 public class ParticleScript : MonoBehaviour
 {
+    //当たったらプレイヤーにダメージを受けるための変数
     [SerializeField]
     private PlayerScript playerScript;
     //パーティクルシステム
     private ParticleSystem ps;
-
+    //現在のパーティクル数がMaxParticlesを超えたらパーティクルを移動させるのに必要な変数
     private bool flag;
-    //経過時間
-    private float elapsedTime;
+    //当たり判定に必要な変数
     [SerializeField]
     int numEnter;
     [SerializeField]
     int numInside;
-
+    //-----------//
+    //当たり判定に必要
     [SerializeField]
     private TrollScript trollScript;
 
@@ -36,8 +37,6 @@ public class ParticleScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        elapsedTime += Time.deltaTime;
-
         //現在のパーティクル数がMaxParticlesを超えたらパーティクルを移動させる
         if(!flag&&ps.particleCount>=ps.main.maxParticles)
         {
@@ -57,14 +56,14 @@ public class ParticleScript : MonoBehaviour
         if(ps != null&&flag)
         {
 
-            //particles
+            //複数のパーティクルを格納するための処理
             List<ParticleSystem.Particle> enter = new List<ParticleSystem.Particle>();
             List<ParticleSystem.Particle> inside = new List<ParticleSystem.Particle>();
 
-            //get
+            //当たり判定で使う処理
              numEnter = ps.GetTriggerParticles(ParticleSystemTriggerEventType.Enter, enter);
              numInside = ps.GetTriggerParticles(ParticleSystemTriggerEventType.Inside, inside);
-
+            //当たったらプレイヤーがダメージを受ける処理
             if(numEnter!=0||numInside !=0)
             {
                 Debug.Log("接触");

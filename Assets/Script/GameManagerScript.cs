@@ -29,12 +29,13 @@ public class GameManagerScript : MonoBehaviour
     void Update()
     {
        
-
+        //ゲーム開始時徐々に画面が見えるようにする演出を入れる処理
         if (material.GetFloat("_Threshold") <= 0.8f)
         {
             colorcounter += 0.001f;
             material.SetFloat("_Threshold", colorcounter);
         }
+        //透明になったらUIを非表示にする処理
         else if (material.GetFloat("_Threshold") >= 0.8f)
         {
             fadeOutUI.SetActive(false);
@@ -44,6 +45,7 @@ public class GameManagerScript : MonoBehaviour
 
     private void FixedUpdate()
     {
+        //ゲームオーバーになる時スクリプトを表示させてグレイスケールを発生させる処理
         if (playerScript.GetState() == PlayerScript.MyState.Dead)
         {
             grayscript.enabled = true;

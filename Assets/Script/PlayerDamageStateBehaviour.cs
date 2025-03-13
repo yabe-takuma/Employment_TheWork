@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerDamageStateBehaviour : StateMachineBehaviour
 {
-
+    //プレイヤーのアニメーションに割り込む関数がある変数
     private ProcessCharaAnimEventScript processCharaAnimEvent;
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
@@ -22,10 +22,8 @@ public class PlayerDamageStateBehaviour : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        //if(processCharaAnimEvent != null)
-        //{
-            processCharaAnimEvent = animator.transform.GetComponent<ProcessCharaAnimEventScript>();
-        //}
+        processCharaAnimEvent = animator.transform.GetComponent<ProcessCharaAnimEventScript>();
+        //アニメーションが終わったらすぐに待機状態に戻る処理
         processCharaAnimEvent.EndDamage();
     }
 

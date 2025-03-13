@@ -4,17 +4,15 @@ using UnityEngine;
 
 public class PlayerAttackStateBehaviour : StateMachineBehaviour
 {
+    //プレイヤーがアニメーション中に割り込むための変数
     [SerializeField]
     private ProcessCharaAnimEventScript processCharaAnimEvent;
-    [SerializeField]
-    private GameObject SwordEffect;
-   
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        //アニメーションする前にデータを格納したり攻撃状態を解除する処理
         processCharaAnimEvent = animator.transform.GetComponent<ProcessCharaAnimEventScript>();
-        
         animator.ResetTrigger("Attack");
        
     }
@@ -22,16 +20,18 @@ public class PlayerAttackStateBehaviour : StateMachineBehaviour
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        //攻撃する時アニメーション中だったら次の攻撃に行く処理
         if(Input.GetKey(KeyCode.Space))
         {
             animator.SetBool("Attack", true);
         }
+        //攻撃しているときジャンプすると攻撃をキャンセルする処理
         else if(animator.GetBool("Jump")==true)
         {
             animator.SetBool("Jump", true);
-            //animator.SetBool("Attack", false);
             animator.ResetTrigger("Attack");
         }
+        //攻撃用のコライダーを表示するための処理
         processCharaAnimEvent.AttackStart();
         
     }
@@ -39,7 +39,8 @@ public class PlayerAttackStateBehaviour : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-      if(stateInfo.IsName("Attack3"))
+        //全ての連続攻撃をしたら攻撃アニメーションを解除する処理
+        if(stateInfo.IsName("Attack3"))
         {
             animator.ResetTrigger("Attack");
            

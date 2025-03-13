@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ReceiveAxeAttackEventScript : MonoBehaviour
 {
-
+    //爆発のパーティクルを格納する変数
     [SerializeField]
     private GameObject particle;
    
@@ -19,7 +19,7 @@ public class ReceiveAxeAttackEventScript : MonoBehaviour
     {
         
     }
-
+    //アニメーション中に爆発を生成する処理
     public void CreateAxeShockwave()
     {
         Instantiate(particle, new Vector3(transform.position.x-0.34f,transform.position.y+0.589f,transform.position.z), particle.transform.rotation);

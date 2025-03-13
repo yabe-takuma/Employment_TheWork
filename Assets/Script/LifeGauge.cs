@@ -8,8 +8,6 @@ public class LifeGauge : MonoBehaviour
     [SerializeField]
     private GameObject hpObj;
     [SerializeField]
-    private GameObject brackhpObj;
-    [SerializeField]
     private int Hp;
 
     
@@ -51,7 +49,7 @@ public class LifeGauge : MonoBehaviour
     {
         
     }
-
+    //他のスクリプトに参照するための関数
     public int GetHP()
     {
         return Hp;

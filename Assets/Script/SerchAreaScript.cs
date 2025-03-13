@@ -31,12 +31,14 @@ public class SerchAreaScript : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
-        if(other.tag == "Player")
+        //プレイヤーキャラクターが一定の範囲にいなくなった時の処理
+        if (other.tag == "Player")
         {
             Debug.Log("見失う");
             moveEnemy.SetState(MoveEnemyScript.EnemyState.Wait);
             
         }
+        //木だった時の処理
         if (other.tag == "Tree")
         {
             

@@ -27,10 +27,7 @@ public class PlayerScript : MonoBehaviour
 
     private ChangeEquipScript changeequipscript;
     //ロックオン
-    [SerializeField]
-    private PlayerLockon lockon;
-    private const float RotateSpeed = 900f;
-    private const float RotateSpeedLockon = 500f;
+   
     //ロックオン状態の時に代入する変数
     private Quaternion rotation;
 
@@ -95,7 +92,6 @@ public class PlayerScript : MonoBehaviour
         characterController = GetComponent<CharacterController>();
         changeequipscript = GetComponent<ChangeEquipScript>();
 
-        lockon = GetComponent<PlayerLockon>();
         rb = this.gameObject.GetComponent<Rigidbody>();
         camera3D = Camera.main.GetComponent<CameraScript>();
         gameoverUI.SetActive(false);

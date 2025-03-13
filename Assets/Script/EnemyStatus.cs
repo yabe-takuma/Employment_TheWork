@@ -71,12 +71,12 @@ public class EnemyStatus : MonoBehaviour
     {
         HPUI.SetActive(false);
     }
-
+    //敵の体力を表すUI
     public void UpdateHPValue()
     {
         hpSlider.value = (float)GetHp() / (float)GetMaxHp();
     }
-
+    //他のスクリプトに参照するための関数
     public int GetAttackPower()
     {
         return attackPower;

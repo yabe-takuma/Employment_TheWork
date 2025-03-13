@@ -4,21 +4,23 @@ using UnityEngine;
 
 public class ChangeEquipScript : MonoBehaviour
 {
-
+    //武器を複数格納するための変数
     [SerializeField]
     private GameObject[] weapons;
     [SerializeField]
     private int equipment;
+    //-----------------------//
     //キャラクターのステータススプリクト
     [SerializeField]
     private MyStatus myStatus;
     //武器の親のTransform
     [SerializeField]
     private Transform equipTransform;
-
+    //武器のコライダーをゲーム開始で付けるための変数
     private ProcessCharaAnimEventScript processCharaAnimEvent;
     private PlayerScript playerScript; 
-
+    //--------------------------//
+    //他のスクリプトに参照するための関数
     public int GetEquipment()
     {
         return equipment;
@@ -89,7 +91,7 @@ public class ChangeEquipScript : MonoBehaviour
 
         
     }
-
+    //ゲーム開始時剣を持ってもらうための関数
     void StartWepon()
     {
         var weapon = Instantiate<GameObject>(weapons[equipment]);

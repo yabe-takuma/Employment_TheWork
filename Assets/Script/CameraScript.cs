@@ -72,12 +72,13 @@ public class CameraScript : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
+        //カメラの回転
         RotAngle -= speed.x * Time.deltaTime * 50.0f;
         HeightAngle += speed.z * Time.deltaTime * 50.0f;
-     
+        //カメラの距離や回転などの制限
         HeightAngle = Mathf.Clamp(HeightAngle, 3.7f, 60.0f);
         Distance = Mathf.Clamp(Distance, 5.0f, 15.0f);
-
+        //あらかじめプレイヤーにコライダーを用意して当たったらこの変数に当たった敵を格納
         RockonTarget = SertchCircle.GetComponent<SensorScript>().nowTarget;
         //減衰
         if (EnableAtten)

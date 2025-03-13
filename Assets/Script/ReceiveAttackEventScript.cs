@@ -135,12 +135,12 @@ public class ReceiveAttackEventScript : MonoBehaviour
         }
 
     }
-
+    //他のスクリプトに参照するための関数
     public bool GetIsWave()
     {
         return isWave;
     }
-
+    //他のスクリプトに参照するための関数
     public bool GetIsAttack()
     {
         return isAttack;

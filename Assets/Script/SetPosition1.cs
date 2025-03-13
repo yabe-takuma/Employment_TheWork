@@ -23,7 +23,7 @@ public class SetPosition1 : MonoBehaviour
     {
         
     }
-
+    //次の目的地の作成
     public void SetNextPosition()
     {
         SetDestination(destination);
@@ -33,12 +33,12 @@ public class SetPosition1 : MonoBehaviour
             nowPatrolPosition = 0;
         }
     }
-
+    //目的地を設定
     public void SetDestination(Vector3 position)
     {
         destination = position;
     }
-
+    //目的地を取得
     public Vector3 GetDestination()
     {
         return destination;

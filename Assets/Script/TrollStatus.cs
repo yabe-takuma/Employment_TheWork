@@ -73,11 +73,6 @@ public class TrollStatus : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //デバッグ
-        if(Input.GetKeyDown("9"))
-        {
-            this.hp = hp / 2;
-            hpSlider.value = hpSlider.value / 2;
-        }
+       
     }
 }

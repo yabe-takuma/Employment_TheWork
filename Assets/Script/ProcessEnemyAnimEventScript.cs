@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class ProcessEnemyAnimEventScript : MonoBehaviour
 {
-    private MoveEnemyScript enemy;
+    private MoveEnemyScript enemy;  //敵の行動などがあるスクリプト
     [SerializeField]
-    private SphereCollider sphereCollider;
+    private SphereCollider sphereCollider;  //攻撃用のコライダー
     // Start is called before the first frame update
     void Start()
     {
@@ -14,25 +14,29 @@ public class ProcessEnemyAnimEventScript : MonoBehaviour
     }
 
      public void AttackStart()
-    {
+     {
+        //攻撃の時コライダーを表示する処理
         sphereCollider.enabled = true;
         Debug.Log("攻撃開始");
-    }
+     }
 
     public void AttackEnd()
     {
+        //攻撃終了時コライダーを非表示にする処理
         sphereCollider.enabled = false;
         Debug.Log("攻撃終了");
     }
 
     public void StateEnd()
     {
+        //アニメーションが終わったら待機状態に戻る処理
         enemy.SetState(MoveEnemyScript.EnemyState.Freeze);
         Debug.Log("固まる");
     }
 
     public void EndDamage()
     {
+        //ダメージアニメーションが終わったら歩くようにする処理
         enemy.SetState(MoveEnemyScript.EnemyState.Walk);
         Debug.Log("食らい終わった");
     }
