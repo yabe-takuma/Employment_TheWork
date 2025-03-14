@@ -51,7 +51,7 @@ public class ExplocionParticleScript : MonoBehaviour
     {
         //爆発が当たったオブジェクトに応じてダメージを変える処理
         if(other.tag=="Player"&& playerScript.GetState() != PlayerScript.MyState.Damage && playerScript.GetState() != PlayerScript.MyState.Dead &&
-           playerScript.GetAvoid() == false && trollScript.GetState() == TrollScript.TrollState.explocion && trollScript.GetState() != TrollScript.TrollState.Dead)
+           playerScript.GetAvoid() == false && playerScript.GetState() != PlayerScript.MyState.SkillAttack && trollScript.GetState() != TrollScript.TrollState.Dead)
         {
             playerScript.Damage(1);
         }

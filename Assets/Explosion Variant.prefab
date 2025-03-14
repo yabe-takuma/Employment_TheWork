@@ -103,23 +103,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerScript: {fileID: 0}
-  numEnter: 0
-  numInside: 0
   trollScript: {fileID: 0}
   moveEnemyScript: {fileID: 0}
---- !u!114 &1887373337644582116
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8645465894408913543}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e2e226bfa853f0f4e859da5f2cadc165, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerScript: {fileID: 0}
-  numEnter: 0
-  numInside: 0
-  trollScript: {fileID: 0}

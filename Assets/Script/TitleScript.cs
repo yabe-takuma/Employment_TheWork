@@ -28,7 +28,7 @@ public class TitleScript : MonoBehaviour
         }
         if(isInput)
         {
-            colorcounter -= 0.001f;
+            colorcounter -= 0.004f;
 
             if (material.GetFloat("_Threshold") >= 0.0f)
             {

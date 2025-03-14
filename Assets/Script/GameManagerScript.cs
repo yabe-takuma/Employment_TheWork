@@ -32,7 +32,7 @@ public class GameManagerScript : MonoBehaviour
         //ゲーム開始時徐々に画面が見えるようにする演出を入れる処理
         if (material.GetFloat("_Threshold") <= 0.8f)
         {
-            colorcounter += 0.001f;
+            colorcounter += 0.004f;
             material.SetFloat("_Threshold", colorcounter);
         }
         //透明になったらUIを非表示にする処理

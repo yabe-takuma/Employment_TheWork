@@ -29,7 +29,7 @@ public class ExplanationScript : MonoBehaviour
         //押していないときは徐々に消えていく処理
         if (!isInput)
         {
-            colorcounter += 0.001f;
+            colorcounter += 0.004f;
             if (material.GetFloat("_Threshold") <= 1.0f)
             {
                 material.SetFloat("_Threshold", colorcounter);
@@ -38,7 +38,7 @@ public class ExplanationScript : MonoBehaviour
         //押したときは徐々に画面を見えなくして次のシーンに行くための処理
         else
         {
-            colorcounter -= 0.001f;
+            colorcounter -= 0.004f;
             if (material.GetFloat("_Threshold") >= 0.0f)
             {
                 material.SetFloat("_Threshold", colorcounter);
