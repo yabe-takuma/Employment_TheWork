@@ -796,6 +796,7 @@ MonoBehaviour:
   myStatus: {fileID: 162323368}
   equipTransform: {fileID: 368430480}
   chestScript: {fileID: 1497359102, guid: dbf9e8d846cdf7347a17eb3e74d16807, type: 3}
+  chestcounter: 0
 --- !u!114 &162323370
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2491,6 +2492,7 @@ MonoBehaviour:
   myStatus: {fileID: 0}
   equipTransform: {fileID: 0}
   chestScript: {fileID: 0}
+  chestcounter: 0
 --- !u!1 &400104066
 GameObject:
   m_ObjectHideFlags: 0
@@ -3054,7 +3056,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\n\u30B9\u30AD\u30EB\u3067\u708E\u653B\u6483\u3092\u3059\u308B\u3053\u3068\u304C\u51FA\u6765\u308B\u305E\n\nLB\u30DC\u30BF\u30F3\u307E\u305F\u306FJ\u30AD\u30FC\u3067\u30B2\u30FC\u30E0\u753B\u9762\u306B\u623B\u308B"
+  m_text: "\n\u7279\u6B8A\u306A\u3082\u306E\u306F\u4F55\u3082\u306A\u3044\n\nLB\u30DC\u30BF\u30F3\u307E\u305F\u306FJ\u30AD\u30FC\u3067\u30B2\u30FC\u30E0\u753B\u9762\u306B\u623B\u308B"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3c3579ed987915241acbf2d6f951d6c3, type: 2}
   m_sharedMaterial: {fileID: 2006669298148341980, guid: 3c3579ed987915241acbf2d6f951d6c3, type: 2}
@@ -4207,7 +4209,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\n\u30B9\u30AD\u30EB\u3067\u6C34\u653B\u6483\u3092\u3059\u308B\u3053\u3068\u304C\u51FA\u6765\u308B\u305E\n\u6FE1\u308C\u3066\u3044\u308B\u6575\u306B\u708E\u3092\u5F53\u3066\u308B\u3068\u5927\u30C0\u30E1\u30FC\u30B8\u3092\u4E0E\u3048\u3089\u308C\u308B\u305E\nLB\u30DC\u30BF\u30F3\u307E\u305F\u306FJ\u30AD\u30FC\u3067\u30B2\u30FC\u30E0\u753B\u9762\u306B\u623B\u308B"
+  m_text: "\n\u7279\u6B8A\u306A\u3082\u306E\u306F\u4F55\u3082\u306A\u3044\n\nLB\u30DC\u30BF\u30F3\u307E\u305F\u306FJ\u30AD\u30FC\u3067\u30B2\u30FC\u30E0\u753B\u9762\u306B\u623B\u308B"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3c3579ed987915241acbf2d6f951d6c3, type: 2}
   m_sharedMaterial: {fileID: 2006669298148341980, guid: 3c3579ed987915241acbf2d6f951d6c3, type: 2}
@@ -5439,10 +5441,10 @@ MonoBehaviour:
   chest: {fileID: 8377511686148390889, guid: dbf9e8d846cdf7347a17eb3e74d16807, type: 3}
   axe: {fileID: 7480431145084042552, guid: bb7d0e4f28edd4148bb582a309c59884, type: 3}
   myItemScript: {fileID: 162323378}
-  chestOpenUI: {fileID: 782274018}
   chestOpensUI:
   - {fileID: 782274018}
   - {fileID: 647794461}
+  changeEquipScript: {fileID: 162323369}
 --- !u!4 &818934482
 Transform:
   m_ObjectHideFlags: 0
