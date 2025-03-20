@@ -9,7 +9,6 @@ public class TitlePlayerScript : MonoBehaviour
     private Vector3 velocity;
     [SerializeField]
     private Animator animator;
-    private bool isInput;
     // Start is called before the first frame update
     void Start()
     {
@@ -19,14 +18,10 @@ public class TitlePlayerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            isInput = true;
-        }
         //プレイヤーが指定した座標まで自動で向かう処理
         if (characterController.isGrounded)
         {
-            if (transform.position.z < 192 && isInput)
+            if (transform.position.z < 192)
             {
                 velocity.z = 1.0f;
                 animator.SetFloat("Speed", velocity.magnitude);
