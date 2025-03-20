@@ -74,13 +74,17 @@ public class MoveEnemyScript : MonoBehaviour
     private int randam;
 
     [SerializeField]
-    private TrollScript trollScript;
+    private TrollScript trollScript;  //ボス
 
     [SerializeField]
-    private PlayerScript playerscript;
+    private PlayerScript playerscript;  //プレイヤー
 
     [SerializeField]
-    private int collisiontimer;
+    private int collisiontimer;  //当たっている時間
+    [SerializeField]
+    private GameObject axe;  //斧
+    private MyItemScript myItemScript;  //斧が生成されるタイミングでスクリプトを代入したいため
+    private AttackAxe attackAxe;  //一つ上と同じ理由
 
     // Start is called before the first frame update
     void Start()
@@ -103,7 +107,7 @@ public class MoveEnemyScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (trollScript.GetState() != TrollScript.TrollState.Dead)
+        if (state!=EnemyState.Dead)
         {
             //見回りまたはキャラクターを追いかける状態
             if (state == EnemyState.Walk || state == EnemyState.Chase)
@@ -177,6 +181,10 @@ public class MoveEnemyScript : MonoBehaviour
             velocity.y += Physics.gravity.y * Time.deltaTime;
            
         }
+        if(enemyStatus.GetHp() <= 0)
+        {
+            SetState(EnemyState.Dead);
+        }
        
     }
 
@@ -186,7 +194,7 @@ public class MoveEnemyScript : MonoBehaviour
     {
         state = tempState;
         velocity = Vector3.zero;
-        if (tempState==EnemyState.Walk)
+        if (tempState==EnemyState.Walk && state != EnemyState.Dead)
         {
             arrived = false;
             elapsedTime = 0f;
@@ -286,7 +294,7 @@ public class MoveEnemyScript : MonoBehaviour
         Destroy(damageEffectIns, 1f);
         enemyStatus.SetHp(enemyStatus.GetHp() - damage);
         //体力が0になると倒される処理
-        if(enemyStatus.GetHp()<=0)
+        if (enemyStatus.GetHp()<=0)
         {
             Dead();
         }
@@ -297,6 +305,12 @@ public class MoveEnemyScript : MonoBehaviour
         //倒す行動とプレイヤーに何体倒したか分かるようにする
         SetState(EnemyState.Dead);
         playerscript.DeadCaunter(1);
+        if (playerscript.SetDeadCaunter() == 1)
+        {
+            GameObject Axe=Instantiate<GameObject>(axe, transform.position+Vector3.up, Quaternion.identity);
+            attackAxe = Axe.GetComponent<AttackAxe>();
+            attackAxe.SetMyItem(myItemScript);
+        }
     }
     //他のスクリプトからもらってきたデータを格納するための関数
     public void SetDamageEffect(GameObject gameobject)
@@ -332,4 +346,15 @@ public class MoveEnemyScript : MonoBehaviour
         }
     }
 
+    public void SetAxeSword(GameObject gameObject)
+    {
+        axe = gameObject;
+    }
+
+    public void SetMyItem(MyItemScript myitemscript)
+    {
+        myItemScript = myitemscript;   
+    }
+
+   
 }

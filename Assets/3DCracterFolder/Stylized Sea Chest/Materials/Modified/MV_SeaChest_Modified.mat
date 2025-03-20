@@ -22,8 +22,6 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: MV_SeaChest_Modified
   m_Shader: {fileID: -6465566751694194690, guid: 0d49c513e622aac40877b42ae51a909c, type: 3}
-  m_Parent: {fileID: 2100000, guid: 101434ee89ef8484a8ccbf1271d65701, type: 2}
-  m_ModifiedSerializedProperties: 16
   m_ValidKeywords: []
   m_InvalidKeywords:
   - _DISABLE_SSR_TRANSPARENT
@@ -39,23 +37,53 @@ Material:
   - TransparentBackface
   - RayTracingPrepass
   - MOTIONVECTORS
-  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
-    m_TexEnvs: []
+    m_TexEnvs:
+    - _T_Base:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _T_Mask_Color:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _T_Mask_Details:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _T_Normal:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _T_PBR:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _BUILTIN_QueueControl: 1
+    - _BUILTIN_QueueOffset: 0
     - _BaseMetalBrightness: 4
     - _BaseWoodBrightness: 6
+    - _ChangeColors: 0
     - _EdgesContrast: -5
     - _EdgesPower: 1
     - _GradientContrast: -2
     - _GradientPower: 0.2
     - _MetalMetallic: 2
+    - _MetalSmoothness: 1
+    - _MossContrast: 0
+    - _MossPower: 0
+    - _WoodSmoothness: 1
     m_Colors:
+    - _BaseMetalColor: {r: 1, g: 1, b: 1, a: 0}
     - _BaseWoodColor: {r: 0.5921569, g: 0.4627451, b: 0.3764706, a: 0}
     - _EdgesColor: {r: 0.6745098, g: 0.6392157, b: 0.5411765, a: 0}
     - _GradientColor: {r: 1, g: 0.9372549, b: 0.7490196, a: 0}
+    - _MetalColor: {r: 0, g: 1, b: 0, a: 0}
+    - _MossColor: {r: 1, g: 1, b: 1, a: 0}
+    - _WoodColor: {r: 1, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &4831641544203846617
 MonoBehaviour:

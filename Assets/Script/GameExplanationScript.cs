@@ -26,6 +26,8 @@ public class GameExplanationScript : MonoBehaviour
     private GrayScaleSprict grayscript;  //ポストエフェクト
     [SerializeField]
     private GameObject textmeshpro;  //文字
+    [SerializeField]
+    private MyItemScript myItem;
     // Start is called before the first frame update
     void Start()
     {
@@ -74,7 +76,7 @@ public class GameExplanationScript : MonoBehaviour
             Time.timeScale = 0;
         }
         //敵が一体倒されると表示されるUIの処理
-        else if (playerScript.SetDeadCaunter() == 1 && islevelup==false)
+        else if (myItem.GetItemCounter()==1 && islevelup == false)
         {
             LevelUpUI.SetActive(true);
             Time.timeScale = 0;

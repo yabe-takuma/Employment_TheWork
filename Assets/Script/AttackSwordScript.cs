@@ -6,7 +6,9 @@ using UnityEngine.UI;
 public class AttackSwordScript : MonoBehaviour
 {
     //敵の攻撃力やプレイヤーにアニメーションをするためやUIやエフェクトなどの変数です。
+    [SerializeField]
     private MyStatus myStatus;
+    [SerializeField]
     private PlayerScript playerscript;
     [SerializeField]
     private GameObject sworddamageUI;
@@ -14,6 +16,7 @@ public class AttackSwordScript : MonoBehaviour
     private GameObject damageEffect;
     private bool isAttack;
 
+  
     // Start is called before the first frame update
     private void Start()
     {
@@ -57,7 +60,7 @@ public class AttackSwordScript : MonoBehaviour
     void Update()
     {
         //プレイヤーが攻撃のアニメーションをしていないときはダメージを表示しないフラグ
-        if(playerscript.GetState()!=PlayerScript.MyState.Attack)
+        if (playerscript!=null&&playerscript.GetState() != PlayerScript.MyState.Attack)
         {
             isAttack = false;
         }

@@ -18,8 +18,13 @@ public class ChangeEquipScript : MonoBehaviour
     private Transform equipTransform;
     //武器のコライダーをゲーム開始で付けるための変数
     private ProcessCharaAnimEventScript processCharaAnimEvent;
-    private PlayerScript playerScript; 
+    private PlayerScript playerScript;
     //--------------------------//
+    [SerializeField]
+    private ChestScript chestScript;  //宝箱を開けた数に応じて使える武器を設定するため
+
+    [SerializeField]
+    private int chestcounter;
     //他のスクリプトに参照するための関数
     public int GetEquipment()
     {
@@ -41,18 +46,29 @@ public class ChangeEquipScript : MonoBehaviour
     void Update()
     {
         //特定のキーやボタンを押したら武器切り替える処理
-        if(Input.GetKeyDown("1")||Input.GetKeyDown(KeyCode.RightShift) && playerScript.SetDeadCaunter() >= 1
-           || Input.GetKeyDown("joystick button 5") && playerScript.GetState() == PlayerScript.MyState.Normal
-           && playerScript.SetDeadCaunter() >= 1)
+        if(Input.GetKeyDown(KeyCode.RightShift) || Input.GetKeyDown("joystick button 5"))
         {
             InstantiateWepon();
             
         }
+        
     }
 
     void InstantiateWepon()
     {
         equipment++;
+        if(playerScript.SetDeadCaunter()<1&&equipment==1)
+        {
+            equipment++;
+        }
+        if (equipment == 2 && chestcounter == 0) 
+        {
+            equipment++;
+        }
+        if (equipment == 3 && chestcounter <= 1) 
+        {
+            equipment++;
+        }
         //持っている武器以上の数値になったら0にする処理
         if (equipment>=weapons.Length)
         {
@@ -78,15 +94,29 @@ public class ChangeEquipScript : MonoBehaviour
                 weapon.transform.localEulerAngles = new Vector3(291.87f, 6.4f, 80f);
                 weapon.transform.localScale = new Vector3(1f, 1f, 1f);
             }
-            else if(equipment==1&&playerScript.SetDeadCaunter()>=1)
+            else if(equipment==1)
             {
                 weapon.transform.SetParent(equipTransform);
                 weapon.transform.localPosition = new Vector3(-0.1f, 0.05f, 0.5f);
                 weapon.transform.localEulerAngles = new Vector3(90.0f, 0.0f, 0.0f);
                 weapon.transform.localScale = new Vector3(1f, 1f, 1f);
             }
+            else if (equipment == 2)
+            {
+                weapon.transform.SetParent(equipTransform);
+                weapon.transform.localPosition = new Vector3(-0.24f, 0.03f, 0f);
+                weapon.transform.localEulerAngles = new Vector3(291.87f, 6.4f, 80f);
+                weapon.transform.localScale = new Vector3(1f, 1f, 1f);
+            }
+            else if (equipment == 3)
+            {
+                weapon.transform.SetParent(equipTransform);
+                weapon.transform.localPosition = new Vector3(-0.24f, 0.03f, 0f);
+                weapon.transform.localEulerAngles = new Vector3(291.87f, 6.4f, 80f);
+                weapon.transform.localScale = new Vector3(1f, 1f, 1f);
+            }
 
-                myStatus.SetEquip(weapon);
+            myStatus.SetEquip(weapon);
         }
 
         
@@ -102,6 +132,11 @@ public class ChangeEquipScript : MonoBehaviour
         weapon.transform.localEulerAngles = new Vector3(291.87f, 6.4f, 80f);
         weapon.transform.localScale = new Vector3(1f, 1f, 1f);
         myStatus.SetEquip(weapon);
+    }
+    //宝箱を開けた回数を記録するための関数
+    public void SetChestCounter(int counter)
+    {
+        chestcounter = counter;
     }
 
 }

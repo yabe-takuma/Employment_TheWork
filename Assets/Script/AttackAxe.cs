@@ -19,11 +19,20 @@ public class AttackAxe : MonoBehaviour
     private GameObject damageEffect;
     private bool isAttack;
 
+    [SerializeField]
+    private SphereCollider sphereCollider;  //最初から自動でコライダーのチェックをオンにするため
+    [SerializeField]
+    private MyItemScript myItemScript;
+    [SerializeField]
+    private bool isCollision;
+
     // Start is called before the first frame update
     private void Start()
     {
         myStatus = transform.root.GetComponent<MyStatus>();
         playerscript = transform.root.GetComponent<PlayerScript>();
+        sphereCollider.enabled = true;
+       
     }
 
     private void OnTriggerEnter(Collider other)
@@ -39,13 +48,15 @@ public class AttackAxe : MonoBehaviour
                 var axedamageobj = Instantiate(axenormaldamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y, other.bounds.center.z), Quaternion.identity);
                 axedamageobj.transform.SetParent(other.transform);
                 Debug.Log("敵に当たった");
+                isCollision = true;
             }
         }
+       
         //ボスに当たった時ダメージを表示するUIやエフェクトなどを表示しています。
         if (other.tag == "Boss")
         {
             var trollScript = other.GetComponentInParent<TrollScript>();
-            if (trollScript.GetState() != TrollScript.TrollState.Dead && isAttack == false)
+            if (trollScript.GetState() != TrollScript.TrollState.Dead)
             {
                 other.GetComponentInParent<TrollScript>().TakeDamage(myStatus.GetAxeAttackPower()*2, other.ClosestPointOnBounds(transform.position));
                 var weakobj = Instantiate(weakUI, new Vector3(other.bounds.center.x,other.bounds.center.y-2.0f,other.bounds.center.z), Quaternion.identity);
@@ -58,14 +69,37 @@ public class AttackAxe : MonoBehaviour
                 Debug.Log("ボスに当たった");
             }
         }
+       
+        if(other.tag=="SearchItemArea")
+        {
+            sphereCollider.enabled = false;
+            Debug.Log("アイテムが削除");
+        }
     }
+  
 
     // Update is called once per frame
     void Update()
     {
-        if (playerscript.GetState() != PlayerScript.MyState.Attack)
+        if (playerscript!=null&&playerscript.GetState() != PlayerScript.MyState.Attack)
         {
             isAttack = false;
         }
+        if (myItemScript==null&& playerscript != null && playerscript.GetState() != PlayerScript.MyState.Attack)
+        {
+            sphereCollider.enabled = false;
+        }
+        else if(playerscript!=null&&playerscript.GetState() != PlayerScript.MyState.Attack)
+        {
+            sphereCollider.enabled = true;
+        }
+       
     }
+
+    public void SetMyItem(MyItemScript myitemscript)
+    {
+        myItemScript = myitemscript;
+    }
+
+   
 }

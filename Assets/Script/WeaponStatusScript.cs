@@ -24,7 +24,7 @@ public class WeaponStatusScript : MonoBehaviour
     private WeaponType weaponType;
     [SerializeField]
     private float weaponRange;
-
+   
     public int GetAttackPower()
     {
         return attackPower;
@@ -53,7 +53,7 @@ public class WeaponStatusScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+       
     }
 
     // Update is called once per frame

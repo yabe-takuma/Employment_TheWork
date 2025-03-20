@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Playables;
+using UnityEngine.ProBuilder.MeshOperations;
 
 public class PlayerScript : MonoBehaviour
 {
@@ -163,7 +164,8 @@ public class PlayerScript : MonoBehaviour
             velocity = Vector3.zero;
             state = MyState.Attack;
             move = Vector3.zero;
-            if (changeequipscript.GetEquipment() == 0)
+            if (changeequipscript.GetEquipment() == 0|| changeequipscript.GetEquipment() == 2||
+                changeequipscript.GetEquipment() ==3)
             {
                 animator.SetTrigger("Attack");
             }
@@ -171,6 +173,7 @@ public class PlayerScript : MonoBehaviour
             {
                 animator.SetTrigger("AxeAttack");
             }
+            
         }
         else if(tempState==MyState.SkillAttack)
         {
@@ -323,7 +326,7 @@ public class PlayerScript : MonoBehaviour
 
     public void OnSkillAttack(InputAction.CallbackContext context)
     {
-        if (context.started && !animator.IsInTransition(0) && changeequipscript.GetEquipment() >= 1)
+        if (context.started && !animator.IsInTransition(0) && changeequipscript.GetEquipment() == 1)
         {
             SetState(MyState.SkillAttack);
 

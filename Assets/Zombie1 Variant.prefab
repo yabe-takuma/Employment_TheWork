@@ -2542,6 +2542,13 @@ MonoBehaviour:
   playerScript: {fileID: 0}
   damageEffect: {fileID: 0}
   trollScript: {fileID: 0}
+  chest: {fileID: 0}
+  chestsrotation:
+  - {x: 0, y: 0, z: 0, w: 0}
+  - {x: 0, y: 0, z: 0, w: 0}
+  - {x: 0, y: 0, z: 0, w: 0}
+  - {x: 0, y: 0, z: 0, w: 0}
+  - {x: 0, y: 0, z: 0, w: 0}
 --- !u!114 &1081153270
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2579,10 +2586,10 @@ MonoBehaviour:
   handCollider: {fileID: 0}
   enemyStatus: {fileID: 1081153281}
   randam: 0
-  distance: 0
   trollScript: {fileID: 0}
   playerscript: {fileID: 0}
   collisiontimer: 0
+  Firesword: {fileID: 0}
 --- !u!114 &1081153280
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2631,6 +2638,13 @@ MonoBehaviour:
   playerScript: {fileID: 0}
   damageEffect: {fileID: 0}
   trollScript: {fileID: 0}
+  chest: {fileID: 0}
+  chestsrotation:
+  - {x: 0, y: 0, z: 0, w: 0}
+  - {x: 0, y: 0, z: 0, w: 0}
+  - {x: 0, y: 0, z: 0, w: 0}
+  - {x: 0, y: 0, z: 0, w: 0}
+  - {x: 0, y: 0, z: 0, w: 0}
 --- !u!195 &1213133306616260300
 NavMeshAgent:
   m_ObjectHideFlags: 0

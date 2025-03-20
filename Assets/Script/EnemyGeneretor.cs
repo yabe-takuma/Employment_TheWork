@@ -21,23 +21,48 @@ public class EnemyGeneretor : MonoBehaviour
     private TrollScript trollScript;         //ボスの行動
     //------------------------------//
 
-    private Vector3[] enemytransform=new Vector3[5];  //複数の敵の座標
-  
+    private Vector3[] enemyposition=new Vector3[5];  //複数の敵の座標
 
-    private int enemycaunter;  //一つ一つの敵にスクリプトを渡す為の変数
+    //宝箱の情報
+    [SerializeField]
+    private GameObject chest;
+   
+    private Vector3[] chestsposition = new Vector3[5]; //複数の宝箱の座標
+   
+    private Quaternion[] chestsrotation = new Quaternion[5]; //複数の宝箱の回転座標
+    //斧
+    [SerializeField]
+    private GameObject axe;  //敵のスクリプトに斧の情報を代入するため
+    [SerializeField]
+    private MyItemScript myItemScript;  //敵のスクリプトに斧の情報を代入するため
+
+    private ChestScript chestScript;  //宝箱のスクリプトに複数の宝箱の情報を代入するため
+    [SerializeField]
+    private List<GameObject> chestOpensUI;  //宝箱を開ける時の複数の説明文
+    [SerializeField]
+    private ChangeEquipScript changeEquipScript;  //宝箱を何回開けたかの情報を代入するため
+
+    private int chestscaunter; //指定した数通りにすることで重くならないようにしている
+
+    private int enemycaunter;  //一つ一つの敵にスクリプトを渡す為の変数と指定した数通りにすることで重くならないようにしている
 
     // Start is called before the first frame update
     void Start()
     {
         //雑魚敵の配置と雑魚敵の数を格納する変数の初期化
-        enemytransform[0] = new Vector3(974.509f, 0.999f, 51.15654f);
-        enemytransform[1] = new Vector3(904.509f, 0.999f, 51.15654f);
-        enemytransform[2] = new Vector3(1015.5f, 0.999f, 51.15654f);
-        enemytransform[3] = new Vector3(910f, 0.999f, 121.15654f);
-        enemytransform[4] = new Vector3(1026.4f, 0.999f, 110.9f);
+        enemyposition[0] = new Vector3(974.509f, 0.999f, 51.15654f);
+        enemyposition[1] = new Vector3(904.509f, 0.999f, 51.15654f);
+        enemyposition[2] = new Vector3(1015.5f, 0.999f, 51.15654f);
+        enemyposition[3] = new Vector3(910f, 0.999f, 121.15654f);
+        enemyposition[4] = new Vector3(1026.4f, 0.999f, 110.9f);
         enemycaunter = 0;
-    }
 
+        //宝箱の配置と格納する変数の初期化
+        chestsposition[0] = new Vector3(954.509f, 0, 51.15654f);
+        chestsposition[1] = new Vector3(909.509f, 0, 51.15654f);
+
+        chestsrotation[0] = Quaternion.Euler(0, 180f, 0);
+    }
     // Update is called once per frame
     void Update()
     {
@@ -46,14 +71,28 @@ public class EnemyGeneretor : MonoBehaviour
         {
             if (enemycaunter == i)
             {
-                GameObject enemys=Instantiate(enemy, enemytransform[i], Quaternion.identity);
+                GameObject enemys=Instantiate(enemy, enemyposition[i], Quaternion.identity);
                 attackScript = enemys.GetComponentInChildren<AttackScript>();
                 attackScript.SetPlayer(playerScript);
                 moveEnemyScript = enemys.GetComponent<MoveEnemyScript>();
                 moveEnemyScript.SetDamageEffect(damageEffect);
                 moveEnemyScript.SetTrollScript(trollScript);
+                moveEnemyScript.SetAxeSword(axe);
+                moveEnemyScript.SetMyItem(myItemScript);
                 playerScript.SetEnemyScript(moveEnemyScript);
                 enemycaunter += 1;
+            }
+            
+        }
+        for(int i=0;i<2;i++)
+        {
+            if (chestscaunter == i)
+            {
+                GameObject chests = Instantiate(chest, chestsposition[i], chestsrotation[i]);
+                chestScript = chests.GetComponent<ChestScript>();
+                chestScript.ChestOpenUI(chestOpensUI);
+                chestScript.GetChangeEquipScript(changeEquipScript);
+                chestscaunter += 1;
             }
         }
     }

@@ -16,6 +16,8 @@ TagManager:
   - Particle
   - Explocion
   - Collision
+  - Item
+  - SearchItemArea
   layers:
   - Default
   - TransparentFX
@@ -25,7 +27,7 @@ TagManager:
   - UI
   - Chara
   - Field
-  - 
+  - Item
   - 
   - 
   - 
