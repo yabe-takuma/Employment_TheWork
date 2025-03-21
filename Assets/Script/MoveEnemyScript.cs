@@ -90,6 +90,9 @@ public class MoveEnemyScript : MonoBehaviour
     private bool isabnormal;  //状態異常になったかのトリガー
     [SerializeField]
     private int abnormalcounter;  //状態異常になっている時間
+    [SerializeField]
+    private GameObject fireeffect;  //炎のエフェクトが格納された変数
+    private GameObject fireEffectIns;
 
     // Start is called before the first frame update
     void Start()
@@ -195,12 +198,23 @@ public class MoveEnemyScript : MonoBehaviour
         {
             abnormalcounter++;
             enemyStatus.SetHp(enemyStatus.GetHp() - 0.02f);
+            if (!fireEffectIns)
+            {
+                fireEffectIns = Instantiate<GameObject>(fireeffect);
+            }
+            fireEffectIns.transform.position = transform.position;
         }
+        //if(isabnormal&&abnormalcounter<=0)
+        //{
+        //    var fireEffectIns = Instantiate<GameObject>(fireeffect);
+        //    fireEffectIns.transform.position = transform.position;
+        //}
 
         if(abnormalcounter>1000)
         {
             isabnormal = false;
             abnormalcounter = 0;
+            Destroy(fireEffectIns);
         }
        
     }
@@ -379,5 +393,8 @@ public class MoveEnemyScript : MonoBehaviour
         myItemScript = myitemscript;   
     }
 
-   
+    public void SetFireEffect(GameObject gameObject)
+    {
+        fireeffect = gameObject;
+    }
 }

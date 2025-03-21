@@ -46,6 +46,9 @@ public class EnemyGeneretor : MonoBehaviour
 
     private int enemycaunter;  //一つ一つの敵にスクリプトを渡す為の変数と指定した数通りにすることで重くならないようにしている
 
+    [SerializeField]
+    private GameObject fireEffect;  //炎のエフェクトを敵に渡すため
+
     // Start is called before the first frame update
     void Start()
     {
@@ -86,6 +89,7 @@ public class EnemyGeneretor : MonoBehaviour
                 moveEnemyScript.SetTrollScript(trollScript);
                 moveEnemyScript.SetAxeSword(axe);
                 moveEnemyScript.SetMyItem(myItemScript);
+                moveEnemyScript.SetFireEffect(fireEffect);
                 playerScript.SetEnemyScript(moveEnemyScript);
                 enemycaunter += 1;
             }
