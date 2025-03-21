@@ -27,7 +27,7 @@ public class AttackSwordScript : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         //剣が雑魚敵に当たった時の処理
-        if(other.tag=="Enemy")
+        if(other.tag=="Enemy" && this.gameObject.tag != "FireSword")
         {
            
             var enemyScript = other.GetComponent<MoveEnemyScript>();
@@ -39,8 +39,22 @@ public class AttackSwordScript : MonoBehaviour
                 Debug.Log("敵に当たった");
             }
         }
+
+        else if (other.tag == "Enemy"&&this.gameObject.tag=="FireSword")
+        {
+
+            var enemyScript = other.GetComponent<MoveEnemyScript>();
+            if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead)
+            {
+                other.GetComponent<MoveEnemyScript>().TakeDamage(myStatus.GetAttackPower(), other.ClosestPointOnBounds(transform.position));
+                other.GetComponent<MoveEnemyScript>().AbnormalCondition();
+                var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 1.0f, other.bounds.center.z), Quaternion.identity);
+                swordobj.transform.SetParent(other.transform);
+                Debug.Log("炎の剣が当たった");
+            }
+        }
         //剣がボスに当たった時の処理
-        if(other.tag=="Boss")
+        if (other.tag=="Boss")
         {
             var trollScript = other.GetComponentInParent<TrollScript>();
             if(trollScript.GetState()!=TrollScript.TrollState.Dead&&isAttack==false)

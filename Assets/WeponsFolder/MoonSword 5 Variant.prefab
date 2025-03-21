@@ -17,7 +17,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1466512764667320, guid: c3d3646a21160034081ae4ce205b8796, type: 3}
       propertyPath: m_TagString
-      value: Item
+      value: FireSword
       objectReference: {fileID: 0}
     - target: {fileID: 4366557514698144, guid: c3d3646a21160034081ae4ce205b8796, type: 3}
       propertyPath: m_RootOrder
@@ -117,4 +117,3 @@ MonoBehaviour:
   playerscript: {fileID: 0}
   sworddamageUI: {fileID: 2634239737505882867, guid: cfd24881922a2934a9ab244ac28c251b, type: 3}
   damageEffect: {fileID: 362261158077530393, guid: 20fda529c996a334da7fd65b48ea40df, type: 3}
-  movememy: {fileID: 0}

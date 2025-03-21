@@ -792,6 +792,8 @@ MonoBehaviour:
   - {fileID: 7480431145084042552, guid: bb7d0e4f28edd4148bb582a309c59884, type: 3}
   - {fileID: 2241308474654585159, guid: 2e3871f3ae19c9242835e4d92139ea99, type: 3}
   - {fileID: 3476545011676661931, guid: 86b3fae9a816e874fa872ed3a09a5cb0, type: 3}
+  - {fileID: 6209981360729681357, guid: c6a1ac0c4f18fc24e8fea3bebf87f400, type: 3}
+  - {fileID: 6858942416784417648, guid: 4513664d5be76b140b16a3ce684412f2, type: 3}
   equipment: 0
   myStatus: {fileID: 162323368}
   equipTransform: {fileID: 368430480}

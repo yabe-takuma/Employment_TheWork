@@ -18,6 +18,7 @@ TagManager:
   - Collision
   - Item
   - SearchItemArea
+  - FireSword
   layers:
   - Default
   - TransparentFX

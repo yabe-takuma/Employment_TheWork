@@ -69,6 +69,14 @@ public class ChangeEquipScript : MonoBehaviour
         {
             equipment++;
         }
+        if (equipment == 4 && chestcounter <= 2)
+        {
+            equipment++;
+        }
+        if (equipment == 5 && chestcounter <= 3)
+        {
+            equipment++;
+        }
         //持っている武器以上の数値になったら0にする処理
         if (equipment>=weapons.Length)
         {
@@ -99,7 +107,7 @@ public class ChangeEquipScript : MonoBehaviour
                 weapon.transform.SetParent(equipTransform);
                 weapon.transform.localPosition = new Vector3(-0.1f, 0.05f, 0.5f);
                 weapon.transform.localEulerAngles = new Vector3(90.0f, 0.0f, 0.0f);
-                weapon.transform.localScale = new Vector3(1f, 1f, 1f);
+                weapon.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
             }
             else if (equipment == 2)
             {
@@ -114,6 +122,21 @@ public class ChangeEquipScript : MonoBehaviour
                 weapon.transform.localPosition = new Vector3(-0.24f, 0.03f, 0f);
                 weapon.transform.localEulerAngles = new Vector3(291.87f, 6.4f, 80f);
                 weapon.transform.localScale = new Vector3(1f, 1f, 1f);
+            }
+            else if(equipment ==4)
+            {
+                weapon.transform.SetParent(equipTransform);
+                weapon.transform.localPosition = new Vector3(-0.105f, 0.046f, 0.215f);
+                weapon.transform.localEulerAngles = new Vector3(90.0f, 0.0f, 0.0f);
+                weapon.transform.localScale = new Vector3(1f, 1f, 1f);
+            }
+            else if (equipment == 5)
+            {
+                weapon.transform.SetParent(equipTransform);
+               
+                weapon.transform.localPosition = new Vector3(-0.183f, 0.058f, 0.485f);
+                weapon.transform.localEulerAngles = new Vector3(-80.0f, 90.0f, 90.0f);
+                weapon.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
             }
 
             myStatus.SetEquip(weapon);

@@ -31,8 +31,10 @@ public class AttackAxe : MonoBehaviour
     {
         myStatus = transform.root.GetComponent<MyStatus>();
         playerscript = transform.root.GetComponent<PlayerScript>();
-        sphereCollider.enabled = true;
-       
+        if (this.gameObject.tag == "Item")
+        {
+            sphereCollider.enabled = true;
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -70,7 +72,7 @@ public class AttackAxe : MonoBehaviour
             }
         }
        
-        if(other.tag=="SearchItemArea")
+        if(this.gameObject.tag=="axe Variant"&&other.tag=="SearchItemArea")
         {
             sphereCollider.enabled = false;
             Debug.Log("アイテムが削除");
@@ -85,11 +87,11 @@ public class AttackAxe : MonoBehaviour
         {
             isAttack = false;
         }
-        if (myItemScript==null&& playerscript != null && playerscript.GetState() != PlayerScript.MyState.Attack)
+        if (this.gameObject.tag == "Item" && myItemScript ==null&& playerscript != null && playerscript.GetState() != PlayerScript.MyState.Attack)
         {
             sphereCollider.enabled = false;
         }
-        else if(playerscript!=null&&playerscript.GetState() != PlayerScript.MyState.Attack)
+        else if(this.gameObject.tag == "Item" && playerscript !=null&&playerscript.GetState() != PlayerScript.MyState.Attack)
         {
             sphereCollider.enabled = true;
         }

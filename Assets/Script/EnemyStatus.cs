@@ -9,10 +9,10 @@ public class EnemyStatus : MonoBehaviour
 
     // 敵のMaxHP
     [SerializeField]
-    private int maxHp;
+    private float maxHp;
     //敵のHP
     [SerializeField]
-    private int hp;
+    private float hp;
     //敵の攻撃力
     [SerializeField]
     private int attackPower;
@@ -30,7 +30,7 @@ public class EnemyStatus : MonoBehaviour
 
 
 
-    public void SetHp(int hp)
+    public void SetHp(float hp)
     {
         this.hp = hp;
 
@@ -45,12 +45,12 @@ public class EnemyStatus : MonoBehaviour
 
     }
 
-    public int GetHp()
+    public float GetHp()
     {
         return hp;
     }
 
-    public int GetMaxHp()
+    public float GetMaxHp()
     {
         return maxHp;
     }

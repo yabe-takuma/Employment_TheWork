@@ -169,7 +169,8 @@ public class PlayerScript : MonoBehaviour
             {
                 animator.SetTrigger("Attack");
             }
-            else if(changeequipscript.GetEquipment()==1)
+            else if(changeequipscript.GetEquipment()==1 || changeequipscript.GetEquipment() == 4 ||
+                    changeequipscript.GetEquipment() == 5)
             {
                 animator.SetTrigger("AxeAttack");
             }
@@ -178,8 +179,19 @@ public class PlayerScript : MonoBehaviour
         else if(tempState==MyState.SkillAttack)
         {
             state = MyState.SkillAttack;
-            move = Vector3.zero;
-            animator.SetTrigger("AxeSkillAttack");
+            if(changeequipscript.GetEquipment()==2|| changeequipscript.GetEquipment() == 3)
+            {
+                animator.SetTrigger("SwordSkillAttack");
+            }
+            else if (changeequipscript.GetEquipment() == 4)
+            {
+                animator.SetTrigger("AxeSkillAttack2");
+            }
+            else if(changeequipscript.GetEquipment() == 5)
+            {
+                animator.SetTrigger("AxeSkillAttack");
+                move = Vector3.zero;
+            }
         }
         else if(tempState == MyState.Dead)
         {
@@ -326,7 +338,8 @@ public class PlayerScript : MonoBehaviour
 
     public void OnSkillAttack(InputAction.CallbackContext context)
     {
-        if (context.started && !animator.IsInTransition(0) && changeequipscript.GetEquipment() == 1)
+        if (context.started && !animator.IsInTransition(0) && changeequipscript.GetEquipment() >=2&&
+            context.started && !animator.IsInTransition(0) && changeequipscript.GetEquipment() <= 5)
         {
             SetState(MyState.SkillAttack);
 

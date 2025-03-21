@@ -60,8 +60,15 @@ public class EnemyGeneretor : MonoBehaviour
         //宝箱の配置と格納する変数の初期化
         chestsposition[0] = new Vector3(954.509f, 0, 51.15654f);
         chestsposition[1] = new Vector3(909.509f, 0, 51.15654f);
+        chestsposition[2] = new Vector3(1045.5f, 0, 11.15654f);
+        chestsposition[3] = new Vector3(904f, 0, 154.15654f);
+        chestsposition[4] = new Vector3(1050.4f, 0, 155.9f);
+
 
         chestsrotation[0] = Quaternion.Euler(0, 180f, 0);
+        chestsrotation[3] = Quaternion.Euler(0, -180f, 0);
+        chestsrotation[4] = Quaternion.Euler(0, -180f, 0);
+
     }
     // Update is called once per frame
     void Update()
@@ -82,10 +89,7 @@ public class EnemyGeneretor : MonoBehaviour
                 playerScript.SetEnemyScript(moveEnemyScript);
                 enemycaunter += 1;
             }
-            
-        }
-        for(int i=0;i<2;i++)
-        {
+
             if (chestscaunter == i)
             {
                 GameObject chests = Instantiate(chest, chestsposition[i], chestsrotation[i]);
@@ -94,7 +98,9 @@ public class EnemyGeneretor : MonoBehaviour
                 chestScript.GetChangeEquipScript(changeEquipScript);
                 chestscaunter += 1;
             }
+
         }
+        
     }
 
    

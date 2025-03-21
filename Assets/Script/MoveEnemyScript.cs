@@ -86,6 +86,11 @@ public class MoveEnemyScript : MonoBehaviour
     private MyItemScript myItemScript;  //斧が生成されるタイミングでスクリプトを代入したいため
     private AttackAxe attackAxe;  //一つ上と同じ理由
 
+    [SerializeField]
+    private bool isabnormal;  //状態異常になったかのトリガー
+    [SerializeField]
+    private int abnormalcounter;  //状態異常になっている時間
+
     // Start is called before the first frame update
     void Start()
     {
@@ -184,6 +189,18 @@ public class MoveEnemyScript : MonoBehaviour
         if(enemyStatus.GetHp() <= 0)
         {
             SetState(EnemyState.Dead);
+        }
+
+        if(isabnormal)
+        {
+            abnormalcounter++;
+            enemyStatus.SetHp(enemyStatus.GetHp() - 0.02f);
+        }
+
+        if(abnormalcounter>1000)
+        {
+            isabnormal = false;
+            abnormalcounter = 0;
         }
        
     }
@@ -312,6 +329,12 @@ public class MoveEnemyScript : MonoBehaviour
             attackAxe.SetMyItem(myItemScript);
         }
     }
+
+    public void AbnormalCondition()
+    {
+        isabnormal = true;
+    }
+
     //他のスクリプトからもらってきたデータを格納するための関数
     public void SetDamageEffect(GameObject gameobject)
     {
