@@ -31,5 +31,9 @@ public class SceneScript : MonoBehaviour
         {
             SceneManager.LoadScene("TitleScene");
         }
+        if(Input.GetKeyDown(KeyCode.T) || Input.GetKeyDown("joystick button 6"))
+        {
+            SceneManager.LoadScene("TitleScene");
+        }
     }
 }

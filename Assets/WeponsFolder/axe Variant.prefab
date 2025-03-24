@@ -48,7 +48,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 103692, guid: a6f75ae2198bd1e47b95c317412b3ef3, type: 3}
       propertyPath: m_TagString
-      value: Item
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 197290, guid: a6f75ae2198bd1e47b95c317412b3ef3, type: 3}
       propertyPath: m_Layer
@@ -166,7 +166,8 @@ MonoBehaviour:
   axenormaldamageUI: {fileID: 102049627662341751, guid: c5d99c1efe26ab04fb828dfb5554733b, type: 3}
   damageEffect: {fileID: 362261158077530393, guid: 20fda529c996a334da7fd65b48ea40df, type: 3}
   sphereCollider: {fileID: 3257077394670335979}
-  capsuleCollider: {fileID: 3379669716494709639}
+  myItemScript: {fileID: 0}
+  isCollision: 0
 --- !u!114 &8686983887646880719
 MonoBehaviour:
   m_ObjectHideFlags: 0

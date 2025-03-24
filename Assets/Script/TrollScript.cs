@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.UI;
 using UnityEngine.AI;
+using static MoveEnemyScript;
 
 public class TrollScript : MonoBehaviour
 {
@@ -92,7 +93,13 @@ public class TrollScript : MonoBehaviour
     [SerializeField]
     private bool Isshockwave, Isinstallation,Isexplocion,Iswave, Iscontinuous;
 
-  
+    [SerializeField]
+    private bool isabnormal;  //状態異常になったかのトリガー
+    [SerializeField]
+    private int abnormalcounter;  //状態異常になっている時間
+    [SerializeField]
+    private GameObject fireeffect;  //炎のエフェクトが格納された変数
+    private GameObject fireEffectIns;
 
     // Start is called before the first frame update
     void Start()
@@ -163,6 +170,23 @@ public class TrollScript : MonoBehaviour
         if (trollStatus.GetHp() <= 0)
         {
             Time.timeScale = 0.2f;
+        }
+        if (isabnormal)
+        {
+            abnormalcounter++;
+            //trollStatus.SetHp(trollStatus.GetHp() - 0.02f);
+            if (!fireEffectIns)
+            {
+                fireEffectIns = Instantiate<GameObject>(fireeffect);
+            }
+            fireEffectIns.transform.position = transform.position;
+        }
+
+        if (abnormalcounter > 1000)
+        {
+            isabnormal = false;
+            abnormalcounter = 0;
+            Destroy(fireEffectIns);
         }
         //移動処理
         velocity.y += Physics.gravity.y * Time.deltaTime;
@@ -617,6 +641,17 @@ public class TrollScript : MonoBehaviour
     public void SetVelocity(Vector3 velo)
     {
         velocity = velo;
+    }
+
+    public void AbnormalCondition()
+    {
+        isabnormal = true;
+        abnormalcounter = 0;
+    }
+
+    public void DestroyFire()
+    {
+        Destroy(fireEffectIns);
     }
 
 }

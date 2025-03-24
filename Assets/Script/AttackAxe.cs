@@ -40,7 +40,7 @@ public class AttackAxe : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         //敵に当たった時ダメージを表示するUIやエフェクトなどを表示しています。
-        if (other.tag == "Enemy")
+        if (other.tag == "Enemy"&&this.gameObject.tag!="Item"&&playerscript!=null)
         {
 
             var enemyScript = other.GetComponent<MoveEnemyScript>();
@@ -72,7 +72,7 @@ public class AttackAxe : MonoBehaviour
             }
         }
        
-        if(this.gameObject.tag=="axe Variant"&&other.tag=="SearchItemArea")
+        if(other.tag=="SearchItemArea")
         {
             sphereCollider.enabled = false;
             Debug.Log("アイテムが削除");

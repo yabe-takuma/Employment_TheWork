@@ -90,7 +90,7 @@ Material:
     - _Speed: 5
     - _SrcBlend: 1
     - _StartTime: 10
-    - _Threshold: 0.8000002
+    - _Threshold: 1
     - _UVSec: 0
     - _ZWrite: 0
     m_Colors:

@@ -19,6 +19,7 @@ public class GameExplanationScript : MonoBehaviour
     private GameObject LevelUpUI; //レベルアップした際の文字
     //-----------------------//
     //レベルアップの際すぐにゲームに戻ってしまうのを防ぐための変数
+    [SerializeField]
     private bool islevelup;
     [SerializeField]
     private PlayerScript playerScript;  //プレイヤー
@@ -75,7 +76,7 @@ public class GameExplanationScript : MonoBehaviour
         {
             Time.timeScale = 0;
         }
-        //敵が一体倒されると表示されるUIの処理
+        //敵からドロップした斧を入手する時に表示されるUIの処理
         else if (myItem.GetItemCounter()==1 && islevelup == false)
         {
             LevelUpUI.SetActive(true);
@@ -91,9 +92,9 @@ public class GameExplanationScript : MonoBehaviour
             || Input.GetKeyDown("joystick button 4") && playerScript.SetDeadCaunter() == 1)
         {
             LevelUpUI.SetActive(false);
+            islevelup = true;
             Time.timeScale = 0;
             Debug.Log("レベル説明終了");
-            islevelup = true;
         }
 
     }

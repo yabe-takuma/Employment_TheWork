@@ -94,6 +94,8 @@ public class MoveEnemyScript : MonoBehaviour
     private GameObject fireeffect;  //炎のエフェクトが格納された変数
     private GameObject fireEffectIns;
 
+    private bool isDead;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -110,6 +112,7 @@ public class MoveEnemyScript : MonoBehaviour
         playerscript= GameObject.Find("Character_Female_Hotel Owner").GetComponent<PlayerScript>();
         navMeshAgent = GetComponent<NavMeshAgent>();
         SetState(EnemyState.Wait);
+        isDead = false;
     }
 
     // Update is called once per frame
@@ -189,9 +192,12 @@ public class MoveEnemyScript : MonoBehaviour
             velocity.y += Physics.gravity.y * Time.deltaTime;
            
         }
-        if(enemyStatus.GetHp() <= 0)
+        //体力が0になると倒される処理
+        if (enemyStatus.GetHp() <= 0&&isabnormal&&!isDead)
         {
             SetState(EnemyState.Dead);
+            Dead();
+            isDead = true;
         }
 
         if(isabnormal)
@@ -204,11 +210,6 @@ public class MoveEnemyScript : MonoBehaviour
             }
             fireEffectIns.transform.position = transform.position;
         }
-        //if(isabnormal&&abnormalcounter<=0)
-        //{
-        //    var fireEffectIns = Instantiate<GameObject>(fireeffect);
-        //    fireEffectIns.transform.position = transform.position;
-        //}
 
         if(abnormalcounter>1000)
         {
@@ -288,6 +289,7 @@ public class MoveEnemyScript : MonoBehaviour
             //倒されるときアニメーションをして消滅をする
             animator.SetTrigger("Dead");
             Destroy(this.gameObject, 3f);
+            Destroy(fireEffectIns, 3f);
             velocity = Vector3.zero;
             navMeshAgent.isStopped = true;
         }
@@ -316,18 +318,22 @@ public class MoveEnemyScript : MonoBehaviour
 
     public void TakeDamage(int damage,Vector3 attackedPlace)
     {
-        //ダメージを受ける時攻撃用のコライダーを非表示にし、エフェクトを生成
-        //さらに体力を減らす処理
-        SetState(EnemyState.Damage);
-        handCollider.enabled = false;
-        var damageEffectIns = Instantiate<GameObject>(damageEffect);
-        damageEffectIns.transform.position = attackedPlace;
-        Destroy(damageEffectIns, 1f);
-        enemyStatus.SetHp(enemyStatus.GetHp() - damage);
-        //体力が0になると倒される処理
-        if (enemyStatus.GetHp()<=0)
+        if (enemyStatus.GetHp() >= 0.0f)
+        {
+            //ダメージを受ける時攻撃用のコライダーを非表示にし、エフェクトを生成
+            //さらに体力を減らす処理
+            SetState(EnemyState.Damage);
+            handCollider.enabled = false;
+            var damageEffectIns = Instantiate<GameObject>(damageEffect);
+            damageEffectIns.transform.position = attackedPlace;
+            Destroy(damageEffectIns, 1f);
+            enemyStatus.SetHp(enemyStatus.GetHp() - damage);
+        }
+        ////体力が0になると倒される処理
+        if (enemyStatus.GetHp() <= 0.0f && !isDead)
         {
             Dead();
+            isDead = true;
         }
     }
 
@@ -340,6 +346,7 @@ public class MoveEnemyScript : MonoBehaviour
         {
             GameObject Axe=Instantiate<GameObject>(axe, transform.position+Vector3.up, Quaternion.identity);
             attackAxe = Axe.GetComponent<AttackAxe>();
+            attackAxe.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
             attackAxe.SetMyItem(myItemScript);
         }
     }
@@ -347,6 +354,7 @@ public class MoveEnemyScript : MonoBehaviour
     public void AbnormalCondition()
     {
         isabnormal = true;
+        abnormalcounter = 0;
     }
 
     //他のスクリプトからもらってきたデータを格納するための関数
@@ -396,5 +404,17 @@ public class MoveEnemyScript : MonoBehaviour
     public void SetFireEffect(GameObject gameObject)
     {
         fireeffect = gameObject;
+    }
+
+    public bool GetIsAbnormal()
+    {
+        return isabnormal;
+    }
+
+    public void DestroyFire()
+    {
+        Destroy(fireEffectIns);
+        isabnormal = false;
+        abnormalcounter = 0;
     }
 }

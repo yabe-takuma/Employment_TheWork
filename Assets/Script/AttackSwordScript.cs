@@ -27,7 +27,7 @@ public class AttackSwordScript : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         //剣が雑魚敵に当たった時の処理
-        if(other.tag=="Enemy" && this.gameObject.tag != "FireSword")
+        if(other.tag=="Enemy" && this.gameObject.tag != "FireSword"&&this.gameObject.tag!="WaterSword")
         {
            
             var enemyScript = other.GetComponent<MoveEnemyScript>();
@@ -44,28 +44,92 @@ public class AttackSwordScript : MonoBehaviour
         {
 
             var enemyScript = other.GetComponent<MoveEnemyScript>();
-            if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead)
+            if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead&&playerscript.GetState()!=PlayerScript.MyState.SkillAttack)
+            {
+                other.GetComponent<MoveEnemyScript>().TakeDamage(myStatus.GetAttackPower(), other.ClosestPointOnBounds(transform.position));
+                var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 1.0f, other.bounds.center.z), Quaternion.identity);
+                swordobj.transform.SetParent(other.transform);
+                Debug.Log("炎の剣が当たった");
+            }
+            else if(enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead && playerscript.GetState() == PlayerScript.MyState.SkillAttack)
             {
                 other.GetComponent<MoveEnemyScript>().TakeDamage(myStatus.GetAttackPower(), other.ClosestPointOnBounds(transform.position));
                 other.GetComponent<MoveEnemyScript>().AbnormalCondition();
                 var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 1.0f, other.bounds.center.z), Quaternion.identity);
                 swordobj.transform.SetParent(other.transform);
-                Debug.Log("炎の剣が当たった");
+            }
+        }
+
+        else if (other.tag == "Enemy" && this.gameObject.tag == "WaterSword")
+        {
+
+            var enemyScript = other.GetComponent<MoveEnemyScript>();
+            if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead && playerscript.GetState() != PlayerScript.MyState.SkillAttack)
+            {
+                other.GetComponent<MoveEnemyScript>().TakeDamage(myStatus.GetAttackPower(), other.ClosestPointOnBounds(transform.position));
+                var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 1.0f, other.bounds.center.z), Quaternion.identity);
+                swordobj.transform.SetParent(other.transform);
+                Debug.Log("水の剣が当たった");
+            }
+            if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead && playerscript.GetState() == PlayerScript.MyState.SkillAttack&&enemyScript.GetIsAbnormal())
+            {
+                other.GetComponent<MoveEnemyScript>().TakeDamage(myStatus.GetAttackPower()*6, other.ClosestPointOnBounds(transform.position));
+                other.GetComponent<MoveEnemyScript>().DestroyFire();
+                var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 1.0f, other.bounds.center.z), Quaternion.identity);
+                swordobj.transform.SetParent(other.transform);
+                Debug.Log("大ダメージ");
             }
         }
         //剣がボスに当たった時の処理
-        if (other.tag=="Boss")
+        if (other.tag == "Boss" && this.gameObject.tag != "FireSword" && this.gameObject.tag != "WaterSword")
         {
             var trollScript = other.GetComponentInParent<TrollScript>();
-            if(trollScript.GetState()!=TrollScript.TrollState.Dead&&isAttack==false)
+            if (trollScript.GetState() != TrollScript.TrollState.Dead && isAttack == false)
             {
                 other.GetComponentInParent<TrollScript>().TakeDamage(myStatus.GetAttackPower(), other.ClosestPointOnBounds(transform.position));
-                var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y-4.0f, other.bounds.center.z), Quaternion.identity);
+                var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 4.0f, other.bounds.center.z), Quaternion.identity);
                 swordobj.transform.SetParent(other.transform);
                 var damageobj = Instantiate(damageEffect, new Vector3(other.bounds.center.x, other.bounds.center.y, other.bounds.center.z), Quaternion.identity);
                 damageobj.transform.SetParent(other.transform);
                 isAttack = true;
                 Debug.Log("ボスに当たった");
+            }
+        }
+        else if (other.tag == "Boss" && this.gameObject.tag == "FireSword")
+        {
+
+            var trollScript = other.GetComponentInParent<TrollScript>();
+            if (trollScript.GetState() != TrollScript.TrollState.Dead && playerscript.GetState() != PlayerScript.MyState.SkillAttack)
+            {
+                other.GetComponentInParent<TrollScript>().TakeDamage(myStatus.GetAttackPower(), other.ClosestPointOnBounds(transform.position));
+                var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 1.0f, other.bounds.center.z), Quaternion.identity);
+                swordobj.transform.SetParent(other.transform);
+                Debug.Log("炎の剣がボスに当たった");
+            }
+            else if (trollScript.GetState() != TrollScript.TrollState.Dead && playerscript.GetState() == PlayerScript.MyState.SkillAttack)
+            {
+                other.GetComponentInParent<TrollScript>().TakeDamage(myStatus.GetAttackPower()*6, other.ClosestPointOnBounds(transform.position));
+                other.GetComponentInParent<TrollScript>().AbnormalCondition();
+                var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 1.0f, other.bounds.center.z), Quaternion.identity);
+                swordobj.transform.SetParent(other.transform);
+            }
+        }
+        else if (other.tag == "Boss" && this.gameObject.tag == "WaterSword")
+        {
+            var trollScript = other.GetComponentInParent<TrollScript>();
+            if (trollScript.GetState() != TrollScript.TrollState.Dead && playerscript.GetState() != PlayerScript.MyState.SkillAttack)
+            {
+                other.GetComponentInParent<TrollScript>().TakeDamage(myStatus.GetAttackPower(), other.ClosestPointOnBounds(transform.position));
+                var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 1.0f, other.bounds.center.z), Quaternion.identity);
+                swordobj.transform.SetParent(other.transform);
+                Debug.Log("水の剣がボスに当たった");
+            }
+            else if (trollScript.GetState() != TrollScript.TrollState.Dead && playerscript.GetState() == PlayerScript.MyState.SkillAttack)
+            {
+                other.GetComponentInParent<TrollScript>().TakeDamage(myStatus.GetAttackPower(), other.ClosestPointOnBounds(transform.position));
+                other.GetComponentInParent<TrollScript>().DestroyFire();
+                var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 1.0f, other.bounds.center.z), Quaternion.identity);
+                swordobj.transform.SetParent(other.transform);
             }
         }
     }

@@ -50,6 +50,7 @@ public class GameManagerScript : MonoBehaviour
         {
             grayscript.enabled = true;
         }
+       
     }
 
    

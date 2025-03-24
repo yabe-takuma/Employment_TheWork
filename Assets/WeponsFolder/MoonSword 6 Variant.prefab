@@ -11,6 +11,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: MoonSword 6 Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 1599587151244576, guid: 0de82f2050779844e840890abdb725d4, type: 3}
+      propertyPath: m_TagString
+      value: WaterSword
+      objectReference: {fileID: 0}
     - target: {fileID: 4861692195392152, guid: 0de82f2050779844e840890abdb725d4, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -105,5 +109,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46157ae4d18c43940864a14100600477, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  myStatus: {fileID: 0}
+  playerscript: {fileID: 0}
   sworddamageUI: {fileID: 2634239737505882867, guid: cfd24881922a2934a9ab244ac28c251b, type: 3}
   damageEffect: {fileID: 362261158077530393, guid: 20fda529c996a334da7fd65b48ea40df, type: 3}

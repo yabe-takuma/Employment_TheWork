@@ -19,6 +19,7 @@ TagManager:
   - Item
   - SearchItemArea
   - FireSword
+  - WaterSword
   layers:
   - Default
   - TransparentFX
