@@ -649,6 +649,11 @@ public class TrollScript : MonoBehaviour
         abnormalcounter = 0;
     }
 
+    public bool GetIsAbnormal()
+    {
+        return isabnormal;
+    }
+
     public void DestroyFire()
     {
         Destroy(fireEffectIns);

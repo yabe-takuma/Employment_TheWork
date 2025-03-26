@@ -81,7 +81,7 @@ public class AttackSwordScript : MonoBehaviour
             }
         }
         //剣がボスに当たった時の処理
-        if (other.tag == "Boss" && this.gameObject.tag != "FireSword" && this.gameObject.tag != "WaterSword")
+        if (other.tag == "Boss" && this.gameObject.tag != "FireSword" && this.gameObject.tag != "WaterSword"&&!isAttack)
         {
             var trollScript = other.GetComponentInParent<TrollScript>();
             if (trollScript.GetState() != TrollScript.TrollState.Dead && isAttack == false)
@@ -95,7 +95,7 @@ public class AttackSwordScript : MonoBehaviour
                 Debug.Log("ボスに当たった");
             }
         }
-        else if (other.tag == "Boss" && this.gameObject.tag == "FireSword")
+        else if (other.tag == "Boss" && this.gameObject.tag == "FireSword" && !isAttack)
         {
 
             var trollScript = other.GetComponentInParent<TrollScript>();
@@ -108,13 +108,13 @@ public class AttackSwordScript : MonoBehaviour
             }
             else if (trollScript.GetState() != TrollScript.TrollState.Dead && playerscript.GetState() == PlayerScript.MyState.SkillAttack)
             {
-                other.GetComponentInParent<TrollScript>().TakeDamage(myStatus.GetAttackPower()*6, other.ClosestPointOnBounds(transform.position));
+                other.GetComponentInParent<TrollScript>().TakeDamage(myStatus.GetAttackPower(), other.ClosestPointOnBounds(transform.position));
                 other.GetComponentInParent<TrollScript>().AbnormalCondition();
                 var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 1.0f, other.bounds.center.z), Quaternion.identity);
                 swordobj.transform.SetParent(other.transform);
             }
         }
-        else if (other.tag == "Boss" && this.gameObject.tag == "WaterSword")
+        else if (other.tag == "Boss" && this.gameObject.tag == "WaterSword" && !isAttack)
         {
             var trollScript = other.GetComponentInParent<TrollScript>();
             if (trollScript.GetState() != TrollScript.TrollState.Dead && playerscript.GetState() != PlayerScript.MyState.SkillAttack)
@@ -124,9 +124,9 @@ public class AttackSwordScript : MonoBehaviour
                 swordobj.transform.SetParent(other.transform);
                 Debug.Log("水の剣がボスに当たった");
             }
-            else if (trollScript.GetState() != TrollScript.TrollState.Dead && playerscript.GetState() == PlayerScript.MyState.SkillAttack)
+            else if (trollScript.GetState() != TrollScript.TrollState.Dead && playerscript.GetState() == PlayerScript.MyState.SkillAttack && trollScript.GetIsAbnormal())
             {
-                other.GetComponentInParent<TrollScript>().TakeDamage(myStatus.GetAttackPower(), other.ClosestPointOnBounds(transform.position));
+                other.GetComponentInParent<TrollScript>().TakeDamage(myStatus.GetAttackPower()*6, other.ClosestPointOnBounds(transform.position));
                 other.GetComponentInParent<TrollScript>().DestroyFire();
                 var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 1.0f, other.bounds.center.z), Quaternion.identity);
                 swordobj.transform.SetParent(other.transform);
@@ -138,10 +138,11 @@ public class AttackSwordScript : MonoBehaviour
     void Update()
     {
         //プレイヤーが攻撃のアニメーションをしていないときはダメージを表示しないフラグ
-        if (playerscript!=null&&playerscript.GetState() != PlayerScript.MyState.Attack)
+        if (playerscript!=null&&playerscript.GetState() != PlayerScript.MyState.Attack && playerscript.GetState() != PlayerScript.MyState.SkillAttack)
         {
             isAttack = false;
         }
+       
     }
     //他のスクリプトに参照できるようにする関数です。
     public bool IsAttack()

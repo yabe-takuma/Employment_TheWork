@@ -6,8 +6,11 @@ public class ChestScript : MonoBehaviour
 {
     [SerializeField]
     private Animation chestanimation;  //宝箱のアニメーション
+    [SerializeField]
     private bool isOpen;  //宝箱を開けたかを検知する変数
     private bool isEndOpen;  //宝箱の処理に必要な変数
+    [SerializeField]
+    private bool isClick;  //宝箱を一回だけ処理させる変数
     [SerializeField]
     private List<GameObject> chestsOpenUI;  //宝箱を開けた時のUI
     private int chestindex;  //配列に入れる用の変数
@@ -15,21 +18,21 @@ public class ChestScript : MonoBehaviour
     private int chestcounter;  //宝箱を開けた回数
     [SerializeField]
     private ChangeEquipScript changeEquipScript;  //宝箱を開けた変数を参照するための変数
+    [SerializeField]
+    private bool isCollision;  //OnTrigger関数内でキーボードやボタンを使った操作を正常にするための変数
     // Start is called before the first frame update
     void Start()
     {
         chestcounter = 0;
         chestindex = 0;
+        isEndOpen = false;
+        isClick = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        //キーを押すと宝箱を開く
-        if (Input.GetKeyDown(KeyCode.Q)||Input.GetKeyDown("joystick button 1"))
-        {
-            isOpen = true;
-        }
+       
         //複数の宝箱それぞれに違うUIを一括で変える処理
         for (int i = 0; i < chestsOpenUI.Count; i++)
         {
@@ -37,8 +40,8 @@ public class ChestScript : MonoBehaviour
             {
                 chestsOpenUI[chestindex].SetActive(true);
                 Debug.Log("宝箱開け切った");
+                isOpen = false;
                 isEndOpen = false;
-               
             }
             if (chestsOpenUI[chestindex].activeSelf && Input.GetKeyDown(KeyCode.J)||
                 chestsOpenUI[chestindex].activeSelf && Input.GetKeyDown("joystick button 4"))
@@ -46,6 +49,7 @@ public class ChestScript : MonoBehaviour
                 chestsOpenUI[chestindex].SetActive(false);
                 chestcounter++;
                 changeEquipScript.SetChestCounter(chestcounter);
+                isClick = true;
                 if (chestindex < chestsOpenUI.Count-1)
                 {
                     chestindex++;
@@ -53,25 +57,34 @@ public class ChestScript : MonoBehaviour
                 }
             }
         }
+        if (isCollision && Input.GetKeyDown(KeyCode.Q) && !isClick || Input.GetKeyDown("joystick button 1")&&!isClick)
+        {
+            isOpen = true;
+        }
     }
 
     private void OnTriggerStay(Collider col)
     {
-        
-        if(col.tag=="Player")
+        isCollision = true;
+        if (col.tag=="Player")
         {
             Debug.Log("プレイヤーが来た");
-            if(isOpen)
+            //キーを押すと宝箱を開く
+            if (isOpen)
             {
-                chestanimation.Play();
-                isOpen = false;
                 isEndOpen = true;
+                chestanimation.Play();
                 Debug.Log("宝箱を開けた");
             }
             
         }
        
         
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+       isCollision = false; 
     }
 
     public void ChestOpenUI(List<GameObject> chestsopenUI)

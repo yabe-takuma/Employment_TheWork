@@ -89,7 +89,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackPower: 0
   shotPower: 0
-  axePower: 0
+  axePower: 8
   weaponType: 3
   weaponRange: 0
 --- !u!114 &5344388528904656864

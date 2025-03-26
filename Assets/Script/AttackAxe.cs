@@ -55,7 +55,7 @@ public class AttackAxe : MonoBehaviour
         }
        
         //ボスに当たった時ダメージを表示するUIやエフェクトなどを表示しています。
-        if (other.tag == "Boss")
+        if (other.tag == "Boss"&&!isAttack)
         {
             var trollScript = other.GetComponentInParent<TrollScript>();
             if (trollScript.GetState() != TrollScript.TrollState.Dead)
