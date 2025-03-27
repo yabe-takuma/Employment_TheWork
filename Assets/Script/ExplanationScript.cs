@@ -22,7 +22,7 @@ public class ExplanationScript : MonoBehaviour
     void Update()
     {
         //ゲーム説明画面の時ゲーム画面に行くための処理
-        if (Input.GetKeyDown(KeyCode.Space)&& material.GetFloat("_Threshold") >= 1.0f || Input.GetKeyDown("joystick button 1")&&material.GetFloat("_Threshold") >= 1.0f)
+        if (Input.GetKeyDown(KeyCode.Space)|| Input.GetKeyDown("joystick button 1"))
         {
             isInput = true;
         }
