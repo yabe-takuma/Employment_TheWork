@@ -48,6 +48,12 @@ public class ReceiveAttackEventScript : MonoBehaviour
     //攻撃制御
     [SerializeField]
     private bool isAttack;
+    private int Stoptimer;
+    [SerializeField]
+    private bool isAttackStop;
+    //波を生成する座標
+    [SerializeField]
+    private Transform wavePoint;
     // Start is called before the first frame update
     void Start()
     {
@@ -83,6 +89,21 @@ public class ReceiveAttackEventScript : MonoBehaviour
             Instantiate(explocionomen, new Vector3(trollScript.GetPosition().x, 0.3f, trollScript.GetPosition().z), explocionomen.transform.rotation);
             Debug.Log("踏みとどまる");
         }
+        else if(trollScript.GetShockwave()|| trollScript.GetInstallation())
+        {
+            isAttackStop = true;
+            animator.SetFloat("MovingSpeed", 0.0f);
+        }
+    }
+
+    public void StartWaveAttack()
+    {
+        isAttack = true;
+    }
+
+    public void EndWaveAttack()
+    {
+        isAttack = false;
     }
     //衝撃波や波や設置物などの発生処理
     public void CreateShockwave()
@@ -105,17 +126,22 @@ public class ReceiveAttackEventScript : MonoBehaviour
             isWave = false;
             iscontinuous = false;
         }
-        else if (trollScript.GetWave())
+        
+
+    }
+
+    public void WaveAttack()
+    {
+        if (trollScript.GetWave())
         {
-            Instantiate(wave, createShockwavePoint.position,wave.transform.rotation );
+            Instantiate(wave, wavePoint.position, wave.transform.rotation);
             isWave = true;
         }
         else if (trollScript.GetContinuous())
         {
-            Instantiate(wave, createShockwavePoint.position, wave.transform.rotation);
+            Instantiate(wave, wavePoint.position, wave.transform.rotation);
             isWave = true;
         }
-
     }
 
     // Update is called once per frame
@@ -129,9 +155,21 @@ public class ReceiveAttackEventScript : MonoBehaviour
         }
         if (EndStop >= 500)
         {
-            animator.SetFloat("MovingSpeed", 1.0f);
+            animator.SetFloat("MovingSpeed", 0.5f);
             EndStop = 0;
             IsEndStop = false;
+        }
+        //爆発攻撃時アニメーションを一時止める処理
+        if (isAttackStop == true)
+        {
+            Stoptimer++;
+
+        }
+        if (Stoptimer >= 200)
+        {
+            animator.SetFloat("MovingSpeed", 0.5f);
+            Stoptimer = 0;
+            isAttackStop = false;
         }
 
     }

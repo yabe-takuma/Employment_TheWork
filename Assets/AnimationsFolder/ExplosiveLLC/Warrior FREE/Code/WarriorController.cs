@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using RPGCharacterAnims;
+using System.Collections;
 using UnityEngine;
 
 namespace WarriorAnimsFREE
@@ -69,7 +70,7 @@ namespace WarriorAnimsFREE
 					|| warrior == Warrior.Crossbow
 					|| warrior == Warrior.Spearman) {
 					ikHands.canBeUsed = true;
-					ikHands.BlendIK(true, 0, 0.25f);
+					//ikHands.BlendIK(true, 0, 0.25f);
 				}
 			}
 
@@ -181,9 +182,9 @@ namespace WarriorAnimsFREE
 		/// </summary>
 		public void Jump()
 		{
-			if (warrior == Warrior.Crossbow) {
-				ikHands.SetIKOff();
-			}
+			//if (warrior == Warrior.Crossbow) {
+			//	ikHands.SetIKOff();
+			//}
 		}
 
 		/// <summary>
@@ -191,9 +192,9 @@ namespace WarriorAnimsFREE
 		/// </summary>
 		public void Land()
 		{
-			if (warrior == Warrior.Crossbow) {
-				ikHands.BlendIK(true, 0.5f, 0.25f);
-			}
+			//if (warrior == Warrior.Crossbow) {
+			//	ikHands.BlendIK(true, 0.5f, 0.25f);
+			//}
 		}
 
 		/// <summary>

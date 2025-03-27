@@ -79,6 +79,12 @@ public class AttackSwordScript : MonoBehaviour
                 swordobj.transform.SetParent(other.transform);
                 Debug.Log("大ダメージ");
             }
+            else if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead && playerscript.GetState() == PlayerScript.MyState.SkillAttack && !enemyScript.GetIsAbnormal())
+            {
+                other.GetComponentInParent<MoveEnemyScript>().TakeDamage(myStatus.GetAttackPower(), other.ClosestPointOnBounds(transform.position));
+                var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 1.0f, other.bounds.center.z), Quaternion.identity);
+                swordobj.transform.SetParent(other.transform);
+            }
         }
         //剣がボスに当たった時の処理
         if (other.tag == "Boss" && this.gameObject.tag != "FireSword" && this.gameObject.tag != "WaterSword"&&!isAttack)
@@ -126,8 +132,14 @@ public class AttackSwordScript : MonoBehaviour
             }
             else if (trollScript.GetState() != TrollScript.TrollState.Dead && playerscript.GetState() == PlayerScript.MyState.SkillAttack && trollScript.GetIsAbnormal())
             {
-                other.GetComponentInParent<TrollScript>().TakeDamage(myStatus.GetAttackPower()*6, other.ClosestPointOnBounds(transform.position));
+                other.GetComponentInParent<TrollScript>().TakeDamage(myStatus.GetAttackPower() * 6, other.ClosestPointOnBounds(transform.position));
                 other.GetComponentInParent<TrollScript>().DestroyFire();
+                var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 1.0f, other.bounds.center.z), Quaternion.identity);
+                swordobj.transform.SetParent(other.transform);
+            }
+            else if (trollScript.GetState() != TrollScript.TrollState.Dead && playerscript.GetState() == PlayerScript.MyState.SkillAttack && !trollScript.GetIsAbnormal())
+            {
+                other.GetComponentInParent<TrollScript>().TakeDamage(myStatus.GetAttackPower(), other.ClosestPointOnBounds(transform.position));
                 var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 1.0f, other.bounds.center.z), Quaternion.identity);
                 swordobj.transform.SetParent(other.transform);
             }

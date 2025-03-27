@@ -41,7 +41,7 @@ public class ParticleScript : MonoBehaviour
         if(!flag&&ps.particleCount>=ps.main.maxParticles)
         {
             var main = ps.main;
-            main.simulationSpeed = 1f;
+            main.simulationSpeed = 10f;
             flag = true;
             ps.GetComponent<Renderer>().enabled = true;
             var a = ps.velocityOverLifetime;

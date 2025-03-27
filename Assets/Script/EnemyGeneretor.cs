@@ -21,7 +21,7 @@ public class EnemyGeneretor : MonoBehaviour
     private TrollScript trollScript;         //ボスの行動
     //------------------------------//
 
-    private Vector3[] enemyposition=new Vector3[5];  //複数の敵の座標
+    private Vector3[] enemyposition=new Vector3[10];  //複数の敵の座標
 
     //宝箱の情報
     [SerializeField]
@@ -58,6 +58,11 @@ public class EnemyGeneretor : MonoBehaviour
         enemyposition[2] = new Vector3(1015.5f, 0.999f, 51.15654f);
         enemyposition[3] = new Vector3(910f, 0.999f, 121.15654f);
         enemyposition[4] = new Vector3(1026.4f, 0.999f, 110.9f);
+        enemyposition[5] = new Vector3(974.509f, 0.999f, 11.15654f);
+        enemyposition[6] = new Vector3(904.509f, 0.999f, 11.15654f);
+        enemyposition[7] = new Vector3(1015.5f, 0.999f, 11.15654f);
+        enemyposition[8] = new Vector3(980f, 0.999f, 139.15654f);
+        enemyposition[9] = new Vector3(1026.4f, 0.999f, 139.9f);
         enemycaunter = 0;
 
         //宝箱の配置と格納する変数の初期化
@@ -79,9 +84,22 @@ public class EnemyGeneretor : MonoBehaviour
         //プレハブ化したものにスクリプトやエフェクトなどの情報を渡す処理
         for (int i = 0; i < 5; i++)
         {
+            if (chestscaunter == i)
+            {
+                GameObject chests = Instantiate(chest, chestsposition[i], chestsrotation[i]);
+                chestScript = chests.GetComponent<ChestScript>();
+                chestScript.ChestOpenUI(chestOpensUI);
+                chestScript.GetChangeEquipScript(changeEquipScript);
+                chestscaunter += 1;
+            }
+
+        }
+
+        for(int i=0;i<10;i++)
+        {
             if (enemycaunter == i)
             {
-                GameObject enemys=Instantiate(enemy, enemyposition[i], Quaternion.identity);
+                GameObject enemys = Instantiate(enemy, enemyposition[i], Quaternion.identity);
                 attackScript = enemys.GetComponentInChildren<AttackScript>();
                 attackScript.SetPlayer(playerScript);
                 moveEnemyScript = enemys.GetComponent<MoveEnemyScript>();
@@ -93,16 +111,6 @@ public class EnemyGeneretor : MonoBehaviour
                 playerScript.SetEnemyScript(moveEnemyScript);
                 enemycaunter += 1;
             }
-
-            if (chestscaunter == i)
-            {
-                GameObject chests = Instantiate(chest, chestsposition[i], chestsrotation[i]);
-                chestScript = chests.GetComponent<ChestScript>();
-                chestScript.ChestOpenUI(chestOpensUI);
-                chestScript.GetChangeEquipScript(changeEquipScript);
-                chestscaunter += 1;
-            }
-
         }
         
     }

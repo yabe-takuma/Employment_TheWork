@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Rendering.UI;
 using UnityEngine.AI;
 using static MoveEnemyScript;
+using UnityEngine.Playables;
 
 public class TrollScript : MonoBehaviour
 {
@@ -101,6 +102,10 @@ public class TrollScript : MonoBehaviour
     private GameObject fireeffect;  //炎のエフェクトが格納された変数
     private GameObject fireEffectIns;
 
+    //予備動作
+    [SerializeField]
+    private PlayableDirector timeline;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -110,6 +115,7 @@ public class TrollScript : MonoBehaviour
         setposition1 = GetComponent<SetPosition1>();
         SetRandomDestination();
         //SetState(TrollState.idle);
+        timeline.Stop();
     }
 
     // Update is called once per frame
@@ -311,7 +317,8 @@ public class TrollScript : MonoBehaviour
         else if(trollState==TrollState.wave)
         {
             velocity = new Vector3(0f, velocity.y, 0f);
-            animator.SetTrigger("ShockwaveAttack");
+            //animator.SetTrigger("ContinuousAttack");
+            timeline.Play();
             animator.SetBool("Chase", false);
             Isshockwave = false;
             Isinstallation = false;
@@ -319,7 +326,7 @@ public class TrollScript : MonoBehaviour
             Iswave = true;
             Iscontinuous = false;
            
-            Debug.Log("爆発攻撃");
+            Debug.Log("波攻撃");
         }
 
         else if (trollState == TrollState.continuous && trollState != TrollState.explocion)
@@ -327,7 +334,8 @@ public class TrollScript : MonoBehaviour
             attackTargetTransform = playerTransform;
             attackTargetPos = attackTargetTransform.position;
             velocity = new Vector3(0f, velocity.y, 0f);
-            animator.SetTrigger("ContinuousAttack");
+            //animator.SetTrigger("ContinuousAttack");
+            timeline.Play();
             animator.SetBool("Chase", false);
             Isshockwave = false;
             Isinstallation = false;
@@ -335,7 +343,7 @@ public class TrollScript : MonoBehaviour
             Iswave = false;
             Iscontinuous = true;
             
-            Debug.Log("爆発攻撃");
+            Debug.Log("波攻撃");
         }
 
         
