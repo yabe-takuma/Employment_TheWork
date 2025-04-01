@@ -58,10 +58,11 @@ public class CameraScript : MonoBehaviour
     private LayerMask obstacleLayer;
 
     private PlayerScript playerScript;
-   
+   //ロックオンの時追従するもの
     [SerializeField]
     private GameObject rockonposition;
-
+    [SerializeField]
+    private GameObject deadposition;
     // Start is called before the first frame update
     void Start()
     {
@@ -73,7 +74,7 @@ public class CameraScript : MonoBehaviour
     void LateUpdate()
     {
         //カメラの回転
-        RotAngle -= speed.x * Time.deltaTime * 50.0f;
+        RotAngle -= speed.x * Time.deltaTime * 100.0f;
         HeightAngle += speed.z * Time.deltaTime * 50.0f;
         //カメラの距離や回転などの制限
         HeightAngle = Mathf.Clamp(HeightAngle, 3.7f, 60.0f);
@@ -168,9 +169,9 @@ public class CameraScript : MonoBehaviour
         //ロックオンの時アイコンを表示する関数
         TargetIcon();
         //ボスが倒された時特定の座標に行く処理
-        if (trollscript.GetState() == TrollScript.TrollState.Dead)
+        if (RockonTarget != null&&trollscript.GetState() == TrollScript.TrollState.Dead)
         {
-            transform.position = new Vector3(transform.position.x, 3.0f, transform.position.z - 5.0f);
+            transform.position = new Vector3(deadposition.transform.position.x, deadposition.transform.position.y/*+3.0f*/, deadposition.transform.position.z );
         }
        
     }

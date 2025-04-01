@@ -71,15 +71,16 @@ public class ParticleScript : MonoBehaviour
                     playerScript.GetAvoid()==false&&trollScript.GetState()!=TrollScript.TrollState.Dead)
                 {
                     playerScript.Damage(1);
+                    for (int i = 0; i < numEnter; i++)
+                    {
+                        ParticleSystem.Particle p = enter[i];
+                        p.startColor = new Color32(255, 0, 0, 255);
+                        inside[i] = p;
+                    }
                 }
             }
 
-            for(int i=0;i<numEnter;i++)
-            {
-                ParticleSystem.Particle p = enter[i];
-                p.startColor = new Color32(255, 0,0, 255);
-                inside[i] = p;
-            }
+           
 
             ps.SetTriggerParticles(ParticleSystemTriggerEventType.Enter, enter);
             ps.SetTriggerParticles(ParticleSystemTriggerEventType.Inside, inside);

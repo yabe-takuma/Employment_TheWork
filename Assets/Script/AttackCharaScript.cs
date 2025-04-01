@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Playables;
 using static TrollScript;
 
 public class AttackCharaScript : MonoBehaviour
@@ -29,6 +30,8 @@ public class AttackCharaScript : MonoBehaviour
     private bool isAttack;
     [SerializeField]
     private ReceiveAttackEventScript receiveAttackEventScript;
+    [SerializeField]
+    private int cooltime;
 
     // Start is called before the first frame update
     void Start()
@@ -36,6 +39,7 @@ public class AttackCharaScript : MonoBehaviour
         trollScript = GetComponentInParent<TrollScript>();
         trollAnimator = trollScript.GetComponent<Animator>();
         receiveAttackEventScript = GetComponentInParent<ReceiveAttackEventScript>();
+        caunter = 0;
     }
 
     private void OnTriggerStay(Collider other)
@@ -49,67 +53,72 @@ public class AttackCharaScript : MonoBehaviour
             && !trollAnimator.GetCurrentAnimatorStateInfo(0).IsName("ShockwaveAttack")
             && trollScript.GetState() != TrollScript.TrollState.installation
             && trollScript.GetState() != TrollScript.TrollState.wave
-            && trollScript.GetState() != TrollScript.TrollState.explocion
+            && !trollAnimator.GetCurrentAnimatorStateInfo(0).IsName("WaveAttack")
             && trollScript.GetState() != TrollScript.TrollState.continuous
-            && trollScript.GetState() != TrollScript.TrollState.charge
-            && !trollAnimator.GetCurrentAnimatorStateInfo(0).IsName("Charge")
-            && trollScript.GetState()!=TrollScript.TrollState.Dead)
+            && trollScript.GetState() != TrollScript.TrollState.explocion
+            && trollScript.GetState() !=TrollScript.TrollState.Dead)
             
         {
-            caunter = Random.value;
+            //caunter = Random.value;
+            cooltime++;
+            //distance = Vector3.Distance(trollScript.transform.position, chaseScript.GetTarget().transform.position);
+            //ボスの攻撃を順番に振り分ける
 
-            distance = Vector3.Distance(trollScript.transform.position, chaseScript.GetTarget().transform.position);
-            //ボスと敵の距離で攻撃を振り分ける
-            if (distance > 9.0f && distance < 10.0f && isAttack==false&& trollstatus.GetHp()>=trollstatus.GetMaxHp()/2)
-            {
-                trollScript.SetState(TrollScript.TrollState.attack, other.transform);
-                trollScript.SetState(TrollScript.TrollState.chase, other.transform);
-                Debug.Log("攻撃1");
-                isAttack = true;
-            }
-            else if (distance > 0.0f && distance < 6.0f && isAttack == false && trollstatus.GetHp() >= trollstatus.GetMaxHp() / 2)
+            if (caunter == 0&&cooltime>=100)
             {
                 trollScript.SetState(TrollScript.TrollState.shockwaveAttack, other.transform);
                 trollScript.SetState(TrollScript.TrollState.chase, other.transform);
                 Debug.Log("攻撃2");
                 isAttack = true;
+                caunter = 1;
+                cooltime = 0;
             }
-            else if (distance > 6.0f && distance < 9.0f && isAttack == false && trollstatus.GetHp() >= trollstatus.GetMaxHp() / 2)
+            else if (caunter == 1 && cooltime >= 100&&trollstatus.GetHp() >= trollstatus.GetMaxHp() / 2)
             {
                 trollScript.SetState(TrollScript.TrollState.wave, other.transform);
                 trollScript.SetState(TrollScript.TrollState.chase, other.transform);
-                Debug.Log("攻撃2");
+                Debug.Log("足踏み攻撃");
                 isAttack = true;
+                caunter = 0;
+                cooltime = 0;
             }
-            else if(distance>3.0f&&distance<7.0f && isAttack == false && trollAnimator.GetBool("Explocion") == false && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2)
+            else if (caunter == 1 && cooltime >= 10 && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2) 
             {
                 trollScript.SetState(TrollScript.TrollState.installation, other.transform);
                 trollScript.SetState(TrollScript.TrollState.chase, other.transform);
                 Debug.Log("攻撃3");
                 isAttack = true;
+                caunter = 2;
+                cooltime = 0;
             }
 
-            else if (distance > 7.0f && distance < 10.0f && isAttack == false && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2)
+            else if (caunter == 2 && cooltime >= 10 && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2) 
             {
                 trollScript.SetState(TrollScript.TrollState.explocion, other.transform);
                 trollScript.SetState(TrollScript.TrollState.chase, other.transform);
                 isAttack = true;
+                caunter = 3;
+                cooltime = 0;
             }
 
-            else if (distance > 10.0f && distance < 15.0f && isAttack == false && trollAnimator.GetBool("Explocion") == false && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2)
+            else if (caunter==3&& cooltime >= 10 && trollAnimator.GetBool("Explocion") == false && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2)
             {
                 trollScript.SetState(TrollScript.TrollState.continuous, other.transform);
                 trollScript.SetState(TrollScript.TrollState.chase, other.transform);
                 Debug.Log("攻撃3");
                 isAttack = true;
+                caunter = 0;
+                cooltime = 0;
             }
             //アタックのアニメーションが終わったらフラグをfalseにすることで
             //変な挙動になっても問題ないようにしています。
-            if(receiveAttackEventScript.GetIsAttack()==false)
+            if (receiveAttackEventScript.GetIsAttack()==false)
             {
                 isAttack = false;
             }
+           
         }
+        
        
     }
 
@@ -118,4 +127,5 @@ public class AttackCharaScript : MonoBehaviour
     {
         hp = trollstatus.GetHp();
     }
+
 }

@@ -73,6 +73,11 @@ public class TrollStatus : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+       if(Input.GetKeyDown(KeyCode.Delete))
+       {
+            hp = hp - 800;
+            UpdateHPValue();
+       }
        
     }
 }

@@ -54,7 +54,7 @@ public class WaveParticleScript : MonoBehaviour
             var a = ps.velocityOverLifetime;
             a.radial = 2f;
         }
-        if (timer<=100)
+        if (timer<=100&&trollScript!=null)
         {
             timer++;
             var targetRot = Quaternion.Lerp(transform.rotation, trollScript.GetRotation(), Time.deltaTime * 2f);

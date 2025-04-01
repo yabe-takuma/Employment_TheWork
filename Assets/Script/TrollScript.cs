@@ -92,7 +92,7 @@ public class TrollScript : MonoBehaviour
     [SerializeField]
     private int chargetimer;
     [SerializeField]
-    private bool Isshockwave, Isinstallation,Isexplocion,Iswave, Iscontinuous;
+    private bool Isshockwave, Isinstallation,Isexplocion,/*Iswave,*/ Iscontinuous;
 
     [SerializeField]
     private bool isabnormal;  //状態異常になったかのトリガー
@@ -104,7 +104,15 @@ public class TrollScript : MonoBehaviour
 
     //予備動作
     [SerializeField]
-    private PlayableDirector timeline;
+    private PlayableDirector[] timeline;
+
+    [SerializeField]
+    private ReceiveAttackEventScript receiveAttackEventScript;
+
+    private AnimatorStateInfo stateInfo;
+
+    private int loopcount;
+    private const int maxloop = 3;
 
     // Start is called before the first frame update
     void Start()
@@ -115,7 +123,10 @@ public class TrollScript : MonoBehaviour
         setposition1 = GetComponent<SetPosition1>();
         SetRandomDestination();
         //SetState(TrollState.idle);
-        timeline.Stop();
+        timeline[0].Stop();
+        timeline[1].Stop();
+        loopcount = 0;
+       
     }
 
     // Update is called once per frame
@@ -144,19 +155,8 @@ public class TrollScript : MonoBehaviour
         {
             ShockwaveAttack();
         }
-        else if(trollState == TrollState.charge)
-        {
-            ChargeAttack();
-            chargetimer++;
-            Debug.Log("突進中");
-        }
-        else if(trollState == TrollState.Jump)
-        {
-            Debug.Log("ジャンプ中");
-        }
         else if(trollState == TrollState.installation)
         {
-
             Debug.Log("設置物配置");
         }
         else if(trollState==TrollState.explocion)
@@ -166,6 +166,7 @@ public class TrollScript : MonoBehaviour
         }
         else if(trollState==TrollState.wave)
         {
+            WaveAttack();
             Debug.Log("波発生");
         }
         else if(trollState==TrollState.continuous)
@@ -180,7 +181,6 @@ public class TrollScript : MonoBehaviour
         if (isabnormal)
         {
             abnormalcounter++;
-            //trollStatus.SetHp(trollStatus.GetHp() - 0.02f);
             if (!fireEffectIns)
             {
                 fireEffectIns = Instantiate<GameObject>(fireeffect);
@@ -197,7 +197,16 @@ public class TrollScript : MonoBehaviour
         //移動処理
         velocity.y += Physics.gravity.y * Time.deltaTime;
         characterController.Move(velocity * Time.deltaTime);
-      
+
+
+        //if (timeline[0].time>=1&&timeline[0].time <= timeline[0].duration)
+        //{
+        //    Iswave = true;
+        //}
+        //else
+        //{
+        //    Iswave = false;
+        //}
     }
 
     //目的地を設定する
@@ -228,12 +237,12 @@ public class TrollScript : MonoBehaviour
             velocity = new Vector3(0f, velocity.y, 0f);
             animator.SetFloat("WalkSpeed", 0f);
             animator.SetBool("Chase", false);
+            animator.ResetTrigger("WaveAttack");
             SetRandomDestination();
             chargetimer = 0;
             Isshockwave = false;
             Isinstallation = false;
             Isexplocion = false;
-            Iswave = false;
             Iscontinuous = false;
             Debug.Log("アイドル");
         }
@@ -261,7 +270,6 @@ public class TrollScript : MonoBehaviour
             Isshockwave = true;
             Isinstallation = false;
             Isexplocion = false;
-            Iswave = false;
             Iscontinuous = false;
             //navMeshAgent.isStopped = true;
             Debug.Log("衝撃波攻撃");
@@ -275,6 +283,7 @@ public class TrollScript : MonoBehaviour
         else if(trollState == TrollState.chase)
         {
             animator.SetBool("Chase", true);
+            //timeline[0].Stop();
             attackTargetTransform = playerTransform;
            
             Debug.Log("チェイス");
@@ -283,17 +292,16 @@ public class TrollScript : MonoBehaviour
         {
             animator.SetTrigger("Jump");
         }
-        else if(trollState == TrollState.installation&& trollState != TrollState.explocion)
+        else if(trollState == TrollState.installation)
         {
             attackTargetTransform = playerTransform;
             attackTargetPos = attackTargetTransform.position;
             velocity = new Vector3(0f, velocity.y, 0f);
-            animator.SetTrigger("ShockwaveAttack");
+            timeline[1].Play();
             animator.SetBool("Chase", false);
             Isshockwave = false;
             Isinstallation = true;
             Isexplocion = false;
-            Iswave = false;
             Iscontinuous = false;
            
             Debug.Log("設置物配置攻撃");
@@ -303,13 +311,13 @@ public class TrollScript : MonoBehaviour
            
             animator.ResetTrigger("ShockwaveAttack");
             animator.ResetTrigger("ContinuousAttack");
+            //animator.SetBool("Wave", false);
             velocity = new Vector3(0f, velocity.y, 0f);
             animator.SetTrigger("Explocion");
             animator.SetBool("Chase", false);
             Isshockwave = false;
             Isinstallation = false;
             Isexplocion = true;
-            Iswave = false;
             Iscontinuous = false;
             
             Debug.Log("爆発攻撃");
@@ -318,12 +326,13 @@ public class TrollScript : MonoBehaviour
         {
             velocity = new Vector3(0f, velocity.y, 0f);
             //animator.SetTrigger("ContinuousAttack");
-            timeline.Play();
+            //timeline[0].Play();
+            //animator.SetBool("Wave",true);
             animator.SetBool("Chase", false);
+            //animator.ResetTrigger("ShockwaveAttack");
             Isshockwave = false;
             Isinstallation = false;
             Isexplocion = false;
-            Iswave = true;
             Iscontinuous = false;
            
             Debug.Log("波攻撃");
@@ -335,12 +344,11 @@ public class TrollScript : MonoBehaviour
             attackTargetPos = attackTargetTransform.position;
             velocity = new Vector3(0f, velocity.y, 0f);
             //animator.SetTrigger("ContinuousAttack");
-            timeline.Play();
+            timeline[0].Play();
             animator.SetBool("Chase", false);
             Isshockwave = false;
             Isinstallation = false;
             Isexplocion = false;
-            Iswave = false;
             Iscontinuous = true;
             
             Debug.Log("波攻撃");
@@ -460,7 +468,7 @@ public class TrollScript : MonoBehaviour
         var targetRot = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(attackTargetPos - transform.position), Time.deltaTime * 2f);
         transform.rotation = Quaternion.Euler(transform.eulerAngles.x, targetRot.eulerAngles.y, transform.eulerAngles.z);
 
-        //Attackアニメーションが終了したらIdle状態にする
+        ////Attackアニメーションが終了したらIdle状態にする
         if (animator.GetCurrentAnimatorStateInfo(0).IsName("ShockwaveAttack")
             && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
         {
@@ -469,24 +477,23 @@ public class TrollScript : MonoBehaviour
         }
     }
 
-    private void ChargeAttack()
+    private void WaveAttack()
     {
        
         velocity = Vector3.zero;
-        if (chargetimer > 0 && chargetimer <= 300)
-        {
-            //追いかける時はキャラクターの向きに回転して進ませる
-            var direction = (destination - transform.position).normalized;
-            var targetRot = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(destination - transform.position), Time.deltaTime * rotateSpeed);
-            transform.rotation = Quaternion.Euler(transform.eulerAngles.x, targetRot.eulerAngles.y, transform.eulerAngles.z);
-            velocity = transform.forward * chaseSpeed;
-            
-            Debug.Log("突進攻撃");
-        }
-        else
+
+        //追いかける時はキャラクターの向きに回転して進ませる
+        var targetRot = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(attackTargetPos - transform.position), Time.deltaTime * 2f);
+        transform.rotation = Quaternion.Euler(transform.eulerAngles.x, targetRot.eulerAngles.y, transform.eulerAngles.z);
+
+        Debug.Log("突進攻撃");
+
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName("WaveAttack")
+            && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
         {
             SetState(TrollState.idle);
         }
+        
     }
 
     private void JumpAttack()
@@ -586,11 +593,6 @@ public class TrollScript : MonoBehaviour
     public bool GetExplocion()
     {
         return Isexplocion;
-    }
-
-    public bool GetWave()
-    {
-        return Iswave;
     }
 
     public bool GetContinuous()

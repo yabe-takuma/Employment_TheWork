@@ -44,6 +44,9 @@ public class ReceiveAttackEventScript : MonoBehaviour
     private Quaternion rotation;
     private bool isWave;
     private bool iscontinuous;
+    [SerializeField]
+    private bool istimelineAnimation;
+    private bool isWaveAttack;
 
     //攻撃制御
     [SerializeField]
@@ -60,6 +63,7 @@ public class ReceiveAttackEventScript : MonoBehaviour
         mace = GetComponentInChildren<MaceScript>();
         rotation = new Quaternion(wave.transform.rotation.x, wave.transform.rotation.y + trollScript.GetRotation().y, wave.transform.rotation.z, wave.transform.rotation.w);
         isAttack = true;
+        isWaveAttack = false;
     }
 
     //攻撃開始時
@@ -98,12 +102,12 @@ public class ReceiveAttackEventScript : MonoBehaviour
 
     public void StartWaveAttack()
     {
-        isAttack = true;
+        isWaveAttack = true;
     }
 
     public void EndWaveAttack()
     {
-        isAttack = false;
+        isWaveAttack = false;
     }
     //衝撃波や波や設置物などの発生処理
     public void CreateShockwave()
@@ -132,16 +136,9 @@ public class ReceiveAttackEventScript : MonoBehaviour
 
     public void WaveAttack()
     {
-        if (trollScript.GetWave())
-        {
-            Instantiate(wave, wavePoint.position, wave.transform.rotation);
-            isWave = true;
-        }
-        else if (trollScript.GetContinuous())
-        {
-            Instantiate(wave, wavePoint.position, wave.transform.rotation);
-            isWave = true;
-        }
+        
+        Instantiate(wave, wavePoint.position, wave.transform.rotation);
+            
     }
 
     // Update is called once per frame
@@ -182,5 +179,10 @@ public class ReceiveAttackEventScript : MonoBehaviour
     public bool GetIsAttack()
     {
         return isAttack;
+    }
+
+    public bool GetIsWaveAttack()
+    {
+        return isWaveAttack;
     }
 }

@@ -49,6 +49,9 @@ public class EnemyGeneretor : MonoBehaviour
     [SerializeField]
     private GameObject fireEffect;  //炎のエフェクトを敵に渡すため
 
+    [SerializeField]
+    private GameObject collisionUI;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -89,6 +92,7 @@ public class EnemyGeneretor : MonoBehaviour
                 GameObject chests = Instantiate(chest, chestsposition[i], chestsrotation[i]);
                 chestScript = chests.GetComponent<ChestScript>();
                 chestScript.ChestOpenUI(chestOpensUI);
+                chestScript.ChestCollisionUI(collisionUI);
                 chestScript.GetChangeEquipScript(changeEquipScript);
                 chestscaunter += 1;
             }

@@ -20,6 +20,8 @@ public class ChestScript : MonoBehaviour
     private ChangeEquipScript changeEquipScript;  //宝箱を開けた変数を参照するための変数
     [SerializeField]
     private bool isCollision;  //OnTrigger関数内でキーボードやボタンを使った操作を正常にするための変数
+    [SerializeField]
+    private GameObject collisionUI;
     // Start is called before the first frame update
     void Start()
     {
@@ -27,6 +29,7 @@ public class ChestScript : MonoBehaviour
         chestindex = 0;
         isEndOpen = false;
         isClick = false;
+        collisionUI.SetActive(false);
     }
 
     // Update is called once per frame
@@ -49,11 +52,11 @@ public class ChestScript : MonoBehaviour
                 chestsOpenUI[chestindex].SetActive(false);
                 chestcounter++;
                 changeEquipScript.SetChestCounter(chestcounter);
-                isClick = true;
                 if (chestindex < chestsOpenUI.Count-1)
                 {
                     chestindex++;
                     chestsOpenUI[i] = chestsOpenUI[chestindex];
+                    isClick = true;
                 }
             }
         }
@@ -68,6 +71,7 @@ public class ChestScript : MonoBehaviour
         isCollision = true;
         if (col.tag=="Player")
         {
+            collisionUI.SetActive(true);
             Debug.Log("プレイヤーが来た");
             //キーを押すと宝箱を開く
             if (isOpen)
@@ -84,12 +88,18 @@ public class ChestScript : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-       isCollision = false; 
+       isCollision = false;
+        collisionUI.SetActive(false);
     }
 
     public void ChestOpenUI(List<GameObject> chestsopenUI)
     {
         chestsOpenUI = chestsopenUI;
+    }
+
+    public void ChestCollisionUI(GameObject chestscollisionUI)
+    {
+        collisionUI = chestscollisionUI;
     }
 
     public int GetChestCounter()
