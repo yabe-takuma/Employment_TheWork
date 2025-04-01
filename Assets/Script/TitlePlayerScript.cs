@@ -21,14 +21,14 @@ public class TitlePlayerScript : MonoBehaviour
     void Update()
     {
 
-        if(Input.GetKeyDown(KeyCode.G))
-        {
-            isInput = true;
-        }
-        //プレイヤーが指定した座標まで自動で向かう処理
+        //if(Input.GetKeyDown(KeyCode.G))
+        //{
+        //    isInput = true;
+        //}
+        //プレイヤーが指定した座標まで自動で向かう処理sa
         if (characterController.isGrounded)
         {
-            if (transform.position.z < 192 && isInput)
+            if (transform.position.z < 192 /*&& isInput*/)
             {
                 velocity.z = 1.0f;
                 animator.SetFloat("Speed", velocity.magnitude);
