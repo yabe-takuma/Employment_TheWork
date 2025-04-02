@@ -52,10 +52,12 @@ public class AttackCharaScript : MonoBehaviour
             && trollScript.GetState() != TrollScript.TrollState.shockwaveAttack
             && !trollAnimator.GetCurrentAnimatorStateInfo(0).IsName("ShockwaveAttack")
             && trollScript.GetState() != TrollScript.TrollState.installation
+            && !trollScript.GetInstallation()
             && trollScript.GetState() != TrollScript.TrollState.wave
             && !trollAnimator.GetCurrentAnimatorStateInfo(0).IsName("WaveAttack")
             && trollScript.GetState() != TrollScript.TrollState.continuous
             && trollScript.GetState() != TrollScript.TrollState.explocion
+            && !trollScript.GetExplocion()
             && trollScript.GetState() !=TrollScript.TrollState.Dead)
             
         {
@@ -82,26 +84,26 @@ public class AttackCharaScript : MonoBehaviour
                 caunter = 0;
                 cooltime = 0;
             }
-            else if (caunter == 1 && cooltime >= 10 && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2) 
+            else if (caunter == 1 && cooltime >= 100 /*&& trollAnimator.GetBool("Explocion") == false*/ && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2) 
             {
                 trollScript.SetState(TrollScript.TrollState.installation, other.transform);
                 trollScript.SetState(TrollScript.TrollState.chase, other.transform);
                 Debug.Log("攻撃3");
                 isAttack = true;
-                caunter = 2;
-                cooltime = 0;
-            }
-
-            else if (caunter == 2 && cooltime >= 10 && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2) 
-            {
-                trollScript.SetState(TrollScript.TrollState.explocion, other.transform);
-                trollScript.SetState(TrollScript.TrollState.chase, other.transform);
-                isAttack = true;
                 caunter = 3;
                 cooltime = 0;
             }
 
-            else if (caunter==3&& cooltime >= 10 && trollAnimator.GetBool("Explocion") == false && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2)
+            else if (caunter == 2 && cooltime >= 100 && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2) 
+            {
+                trollScript.SetState(TrollScript.TrollState.explocion, other.transform);
+                trollScript.SetState(TrollScript.TrollState.chase, other.transform);
+                isAttack = true;
+                caunter = 0;
+                cooltime = 0;
+            }
+
+            else if (caunter==3&& cooltime >= 100 /*&& trollAnimator.GetBool("Explocion") == false*/ && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2)
             {
                 trollScript.SetState(TrollScript.TrollState.continuous, other.transform);
                 trollScript.SetState(TrollScript.TrollState.chase, other.transform);

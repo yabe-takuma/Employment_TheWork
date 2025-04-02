@@ -171,7 +171,8 @@ public class CameraScript : MonoBehaviour
         //ボスが倒された時特定の座標に行く処理
         if (RockonTarget != null&&trollscript.GetState() == TrollScript.TrollState.Dead)
         {
-            transform.position = new Vector3(deadposition.transform.position.x, deadposition.transform.position.y/*+3.0f*/, deadposition.transform.position.z );
+            transform.position = new Vector3(rockonposition.transform.position.x, rockonposition.transform.position.y + 3.0f, rockonposition.transform.position.z );
+            transform.rotation = rockonposition.transform.rotation;
         }
        
     }

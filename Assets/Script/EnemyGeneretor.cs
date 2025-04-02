@@ -73,19 +73,19 @@ public class EnemyGeneretor : MonoBehaviour
         chestsposition[1] = new Vector3(909.509f, 0, 51.15654f);
         chestsposition[2] = new Vector3(1045.5f, 0, 11.15654f);
         chestsposition[3] = new Vector3(904f, 0, 154.15654f);
-        chestsposition[4] = new Vector3(1050.4f, 0, 155.9f);
+        //chestsposition[4] = new Vector3(1050.4f, 0, 155.9f);
 
 
         chestsrotation[0] = Quaternion.Euler(0, 180f, 0);
         chestsrotation[3] = Quaternion.Euler(0, -180f, 0);
-        chestsrotation[4] = Quaternion.Euler(0, -180f, 0);
+        //chestsrotation[4] = Quaternion.Euler(0, -180f, 0);
 
     }
     // Update is called once per frame
     void Update()
     {
         //プレハブ化したものにスクリプトやエフェクトなどの情報を渡す処理
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 4; i++)
         {
             if (chestscaunter == i)
             {

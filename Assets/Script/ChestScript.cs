@@ -22,6 +22,8 @@ public class ChestScript : MonoBehaviour
     private bool isCollision;  //OnTrigger関数内でキーボードやボタンを使った操作を正常にするための変数
     [SerializeField]
     private GameObject collisionUI;
+    [SerializeField]
+    private int opentimer;
     // Start is called before the first frame update
     void Start()
     {
@@ -39,7 +41,7 @@ public class ChestScript : MonoBehaviour
         //複数の宝箱それぞれに違うUIを一括で変える処理
         for (int i = 0; i < chestsOpenUI.Count; i++)
         {
-            if (isEndOpen && !chestanimation.isPlaying)
+            if (isEndOpen && opentimer >= 187)
             {
                 chestsOpenUI[chestindex].SetActive(true);
                 Debug.Log("宝箱開け切った");
@@ -50,8 +52,10 @@ public class ChestScript : MonoBehaviour
                 chestsOpenUI[chestindex].activeSelf && Input.GetKeyDown("joystick button 4"))
             {
                 chestsOpenUI[chestindex].SetActive(false);
+                collisionUI.SetActive(false);
                 chestcounter++;
                 changeEquipScript.SetChestCounter(chestcounter);
+               
                 if (chestindex < chestsOpenUI.Count-1)
                 {
                     chestindex++;
@@ -60,35 +64,48 @@ public class ChestScript : MonoBehaviour
                 }
             }
         }
-        if (isCollision && Input.GetKeyDown(KeyCode.Q) && !isClick || Input.GetKeyDown("joystick button 1")&&!isClick)
+        if (isCollision && Input.GetKeyDown(KeyCode.Q) && !isClick || isCollision && Input.GetKeyDown("joystick button 1")&&!isClick)
         {
             isOpen = true;
+            
+        }
+        //if(chestanimation.isPlaying)
+        //{
+        //    opentimer++;
+        //}
+        if(isOpen)
+        {
+            opentimer++;
         }
     }
 
     private void OnTriggerStay(Collider col)
     {
-        isCollision = true;
+       
         if (col.tag=="Player")
         {
-            collisionUI.SetActive(true);
+            isCollision = true;
+            if (!isClick)
+            {
+                collisionUI.SetActive(true);
+            }
             Debug.Log("プレイヤーが来た");
             //キーを押すと宝箱を開く
             if (isOpen)
             {
+                //opentimer++;
                 isEndOpen = true;
                 chestanimation.Play();
                 Debug.Log("宝箱を開けた");
             }
-            
         }
        
-        
+
     }
 
     private void OnTriggerExit(Collider other)
     {
-       isCollision = false;
+        isCollision = false;
         collisionUI.SetActive(false);
     }
 

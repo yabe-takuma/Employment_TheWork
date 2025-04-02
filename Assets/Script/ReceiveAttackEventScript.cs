@@ -120,7 +120,8 @@ public class ReceiveAttackEventScript : MonoBehaviour
         }
         else if (trollScript.GetInstallation())
         {
-            Instantiate(installationsphere, createShockwavePoint.position, installationsphere.transform.rotation);
+            // Instantiate(installationsphere, createShockwavePoint.position, installationsphere.transform.rotation);
+            Instantiate(shockwavePrefab, createShockwavePoint.position, shockwavePrefab.transform.rotation);
             isWave = false;
             iscontinuous = false;
         }
@@ -184,5 +185,10 @@ public class ReceiveAttackEventScript : MonoBehaviour
     public bool GetIsWaveAttack()
     {
         return isWaveAttack;
+    }
+
+    public bool GetEndStop()
+    {
+        return IsEndStop;
     }
 }

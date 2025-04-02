@@ -199,14 +199,14 @@ public class TrollScript : MonoBehaviour
         characterController.Move(velocity * Time.deltaTime);
 
 
-        //if (timeline[0].time>=1&&timeline[0].time <= timeline[0].duration)
-        //{
-        //    Iswave = true;
-        //}
-        //else
-        //{
-        //    Iswave = false;
-        //}
+        if (timeline[1].time >= timeline[1].duration)
+        {
+            Isinstallation = false;
+        }
+        if(!receiveAttackEventScript.GetEndStop())
+        {
+            Isexplocion = false;
+        }
     }
 
     //目的地を設定する
@@ -327,7 +327,7 @@ public class TrollScript : MonoBehaviour
             velocity = new Vector3(0f, velocity.y, 0f);
             //animator.SetTrigger("ContinuousAttack");
             //timeline[0].Play();
-            //animator.SetBool("Wave",true);
+            animator.SetBool("Wave",true);
             animator.SetBool("Chase", false);
             //animator.ResetTrigger("ShockwaveAttack");
             Isshockwave = false;
@@ -344,7 +344,8 @@ public class TrollScript : MonoBehaviour
             attackTargetPos = attackTargetTransform.position;
             velocity = new Vector3(0f, velocity.y, 0f);
             //animator.SetTrigger("ContinuousAttack");
-            timeline[0].Play();
+            animator.SetBool("Wave", true);
+            //timeline[0].Play();
             animator.SetBool("Chase", false);
             Isshockwave = false;
             Isinstallation = false;

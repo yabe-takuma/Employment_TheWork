@@ -29,6 +29,8 @@ public class GameExplanationScript : MonoBehaviour
     private GameObject textmeshpro;  //文字
     [SerializeField]
     private MyItemScript myItem;
+    [SerializeField]
+    private List<GameObject> chestsUI;
     // Start is called before the first frame update
     void Start()
     {
@@ -96,6 +98,13 @@ public class GameExplanationScript : MonoBehaviour
             Time.timeScale = 0;
             Debug.Log("レベル説明終了");
         }
-
+        //宝箱の説明が表示か非表示か確認する処理
+        for (int i = 0; i < chestsUI.Count; i++)
+        {
+            if (chestsUI[i].activeSelf)
+            {
+                Time.timeScale = 0;
+            }
+        }
     }
 }
