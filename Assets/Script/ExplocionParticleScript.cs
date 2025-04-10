@@ -16,6 +16,7 @@ public class ExplocionParticleScript : MonoBehaviour
     private TrollScript trollScript;
     [SerializeField]
     private MoveEnemyScript moveEnemyScript;
+   
     //--------------------//
     // Start is called before the first frame update
     void Start()
@@ -50,11 +51,7 @@ public class ExplocionParticleScript : MonoBehaviour
     public void OnParticleCollision(GameObject other)
     {
         //爆発が当たったオブジェクトに応じてダメージを変える処理
-        if(other.tag=="Player"&& playerScript.GetState() != PlayerScript.MyState.Damage && playerScript.GetState() != PlayerScript.MyState.Dead &&
-           playerScript.GetAvoid() == false && playerScript.GetState() != PlayerScript.MyState.SkillAttack && trollScript.GetState() != TrollScript.TrollState.Dead)
-        {
-            playerScript.Damage(1);
-        }
+       
         if(other.tag=="Boss"&&playerScript.GetState()==PlayerScript.MyState.SkillAttack
             &&trollScript.GetState()!=TrollScript.TrollState.Dead)
         {

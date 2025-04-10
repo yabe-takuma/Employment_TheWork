@@ -33,7 +33,6 @@ public class PlayerAttackStateBehaviour : StateMachineBehaviour
         }
         //攻撃用のコライダーを表示するための処理
         processCharaAnimEvent.AttackStart();
-        
     }
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state

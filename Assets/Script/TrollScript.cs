@@ -40,6 +40,7 @@ public class TrollScript : MonoBehaviour
     [SerializeField]
     private float movementRange = 20f;
     //移動速度
+    [SerializeField]
     private Vector3 velocity = Vector3.zero;
     //歩くスピード
     [SerializeField]
@@ -174,10 +175,12 @@ public class TrollScript : MonoBehaviour
             ContinuousAttack();
             Debug.Log("連続攻撃5");
         }
+
         if (trollStatus.GetHp() <= 0)
         {
             Time.timeScale = 0.2f;
         }
+        //敵が炎上している時
         if (isabnormal)
         {
             abnormalcounter++;
@@ -197,15 +200,21 @@ public class TrollScript : MonoBehaviour
         //移動処理
         velocity.y += Physics.gravity.y * Time.deltaTime;
         characterController.Move(velocity * Time.deltaTime);
-
+        
 
         if (timeline[1].time >= timeline[1].duration)
         {
             Isinstallation = false;
         }
-        if(!receiveAttackEventScript.GetEndStop())
+        if (receiveAttackEventScript.GetIsExplocion())
         {
             Isexplocion = false;
+        }
+
+        if(animator.GetCurrentAnimatorStateInfo(0).IsName("ShockwaveAttack")||
+           animator.GetCurrentAnimatorStateInfo(0).IsName("WaveAttack"))
+        {
+            velocity = new Vector3(0f, velocity.y, 0f);
         }
     }
 
@@ -298,6 +307,7 @@ public class TrollScript : MonoBehaviour
             attackTargetPos = attackTargetTransform.position;
             velocity = new Vector3(0f, velocity.y, 0f);
             timeline[1].Play();
+            timeline[1].playableGraph.GetRootPlayable(0).SetSpeed(0.5f);
             animator.SetBool("Chase", false);
             Isshockwave = false;
             Isinstallation = true;
@@ -311,7 +321,6 @@ public class TrollScript : MonoBehaviour
            
             animator.ResetTrigger("ShockwaveAttack");
             animator.ResetTrigger("ContinuousAttack");
-            //animator.SetBool("Wave", false);
             velocity = new Vector3(0f, velocity.y, 0f);
             animator.SetTrigger("Explocion");
             animator.SetBool("Chase", false);
@@ -325,11 +334,8 @@ public class TrollScript : MonoBehaviour
         else if(trollState==TrollState.wave)
         {
             velocity = new Vector3(0f, velocity.y, 0f);
-            //animator.SetTrigger("ContinuousAttack");
-            //timeline[0].Play();
             animator.SetBool("Wave",true);
             animator.SetBool("Chase", false);
-            //animator.ResetTrigger("ShockwaveAttack");
             Isshockwave = false;
             Isinstallation = false;
             Isexplocion = false;
@@ -361,6 +367,7 @@ public class TrollScript : MonoBehaviour
             animator.SetTrigger("Dead");
             Destroy(this.gameObject, 2f);
             velocity = Vector3.zero;
+            timeline[1].Pause();
         }
         //レイを視覚化して表示
         Debug.DrawLine(rayTransform.position, rayTransform.position + rayTransform.forward * rayDistance, Color.red);
@@ -429,6 +436,7 @@ public class TrollScript : MonoBehaviour
         {
             elapsedCollisionWall = avoidanceTimeCollisionWall;
         }
+        
     }
     //Chase状態の時の処理
     private void Chase()
@@ -446,6 +454,7 @@ public class TrollScript : MonoBehaviour
             velocity = transform.forward * chaseSpeed;
             Debug.Log("追いかける");
         }
+       
     }
     //Attack状態の時の処理
     private void Attack()
@@ -519,16 +528,13 @@ public class TrollScript : MonoBehaviour
 
     private void Explocion()
     {
-        // 攻撃状態になった時のキャラクターの向きを計算し、徐々にそちらの向きに回転させる
-        //var targetRot = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(attackTargetPos - transform.position), Time.deltaTime * 2f);
-        //transform.rotation = Quaternion.Euler(transform.eulerAngles.x, targetRot.eulerAngles.y, transform.eulerAngles.z);
-
         //Attackアニメーションが終了したらIdle状態にする
-        if (animator.GetCurrentAnimatorStateInfo(0).IsName("Explocion")
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName("ExplocionAttack")
             && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
         {
             SetState(TrollState.idle);
-            Debug.Log("設置物を置いた");
+            Isexplocion = false;
+            Debug.Log("爆発発生");
         }
     }
 

@@ -25,6 +25,8 @@ public class ChangeEquipScript : MonoBehaviour
 
     [SerializeField]
     private int chestcounter;
+    [SerializeField]
+    private GameExplanationScript gameExplanationScript;
     //他のスクリプトに参照するための関数
     public int GetEquipment()
     {
@@ -57,7 +59,7 @@ public class ChangeEquipScript : MonoBehaviour
     void InstantiateWepon()
     {
         equipment++;
-        if(playerScript.SetDeadCaunter()<1&&equipment==1)
+        if(!gameExplanationScript.GetIsAxeExplocion() && equipment==1)
         {
             equipment++;
         }

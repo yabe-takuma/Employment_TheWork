@@ -25,9 +25,6 @@ public class AttackCharaScript : MonoBehaviour
 
     [SerializeField]
     private int hp;
-    //ボスの攻撃を終了を検知
-    [SerializeField]
-    private bool isAttack;
     [SerializeField]
     private ReceiveAttackEventScript receiveAttackEventScript;
     [SerializeField]
@@ -44,7 +41,6 @@ public class AttackCharaScript : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        //target = chaseScript.GetTarget().transform.position;
         //攻撃状態でない時に攻撃(アニメーションが攻撃状態でない時も条件に含める)
         if (other.tag == "Player"
             && trollScript.GetState() != TrollScript.TrollState.attack
@@ -61,17 +57,13 @@ public class AttackCharaScript : MonoBehaviour
             && trollScript.GetState() !=TrollScript.TrollState.Dead)
             
         {
-            //caunter = Random.value;
             cooltime++;
-            //distance = Vector3.Distance(trollScript.transform.position, chaseScript.GetTarget().transform.position);
             //ボスの攻撃を順番に振り分ける
-
             if (caunter == 0&&cooltime>=100)
             {
                 trollScript.SetState(TrollScript.TrollState.shockwaveAttack, other.transform);
                 trollScript.SetState(TrollScript.TrollState.chase, other.transform);
                 Debug.Log("攻撃2");
-                isAttack = true;
                 caunter = 1;
                 cooltime = 0;
             }
@@ -80,17 +72,15 @@ public class AttackCharaScript : MonoBehaviour
                 trollScript.SetState(TrollScript.TrollState.wave, other.transform);
                 trollScript.SetState(TrollScript.TrollState.chase, other.transform);
                 Debug.Log("足踏み攻撃");
-                isAttack = true;
                 caunter = 0;
                 cooltime = 0;
             }
-            else if (caunter == 1 && cooltime >= 100 /*&& trollAnimator.GetBool("Explocion") == false*/ && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2) 
+            else if (caunter == 1 && cooltime >= 100&& trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2) 
             {
                 trollScript.SetState(TrollScript.TrollState.installation, other.transform);
                 trollScript.SetState(TrollScript.TrollState.chase, other.transform);
                 Debug.Log("攻撃3");
-                isAttack = true;
-                caunter = 3;
+                caunter = 2;
                 cooltime = 0;
             }
 
@@ -98,8 +88,7 @@ public class AttackCharaScript : MonoBehaviour
             {
                 trollScript.SetState(TrollScript.TrollState.explocion, other.transform);
                 trollScript.SetState(TrollScript.TrollState.chase, other.transform);
-                isAttack = true;
-                caunter = 0;
+                caunter = 3;
                 cooltime = 0;
             }
 
@@ -108,16 +97,10 @@ public class AttackCharaScript : MonoBehaviour
                 trollScript.SetState(TrollScript.TrollState.continuous, other.transform);
                 trollScript.SetState(TrollScript.TrollState.chase, other.transform);
                 Debug.Log("攻撃3");
-                isAttack = true;
                 caunter = 0;
                 cooltime = 0;
             }
-            //アタックのアニメーションが終わったらフラグをfalseにすることで
-            //変な挙動になっても問題ないようにしています。
-            if (receiveAttackEventScript.GetIsAttack()==false)
-            {
-                isAttack = false;
-            }
+           
            
         }
         

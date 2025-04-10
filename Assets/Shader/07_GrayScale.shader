@@ -37,7 +37,7 @@ Shader "Unlit/07_GrayScale"
             v2f vert (appdata v)
             {
                 v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.vertex= UnityObjectToClipPos(v.vertex);
                 o.uv = v.uv;
                 return o;
             }

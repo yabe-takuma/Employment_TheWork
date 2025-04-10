@@ -57,6 +57,19 @@ public class ReceiveAttackEventScript : MonoBehaviour
     //波を生成する座標
     [SerializeField]
     private Transform wavePoint;
+    [SerializeField]
+    private bool isExplocion;
+    [SerializeField]
+    private GameObject ExplocionSphere;
+    //地面を大きく踏みつけた時のパーティクル
+    [SerializeField]
+    private GameObject trampling;
+    //地面を大きく踏みつけた時座標
+    [SerializeField]
+    private GameObject tramplingPoint;
+    //メイスを振りかざした時のパーティクル
+    [SerializeField]
+    private GameObject brandish;
     // Start is called before the first frame update
     void Start()
     {
@@ -117,10 +130,10 @@ public class ReceiveAttackEventScript : MonoBehaviour
             Instantiate(shockwavePrefab, createShockwavePoint.position, shockwavePrefab.transform.rotation);
             isWave = false;
             iscontinuous = false;
+            isExplocion = false;
         }
         else if (trollScript.GetInstallation())
         {
-            // Instantiate(installationsphere, createShockwavePoint.position, installationsphere.transform.rotation);
             Instantiate(shockwavePrefab, createShockwavePoint.position, shockwavePrefab.transform.rotation);
             isWave = false;
             iscontinuous = false;
@@ -128,18 +141,26 @@ public class ReceiveAttackEventScript : MonoBehaviour
         else if (trollScript.GetExplocion())
         {
             Instantiate(explocion, createShockwavePoint.position, explocion.transform.rotation);
+            Instantiate(ExplocionSphere, createShockwavePoint.position, explocion.transform.rotation);
             isWave = false;
             iscontinuous = false;
+            isExplocion = true;
         }
         
 
+    }
+    //メイスの振りかざした地面にパーティクルを出す
+    public void BrandishPoint()
+    {
+        Instantiate(brandish, createShockwavePoint.position, shockwavePrefab.transform.rotation);
     }
 
     public void WaveAttack()
     {
         
         Instantiate(wave, wavePoint.position, wave.transform.rotation);
-            
+        Instantiate(trampling, tramplingPoint.transform.position, trampling.transform.rotation);
+        Debug.Log("波");
     }
 
     // Update is called once per frame
@@ -187,8 +208,8 @@ public class ReceiveAttackEventScript : MonoBehaviour
         return isWaveAttack;
     }
 
-    public bool GetEndStop()
+    public bool GetIsExplocion()
     {
-        return IsEndStop;
+        return isExplocion;
     }
 }

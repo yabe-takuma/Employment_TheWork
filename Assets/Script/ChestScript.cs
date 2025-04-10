@@ -48,14 +48,14 @@ public class ChestScript : MonoBehaviour
                 isOpen = false;
                 isEndOpen = false;
             }
-            if (chestsOpenUI[chestindex].activeSelf && Input.GetKeyDown(KeyCode.J)||
-                chestsOpenUI[chestindex].activeSelf && Input.GetKeyDown("joystick button 4"))
+            if (chestsOpenUI[chestindex].activeSelf && Input.GetKeyDown(KeyCode.J)/* && !isClick*/ ||
+                chestsOpenUI[chestindex].activeSelf && Input.GetKeyDown("joystick button 4") /*&& !isClick*/)
             {
                 chestsOpenUI[chestindex].SetActive(false);
                 collisionUI.SetActive(false);
                 chestcounter++;
                 changeEquipScript.SetChestCounter(chestcounter);
-               
+                isClick = true;
                 if (chestindex < chestsOpenUI.Count-1)
                 {
                     chestindex++;
@@ -107,6 +107,11 @@ public class ChestScript : MonoBehaviour
     {
         isCollision = false;
         collisionUI.SetActive(false);
+        //if (other.tag == "Player"&&opentimer<187)
+        //{
+        //    isClick = false;
+        //}
+
     }
 
     public void ChestOpenUI(List<GameObject> chestsopenUI)

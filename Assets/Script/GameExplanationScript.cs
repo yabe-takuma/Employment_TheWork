@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameExplanationScript : MonoBehaviour
 {
@@ -31,11 +33,22 @@ public class GameExplanationScript : MonoBehaviour
     private MyItemScript myItem;
     [SerializeField]
     private List<GameObject> chestsUI;
+    private bool isAxeExplocion;
+    //キーボードかコントローラーを入力しているか分ける処理
+    [SerializeField]
+    private List<GameObject> explanationsUI;
+    private float[] iscontroller;
+    [SerializeField]
+    private bool isInput;
+    [SerializeField]
+    private bool isKeyInput;
     // Start is called before the first frame update
     void Start()
     {
         isExplanation = false;
         islevelup = false;
+        isAxeExplocion = false;
+
     }
 
     // Update is called once per frame
@@ -83,6 +96,7 @@ public class GameExplanationScript : MonoBehaviour
         {
             LevelUpUI.SetActive(true);
             Time.timeScale = 0;
+            isAxeExplocion = true;
             Debug.Log("レベルが2になった");
         }
         else
@@ -106,5 +120,45 @@ public class GameExplanationScript : MonoBehaviour
                 Time.timeScale = 0;
             }
         }
+      
+        if (isInput&&!isKeyInput)
+        {
+            explanationsUI[0].SetActive(false);
+            explanationsUI[1].SetActive(false);
+            explanationsUI[2].SetActive(true);
+            explanationsUI[3].SetActive(true);
+            isKeyInput = false;
+        }
+        else
+        {
+            isKeyInput = true;
+        }
+        if (Input.anyKeyDown)
+        {
+            isInput = false;
+            //isKeyInput = true;
+            foreach(KeyCode code in Enum.GetValues(typeof(KeyCode)))
+            {
+                if (Input.GetKeyDown(code) && isKeyInput)
+                {
+                    //isInput = false;
+                    explanationsUI[0].SetActive(true);
+                    explanationsUI[1].SetActive(true);
+                    explanationsUI[2].SetActive(false);
+                    explanationsUI[3].SetActive(false);
+                    isInput = false;
+                }
+            }
+        }
+    }
+    public bool GetIsAxeExplocion()
+    {
+        return isAxeExplocion;
+    }
+
+    public void OnController()
+    {
+        isInput = true;
+        isKeyInput = false;
     }
 }

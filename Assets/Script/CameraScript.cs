@@ -48,9 +48,6 @@ public class CameraScript : MonoBehaviour
     [SerializeField]
     private GameObject targetIcon;
 
-    [SerializeField]
-    private GameObject rockonplayer;
-
     private Vector3 startposition;
     [SerializeField]
     private TrollScript trollscript;
@@ -63,6 +60,8 @@ public class CameraScript : MonoBehaviour
     private GameObject rockonposition;
     [SerializeField]
     private GameObject deadposition;
+    [SerializeField]
+    private GameObject rockonPlayer;
     // Start is called before the first frame update
     void Start()
     {
@@ -92,7 +91,6 @@ public class CameraScript : MonoBehaviour
                 {
                     target = RockonTarget.transform.position;
                     distance = Vector3.Distance(TargetObject.transform.position, RockonTarget.transform.position);
-                   
                 }
                 else
                 {
@@ -116,38 +114,7 @@ public class CameraScript : MonoBehaviour
         else nowRotAngle = RotAngle;
         if (EnableAtten) nowHeightAngle = Mathf.Lerp(nowHeightAngle, HeightAngle, Time.deltaTime * RotAngleAttenRate);
         else nowHeightAngle = HeightAngle;
-        //プレイヤーとカメラの距離を調整する処理
-        if (rock)
-        {
-            var dis = Vector3.Distance(TargetObject.transform.position, RockonTarget.transform.position);
-            if (HeightAngle > 30)
-            {
-                Distance = Mathf.Lerp(Distance, dis_mdl * dis / 10 * HeightAngle / 30.0f, Time.deltaTime);
-            }
-            else if (HeightAngle <= 30 && HeightAngle >= 3)
-            {
-                Distance = Mathf.Lerp(Distance, dis_mdl * dis / 10, Time.deltaTime);
-            }
-            else if (HeightAngle < -3)
-            {
-                rock = false;
-            }
-        }
-        else
-        {
-            if (HeightAngle > 30)
-            {
-                Distance = Mathf.Lerp(Distance, 5.0f * HeightAngle / 30.0f, Time.deltaTime);
-            }
-            else if (HeightAngle <= 30 && HeightAngle >= -3)
-            {
-                Distance = Mathf.Lerp(Distance, 5.0f, Time.deltaTime);
-            }
-            else if (HeightAngle < -3)
-            {
-                Distance = Mathf.Lerp(Distance, dis_min, Time.deltaTime);
-            }
-        }
+      
         var deg = Mathf.Deg2Rad;
         var cx = Mathf.Sin(nowRotAngle * deg) * Mathf.Cos(nowHeightAngle * deg) * Distance;
         var cz = -Mathf.Cos(nowRotAngle * deg) * Mathf.Cos(nowHeightAngle * deg) * Distance;
@@ -171,7 +138,9 @@ public class CameraScript : MonoBehaviour
         //ボスが倒された時特定の座標に行く処理
         if (RockonTarget != null&&trollscript.GetState() == TrollScript.TrollState.Dead)
         {
-            transform.position = new Vector3(rockonposition.transform.position.x, rockonposition.transform.position.y + 3.0f, rockonposition.transform.position.z );
+            transform.position = new Vector3(rockonposition.transform.position.x, 
+            rockonposition.transform.position.y + 3.0f, rockonposition.transform.position.z );
+
             transform.rotation = rockonposition.transform.rotation;
         }
        
@@ -209,6 +178,10 @@ public class CameraScript : MonoBehaviour
     {
         RockonTarget = target;
       
+    }
+    public GameObject SetRockonTarget()
+    {
+        return RockonTarget;
     }
     //ロックオンされた敵に応じてアイコンの位置を変える処理
     private void TargetIcon()

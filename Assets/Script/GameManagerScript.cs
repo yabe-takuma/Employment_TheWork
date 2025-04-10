@@ -49,6 +49,7 @@ public class GameManagerScript : MonoBehaviour
         if (playerScript.GetState() == PlayerScript.MyState.Dead)
         {
             grayscript.enabled = true;
+            
         }
        
     }

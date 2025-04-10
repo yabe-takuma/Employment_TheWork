@@ -44,6 +44,9 @@ public class ProcessEnemyAnimEventScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(enemy.GetState()==MoveEnemyScript.EnemyState.Dead)
+        {
+            sphereCollider.enabled = false;
+        }
     }
 }

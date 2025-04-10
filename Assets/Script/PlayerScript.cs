@@ -164,6 +164,7 @@ public class PlayerScript : MonoBehaviour
             velocity = Vector3.zero;
             state = MyState.Attack;
             move = Vector3.zero;
+            rb.velocity = new Vector3(0, rb.velocity.y, 0);
             if (changeequipscript.GetEquipment() == 0|| changeequipscript.GetEquipment() == 2||
                 changeequipscript.GetEquipment() ==3)
             {
@@ -179,9 +180,11 @@ public class PlayerScript : MonoBehaviour
         else if(tempState==MyState.SkillAttack)
         {
             state = MyState.SkillAttack;
-            if(changeequipscript.GetEquipment()==2|| changeequipscript.GetEquipment() == 3)
+            rb.velocity = new Vector3(0, rb.velocity.y, 0);
+            if (changeequipscript.GetEquipment()==2|| changeequipscript.GetEquipment() == 3)
             {
                 animator.SetTrigger("SwordSkillAttack");
+                rb.velocity = new Vector3(0, rb.velocity.y, 0);
             }
             else if (changeequipscript.GetEquipment() == 4)
             {
@@ -190,6 +193,7 @@ public class PlayerScript : MonoBehaviour
             else if(changeequipscript.GetEquipment() == 5)
             {
                 animator.SetTrigger("AxeSkillAttack");
+                rb.velocity = new Vector3(0, rb.velocity.y, 0);
                 move = Vector3.zero;
             }
         }
@@ -251,7 +255,6 @@ public class PlayerScript : MonoBehaviour
         {
             if (camera3D.rock)
             {
-
                 var dir = camera3D.RockonTarget.transform.position - this.gameObject.transform.position;
                 Quaternion targetRotation = Quaternion.LookRotation(dir);
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * turnTimeRate);
@@ -281,14 +284,20 @@ public class PlayerScript : MonoBehaviour
                    && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack03"))
         {
             animator.SetFloat("Speed", rb.velocity.magnitude);
-            transform.LookAt(transform.position + velocity);
-
+            if (!camera3D.rock)
+            {
+                transform.LookAt(transform.position + moveForward);
+            }
+            else
+            {
+                transform.LookAt(transform.position);
+            }
         }
         else
         {
             animator.SetFloat("Speed", 0f);
         }
-
+       
 
         if (transform.position.y < 0)
         {
@@ -322,7 +331,10 @@ public class PlayerScript : MonoBehaviour
 
     public void OnMove(InputAction.CallbackContext context)
     {
-        move = new Vector3(context.ReadValue<Vector2>().x, 0f, context.ReadValue<Vector2>().y);
+        if (state != MyState.Attack || state != MyState.SkillAttack)
+        {
+            move = new Vector3(context.ReadValue<Vector2>().x, 0f, context.ReadValue<Vector2>().y);
+        }
     }
 
     public void OnAttack(InputAction.CallbackContext context)
