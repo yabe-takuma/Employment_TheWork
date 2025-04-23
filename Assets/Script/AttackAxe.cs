@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class AttackAxe : MonoBehaviour
@@ -42,7 +43,6 @@ public class AttackAxe : MonoBehaviour
         //敵に当たった時ダメージを表示するUIやエフェクトなどを表示しています。
         if (other.tag == "Enemy"&&this.gameObject.tag!="Item"&&playerscript!=null)
         {
-
             var enemyScript = other.GetComponent<MoveEnemyScript>();
             if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead)
             {
@@ -83,19 +83,8 @@ public class AttackAxe : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (playerscript!=null&&playerscript.GetState() != PlayerScript.MyState.Attack)
-        {
-            isAttack = false;
-        }
-        if (this.gameObject.tag == "Item" && myItemScript ==null&& playerscript != null && playerscript.GetState() != PlayerScript.MyState.Attack)
-        {
-            sphereCollider.enabled = false;
-        }
-        else if(this.gameObject.tag == "Item" && playerscript !=null&&playerscript.GetState() != PlayerScript.MyState.Attack)
-        {
-            sphereCollider.enabled = true;
-        }
-       
+        //アイテム取得する前の当たり判定の有無や攻撃の当たり判定の有無の処理
+        PlayerAround();
     }
 
     public void SetMyItem(MyItemScript myitemscript)
@@ -103,5 +92,20 @@ public class AttackAxe : MonoBehaviour
         myItemScript = myitemscript;
     }
 
+    void PlayerAround()
+    {
+        if (playerscript != null && playerscript.GetState() != PlayerScript.MyState.Attack)
+        {
+            isAttack = false;
+        }
+        if (this.gameObject.tag == "Item" && myItemScript == null && playerscript != null && playerscript.GetState() != PlayerScript.MyState.Attack)
+        {
+            sphereCollider.enabled = false;
+        }
+        else if (this.gameObject.tag == "Item" && playerscript != null && playerscript.GetState() != PlayerScript.MyState.Attack)
+        {
+            sphereCollider.enabled = true;
+        }
+    }
    
 }

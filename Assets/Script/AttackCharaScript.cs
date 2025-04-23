@@ -57,60 +57,61 @@ public class AttackCharaScript : MonoBehaviour
             && trollScript.GetState() !=TrollScript.TrollState.Dead)
             
         {
-            cooltime++;
-            //ボスの攻撃を順番に振り分ける
-            if (caunter == 0&&cooltime>=100)
-            {
-                trollScript.SetState(TrollScript.TrollState.shockwaveAttack, other.transform);
-                trollScript.SetState(TrollScript.TrollState.chase, other.transform);
-                Debug.Log("攻撃2");
-                caunter = 1;
-                cooltime = 0;
-            }
-            else if (caunter == 1 && cooltime >= 100&&trollstatus.GetHp() >= trollstatus.GetMaxHp() / 2)
-            {
-                trollScript.SetState(TrollScript.TrollState.wave, other.transform);
-                trollScript.SetState(TrollScript.TrollState.chase, other.transform);
-                Debug.Log("足踏み攻撃");
-                caunter = 0;
-                cooltime = 0;
-            }
-            else if (caunter == 1 && cooltime >= 100&& trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2) 
-            {
-                trollScript.SetState(TrollScript.TrollState.installation, other.transform);
-                trollScript.SetState(TrollScript.TrollState.chase, other.transform);
-                Debug.Log("攻撃3");
-                caunter = 2;
-                cooltime = 0;
-            }
-
-            else if (caunter == 2 && cooltime >= 100 && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2) 
-            {
-                trollScript.SetState(TrollScript.TrollState.explocion, other.transform);
-                trollScript.SetState(TrollScript.TrollState.chase, other.transform);
-                caunter = 3;
-                cooltime = 0;
-            }
-
-            else if (caunter==3&& cooltime >= 100 /*&& trollAnimator.GetBool("Explocion") == false*/ && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2)
-            {
-                trollScript.SetState(TrollScript.TrollState.continuous, other.transform);
-                trollScript.SetState(TrollScript.TrollState.chase, other.transform);
-                Debug.Log("攻撃3");
-                caunter = 0;
-                cooltime = 0;
-            }
-           
-           
+            TrollAttackState(other.gameObject);
         }
-        
-       
     }
 
     // Update is called once per frame
     void Update()
     {
         hp = trollstatus.GetHp();
+    }
+
+    void TrollAttackState(GameObject other)
+    {
+        cooltime++;
+        //ボスの攻撃を順番に振り分ける
+        if (caunter == 0 && cooltime >= 100)
+        {
+            trollScript.SetState(TrollScript.TrollState.shockwaveAttack, other.transform);
+            trollScript.SetState(TrollScript.TrollState.chase, other.transform);
+            Debug.Log("攻撃2");
+            caunter = 1;
+            cooltime = 0;
+        }
+        else if (caunter == 1 && cooltime >= 100 && trollstatus.GetHp() >= trollstatus.GetMaxHp() / 2)
+        {
+            trollScript.SetState(TrollScript.TrollState.wave, other.transform);
+            trollScript.SetState(TrollScript.TrollState.chase, other.transform);
+            Debug.Log("足踏み攻撃");
+            caunter = 0;
+            cooltime = 0;
+        }
+        else if (caunter == 1 && cooltime >= 100 && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2)
+        {
+            trollScript.SetState(TrollScript.TrollState.installation, other.transform);
+            trollScript.SetState(TrollScript.TrollState.chase, other.transform);
+            Debug.Log("攻撃3");
+            caunter = 2;
+            cooltime = 0;
+        }
+
+        else if (caunter == 2 && cooltime >= 100 && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2)
+        {
+            trollScript.SetState(TrollScript.TrollState.explocion, other.transform);
+            trollScript.SetState(TrollScript.TrollState.chase, other.transform);
+            caunter = 3;
+            cooltime = 0;
+        }
+
+        else if (caunter == 3 && cooltime >= 100 && trollstatus.GetHp() <= trollstatus.GetMaxHp() / 2)
+        {
+            trollScript.SetState(TrollScript.TrollState.continuous, other.transform);
+            trollScript.SetState(TrollScript.TrollState.chase, other.transform);
+            Debug.Log("攻撃3");
+            caunter = 0;
+            cooltime = 0;
+        }
     }
 
 }

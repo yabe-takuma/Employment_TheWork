@@ -59,22 +59,27 @@ public class ChangeEquipScript : MonoBehaviour
     void InstantiateWepon()
     {
         equipment++;
+        //斧を持っていなかったら数字を加算して斧を持たないようにする処理
         if(!gameExplanationScript.GetIsAxeExplocion() && equipment==1)
         {
             equipment++;
         }
+        //炎の剣を持っていなかったら数字を加算して炎の剣を持たないようにする処理
         if (equipment == 2 && chestcounter == 0) 
         {
             equipment++;
         }
+        //水の剣を持っていなかったら数字を加算して水の剣を持たないようにする処理
         if (equipment == 3 && chestcounter <= 1) 
         {
             equipment++;
         }
+        //2つ目の斧を持っていなかったら数字を加算して2つ目の斧を持たないようにする処理
         if (equipment == 4 && chestcounter <= 2)
         {
             equipment++;
         }
+        //3つ目の斧を持っていなかったら数字を加算して3つ目の斧を持たないようにする処理
         if (equipment == 5 && chestcounter <= 3)
         {
             equipment++;

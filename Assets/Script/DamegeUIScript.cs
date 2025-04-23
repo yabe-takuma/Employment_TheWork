@@ -24,6 +24,17 @@ public class DamegeUIScript : MonoBehaviour
 
     void LateUpdate()
     {
+        UIhandling();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+
+    void UIhandling()
+    {
         //UIが徐々に上に行く処理
         transform.rotation = Camera.main.transform.rotation;
         transform.position += Vector3.up * moveSpeed * Time.deltaTime;
@@ -34,11 +45,5 @@ public class DamegeUIScript : MonoBehaviour
         {
             Destroy(gameObject);
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

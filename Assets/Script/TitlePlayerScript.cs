@@ -20,12 +20,12 @@ public class TitlePlayerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        //動画を取る際勝手にプレイヤーが進んでしまうのをキーを押したら進む用にする処理
         //if(Input.GetKeyDown(KeyCode.G))
         //{
         //    isInput = true;
         //}
-        //プレイヤーが指定した座標まで自動で向かう処理sa
+        //プレイヤーが指定した座標まで自動で向かう処理
         if (characterController.isGrounded)
         {
             if (transform.position.z < 192 /*&& isInput*/)

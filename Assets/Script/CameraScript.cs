@@ -55,13 +55,18 @@ public class CameraScript : MonoBehaviour
     private LayerMask obstacleLayer;
 
     private PlayerScript playerScript;
-   //ロックオンの時追従するもの
+   //ロックオンの時ボスの時に追従するもの
     [SerializeField]
     private GameObject rockonposition;
+    //ロックオンの時敵の時に追従するもの
+    [SerializeField]
+    private GameObject rockonEnemyposition;
     [SerializeField]
     private GameObject deadposition;
     [SerializeField]
     private GameObject rockonPlayer;
+
+    private float cameraRotateSpeed = 45f;
     // Start is called before the first frame update
     void Start()
     {
@@ -72,83 +77,12 @@ public class CameraScript : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
-        //カメラの回転
-        RotAngle -= speed.x * Time.deltaTime * 100.0f;
-        HeightAngle += speed.z * Time.deltaTime * 50.0f;
-        //カメラの距離や回転などの制限
-        HeightAngle = Mathf.Clamp(HeightAngle, 3.7f, 60.0f);
-        Distance = Mathf.Clamp(Distance, 5.0f, 15.0f);
-        //あらかじめプレイヤーにコライダーを用意して当たったらこの変数に当たった敵を格納
-        RockonTarget = SertchCircle.GetComponent<SensorScript>().nowTarget;
-        //減衰
-        if (EnableAtten)
-        {
-            var target = TargetObject.transform.position;
-            //敵が一定範囲にいてrockフラグが経つと敵の座標などを渡す処理
-            if (rock)
-            {
-                if (RockonTarget != null)
-                {
-                    target = RockonTarget.transform.position;
-                    distance = Vector3.Distance(TargetObject.transform.position, RockonTarget.transform.position);
-                }
-                else
-                {
-                    rock = false;
-                }
-               
-            }
-            //減衰処理
-            var halfPoint = (TargetObject.transform.position + target) / 2;
-            var deltaPos = halfPoint - prevTargetPos;
-            prevTargetPos = halfPoint;
-            deltaPos *= ForwardDistance;
-
-            addForward += deltaPos * Time.deltaTime * 20.0f;
-            addForward = Vector3.Lerp(addForward, Vector3.zero, Time.deltaTime * AttenRate);
-
-            nowPos = Vector3.Lerp(nowPos, halfPoint + Vector3.up * Height + addForward, Mathf.Clamp01(Time.deltaTime * AttenRate));
-        }
-        else nowPos = TargetObject.transform.position + Vector3.up * Height;
-        if (EnableAtten) nowRotAngle = Mathf.Lerp(nowRotAngle, RotAngle, Time.deltaTime * RotAngleAttenRate);
-        else nowRotAngle = RotAngle;
-        if (EnableAtten) nowHeightAngle = Mathf.Lerp(nowHeightAngle, HeightAngle, Time.deltaTime * RotAngleAttenRate);
-        else nowHeightAngle = HeightAngle;
-      
-        var deg = Mathf.Deg2Rad;
-        var cx = Mathf.Sin(nowRotAngle * deg) * Mathf.Cos(nowHeightAngle * deg) * Distance;
-        var cz = -Mathf.Cos(nowRotAngle * deg) * Mathf.Cos(nowHeightAngle * deg) * Distance;
-        var cy = Mathf.Sin(nowHeightAngle * deg) * Distance;
-        //ロックオンじゃない時のカメラの座標
-        if(!rock)
-        {
-            transform.position = nowPos + new Vector3(cx, cy, cz);
-        }
-        //ロックオンじゃない時のカメラの回転
-        var rot = Quaternion.LookRotation((nowPos - transform.position).normalized);
-        if (!rock) transform.rotation = rot;
-        //ロックオン時のカメラの座標と回転
-        if (rock)
-        {
-            transform.rotation = rockonposition.transform.rotation;
-            transform.position = rockonposition.transform.position;
-        }
-        //ロックオンの時アイコンを表示する関数
-        TargetIcon();
-        //ボスが倒された時特定の座標に行く処理
-        if (RockonTarget != null&&trollscript.GetState() == TrollScript.TrollState.Dead)
-        {
-            transform.position = new Vector3(rockonposition.transform.position.x, 
-            rockonposition.transform.position.y + 3.0f, rockonposition.transform.position.z );
-
-            transform.rotation = rockonposition.transform.rotation;
-        }
-       
+        //Camera();
     }
 
     void Update()
     {
-        
+        Camera();
     }
     public void OnCamera(InputAction.CallbackContext context)
     {
@@ -199,6 +133,86 @@ public class CameraScript : MonoBehaviour
         else
         {
             targetIcon.SetActive(false);
+        }
+    }
+
+    void Camera()
+    {
+        //カメラの回転
+        RotAngle -= speed.x * Time.deltaTime * 100.0f;
+        HeightAngle += speed.z * Time.deltaTime * 50.0f;
+        //カメラの距離や回転などの制限
+        HeightAngle = Mathf.Clamp(HeightAngle, 3.7f, 60.0f);
+        Distance = Mathf.Clamp(Distance, 5.0f, 15.0f);
+        //あらかじめプレイヤーにコライダーを用意して当たったらこの変数に当たった敵を格納
+        RockonTarget = SertchCircle.GetComponent<SensorScript>().nowTarget;
+        //減衰
+        if (EnableAtten)
+        {
+            var target = TargetObject.transform.position;
+            //敵が一定範囲にいてrockフラグが経つと敵の座標などを渡す処理
+            if (rock)
+            {
+                if (RockonTarget != null)
+                {
+                    target = RockonTarget.transform.position;
+                    distance = Vector3.Distance(TargetObject.transform.position, RockonTarget.transform.position);
+                }
+                else
+                {
+                    rock = false;
+                }
+
+            }
+            //減衰処理
+            var halfPoint = (TargetObject.transform.position + target) / 2;
+            var deltaPos = halfPoint - prevTargetPos;
+            prevTargetPos = halfPoint;
+            deltaPos *= ForwardDistance;
+
+            addForward += deltaPos * Time.deltaTime * 20.0f;
+            addForward = Vector3.Lerp(addForward, Vector3.zero, Time.deltaTime * AttenRate);
+
+            nowPos = Vector3.Lerp(nowPos, halfPoint + Vector3.up * Height + addForward, Mathf.Clamp01(Time.deltaTime * AttenRate));
+        }
+        else nowPos = TargetObject.transform.position + Vector3.up * Height;
+        if (EnableAtten) nowRotAngle = Mathf.Lerp(nowRotAngle, RotAngle, Time.deltaTime * RotAngleAttenRate);
+        else nowRotAngle = RotAngle;
+        if (EnableAtten) nowHeightAngle = Mathf.Lerp(nowHeightAngle, HeightAngle, Time.deltaTime * RotAngleAttenRate);
+        else nowHeightAngle = HeightAngle;
+
+        var deg = Mathf.Deg2Rad;
+        var cx = Mathf.Sin(nowRotAngle * deg) * Mathf.Cos(nowHeightAngle * deg) * Distance;
+        var cz = -Mathf.Cos(nowRotAngle * deg) * Mathf.Cos(nowHeightAngle * deg) * Distance;
+        var cy = Mathf.Sin(nowHeightAngle * deg) * Distance;
+        //ロックオンじゃない時のカメラの座標
+        if (!rock)
+        {
+            transform.position = nowPos + new Vector3(cx, cy, cz);
+        }
+        //ロックオンじゃない時のカメラの回転
+        var rot = Quaternion.LookRotation((nowPos - transform.position).normalized);
+        if (!rock) transform.rotation = rot;
+        //ロックオン時のカメラの座標と回転
+        if (rock&&RockonTarget.tag=="Boss")
+        {
+            transform.rotation = rockonposition.transform.rotation;
+            transform.position = rockonposition.transform.position;
+        }
+        else if(rock && RockonTarget.tag == "Enemy")
+        {
+            transform.rotation = rockonEnemyposition.transform.rotation;
+            transform.position = rockonEnemyposition.transform.position;
+        }
+        //ロックオンの時アイコンを表示する関数
+        TargetIcon();
+        //ボスが倒された時特定の座標に行く処理
+        if (RockonTarget != null && trollscript.GetState() == TrollScript.TrollState.Dead)
+        {
+            transform.position = new Vector3(rockonposition.transform.position.x,
+            rockonposition.transform.position.y + 3.0f, rockonposition.transform.position.z);
+
+            transform.rotation = rockonposition.transform.rotation;
         }
     }
 }

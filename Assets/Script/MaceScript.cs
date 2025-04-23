@@ -25,23 +25,7 @@ public class MaceScript : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        //攻撃が有効な範囲のアニメーションでなければ何もしない
-        if(!enableAttack)
-        {
-            return;
-        }
-        if(collision.gameObject.tag=="Player")
-        {
-            var playerChara = collision.gameObject.GetComponent<PlayerScript>();
-            //キャラがダメージ状態でなければダメージを与える
-            if(playerChara.GetState() != PlayerScript.MyState.Damage
-                &&playerChara.GetState()!=PlayerScript.MyState.Dead&&playerChara.GetAvoid()==false)
-            {
-                playerChara.Damage(trollStatus.GetAttackPower());
-                //キャラが攻撃を受けた時にメイスとの衝突を無効にする
-                IgnoreCollision(true);
-            }
-        }
+        MaceDamage(collision.gameObject);
     }
     //攻撃の有効・向こうの切り替えメソッド
     public void ChangeEnableAttack(bool flag)
@@ -66,5 +50,26 @@ public class MaceScript : MonoBehaviour
     void Update()
     {
         
+    }
+
+    void MaceDamage(GameObject collision)
+    {
+        //攻撃が有効な範囲のアニメーションでなければ何もしない
+        if (!enableAttack)
+        {
+            return;
+        }
+        if (collision.gameObject.tag == "Player")
+        {
+            var playerChara = collision.gameObject.GetComponent<PlayerScript>();
+            //キャラがダメージ状態でなければダメージを与える
+            if (playerChara.GetState() != PlayerScript.MyState.Damage
+                && playerChara.GetState() != PlayerScript.MyState.Dead && playerChara.GetAvoid() == false)
+            {
+                playerChara.Damage(trollStatus.GetAttackPower());
+                //キャラが攻撃を受けた時にメイスとの衝突を無効にする
+                IgnoreCollision(true);
+            }
+        }
     }
 }

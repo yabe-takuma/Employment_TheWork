@@ -42,9 +42,4 @@ public class TitleScript : MonoBehaviour
         
     }
 
-    public void OnScene(InputAction context)
-    {
-
-    }
-
 }

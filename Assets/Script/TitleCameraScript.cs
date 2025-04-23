@@ -28,27 +28,31 @@ public class TitleCameraScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        TitleCamerahauding();
+    }
+
+    void TitleCamerahauding()
+    {
         //プレイヤーが指定した座標に来るまで別のオブジェクトに追従
         if (player.transform.position.z < 192)
         {
             transform.position = camera.transform.position;
         }
         //プレイヤーが指定した座標に来たらフラグが立つまでカメラが回り込む演出をする処理
-        if (player.transform.position.z>192&&!isEvent)
+        if (player.transform.position.z > 192 && !isEvent)
         {
-           timeline.Play();
+            timeline.Play();
         }
         //カメラが指定した座標に来たらフラグと立たせる
-        if(transform.position.z <= 188f)
+        if (transform.position.z <= 188f)
         {
             isEvent = true;
         }
         //アニメーションが終わったらUIを表示する処理
-        if(timeline.time>=timeline.duration)
+        if (timeline.time >= timeline.duration)
         {
             textUI.SetActive(true);
             panel.SetActive(true);
         }
-        
     }
 }

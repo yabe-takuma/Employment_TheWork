@@ -157,7 +157,6 @@ public class ReceiveAttackEventScript : MonoBehaviour
 
     public void WaveAttack()
     {
-        
         Instantiate(wave, wavePoint.position, wave.transform.rotation);
         Instantiate(trampling, tramplingPoint.transform.position, trampling.transform.rotation);
         Debug.Log("波");
@@ -166,31 +165,7 @@ public class ReceiveAttackEventScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //爆発攻撃時アニメーションを一時止める処理
-        if(IsEndStop==true)
-        {
-            EndStop++;
-          
-        }
-        if (EndStop >= 500)
-        {
-            animator.SetFloat("MovingSpeed", 0.5f);
-            EndStop = 0;
-            IsEndStop = false;
-        }
-        //爆発攻撃時アニメーションを一時止める処理
-        if (isAttackStop == true)
-        {
-            Stoptimer++;
-
-        }
-        if (Stoptimer >= 200)
-        {
-            animator.SetFloat("MovingSpeed", 0.5f);
-            Stoptimer = 0;
-            isAttackStop = false;
-        }
-
+        Explocionhauding();
     }
     //他のスクリプトに参照するための関数
     public bool GetIsWave()
@@ -211,5 +186,33 @@ public class ReceiveAttackEventScript : MonoBehaviour
     public bool GetIsExplocion()
     {
         return isExplocion;
+    }
+
+    void Explocionhauding()
+    {
+        //爆発攻撃時アニメーションを一時止める処理
+        if (IsEndStop == true)
+        {
+            EndStop++;
+
+        }
+        if (EndStop >= 500)
+        {
+            animator.SetFloat("MovingSpeed", 0.5f);
+            EndStop = 0;
+            IsEndStop = false;
+        }
+        //爆発攻撃時アニメーションを一時止める処理
+        if (isAttackStop == true)
+        {
+            Stoptimer++;
+
+        }
+        if (Stoptimer >= 200)
+        {
+            animator.SetFloat("MovingSpeed", 0.5f);
+            Stoptimer = 0;
+            isAttackStop = false;
+        }
     }
 }

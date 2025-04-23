@@ -54,15 +54,30 @@ public class GameExplanationScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Keyshanding();
+    }
+    public bool GetIsAxeExplocion()
+    {
+        return isAxeExplocion;
+    }
+
+    public void OnController()
+    {
+        isInput = true;
+        isKeyInput = false;
+    }
+
+    void Keyshanding()
+    {
         //キーやボタンを押した際にUIが出るか消えるかの処理
-        if(Input.GetKeyDown("joystick button 2")&&isExplanation==false|| Input.GetKeyDown(KeyCode.Y)&&isExplanation==false)
+        if (Input.GetKeyDown("joystick button 2") && isExplanation == false || Input.GetKeyDown(KeyCode.Y) && isExplanation == false)
         {
             isExplanation = true;
             BackGround.SetActive(true);
             ExplanationUI.SetActive(true);
             textmeshpro.SetActive(false);
         }
-        else if(Input.GetKeyDown("joystick button 2") && isExplanation == true || Input.GetKeyDown(KeyCode.Y) && isExplanation == true)
+        else if (Input.GetKeyDown("joystick button 2") && isExplanation == true || Input.GetKeyDown(KeyCode.Y) && isExplanation == true)
         {
             isExplanation = false;
             ExplanationUI.SetActive(false);
@@ -72,27 +87,27 @@ public class GameExplanationScript : MonoBehaviour
         }
         //--------------//
         //UIが出現する時次のページに行ったり戻ったり出来る処理
-        if(Input.GetKeyDown(KeyCode.L)|| Input.GetKeyDown("joystick button 5") && isExplanation == true)
+        if (Input.GetKeyDown(KeyCode.L) || Input.GetKeyDown("joystick button 5") && isExplanation == true)
         {
             ExplanationUI.SetActive(true);
             BackGround.SetActive(false);
             Keys.SetActive(true);
         }
-        else if(Input.GetKeyDown(KeyCode.R) || Input.GetKeyDown("joystick button 4") && isExplanation == true)
+        else if (Input.GetKeyDown(KeyCode.R) || Input.GetKeyDown("joystick button 4") && isExplanation == true)
         {
             ExplanationUI.SetActive(true);
             BackGround.SetActive(true);
             Keys.SetActive(false);
         }
-       
-       
+
+
         //操作説明やゲームオーバーの際敵やボスの時間を止める処理
-        if (isExplanation==true|| grayscript.enabled==true&&playerScript.IsGameOver())
+        if (isExplanation == true || grayscript.enabled == true && playerScript.IsGameOver())
         {
             Time.timeScale = 0;
         }
         //敵からドロップした斧を入手する時に表示されるUIの処理
-        else if (myItem.GetItemCounter()==1 && islevelup == false)
+        else if (myItem.GetItemCounter() == 1 && islevelup == false)
         {
             LevelUpUI.SetActive(true);
             Time.timeScale = 0;
@@ -120,8 +135,8 @@ public class GameExplanationScript : MonoBehaviour
                 Time.timeScale = 0;
             }
         }
-      
-        if (isInput&&!isKeyInput)
+        //コントローラーのボタンを押したらコントローラーの操作説明が表示される処理
+        if (isInput && !isKeyInput)
         {
             explanationsUI[0].SetActive(false);
             explanationsUI[1].SetActive(false);
@@ -133,15 +148,14 @@ public class GameExplanationScript : MonoBehaviour
         {
             isKeyInput = true;
         }
+        //キーボードを押したらキーボードの操作説明が表示される処理
         if (Input.anyKeyDown)
         {
             isInput = false;
-            //isKeyInput = true;
-            foreach(KeyCode code in Enum.GetValues(typeof(KeyCode)))
+            foreach (KeyCode code in Enum.GetValues(typeof(KeyCode)))
             {
                 if (Input.GetKeyDown(code) && isKeyInput)
                 {
-                    //isInput = false;
                     explanationsUI[0].SetActive(true);
                     explanationsUI[1].SetActive(true);
                     explanationsUI[2].SetActive(false);
@@ -150,15 +164,5 @@ public class GameExplanationScript : MonoBehaviour
                 }
             }
         }
-    }
-    public bool GetIsAxeExplocion()
-    {
-        return isAxeExplocion;
-    }
-
-    public void OnController()
-    {
-        isInput = true;
-        isKeyInput = false;
     }
 }

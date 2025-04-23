@@ -42,28 +42,7 @@ public class WaveParticleScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        elapsedTime += Time.deltaTime;
-
-        //現在のパーティクル数がMaxParticlesを超えたらパーティクルを移動させる
-        if (!flag && ps.particleCount >= ps.main.maxParticles)
-        {
-            var main = ps.main;
-            main.simulationSpeed = 1f;
-            flag = true;
-            ps.GetComponent<Renderer>().enabled = true;
-            var a = ps.velocityOverLifetime;
-            a.radial = 2f;
-        }
-        if (timer<=100&&trollScript!=null)
-        {
-            timer++;
-            var targetRot = Quaternion.Lerp(transform.rotation, trollScript.GetRotation(), Time.deltaTime * 2f);
-            transform.rotation = Quaternion.Euler(transform.eulerAngles.x, targetRot.eulerAngles.y, transform.eulerAngles.z);
-        }
-        if(receveattackevent.GetIsWave())
-        {
-            timer++;
-        }
+        WaveParticleUpdate();
     }
 
     public void OnParticleTrigger()
@@ -99,6 +78,32 @@ public class WaveParticleScript : MonoBehaviour
             ps.SetTriggerParticles(ParticleSystemTriggerEventType.Enter, enter);
             ps.SetTriggerParticles(ParticleSystemTriggerEventType.Inside, inside);
 
+        }
+    }
+
+    void WaveParticleUpdate()
+    {
+        elapsedTime += Time.deltaTime;
+
+        //現在のパーティクル数がMaxParticlesを超えたらパーティクルを移動させる
+        if (!flag && ps.particleCount >= ps.main.maxParticles)
+        {
+            var main = ps.main;
+            main.simulationSpeed = 1f;
+            flag = true;
+            ps.GetComponent<Renderer>().enabled = true;
+            var a = ps.velocityOverLifetime;
+            a.radial = 2f;
+        }
+        if (timer <= 100 && trollScript != null)
+        {
+            timer++;
+            var targetRot = Quaternion.Lerp(transform.rotation, trollScript.GetRotation(), Time.deltaTime * 2f);
+            transform.rotation = Quaternion.Euler(transform.eulerAngles.x, targetRot.eulerAngles.y, transform.eulerAngles.z);
+        }
+        if (receveattackevent.GetIsWave())
+        {
+            timer++;
         }
     }
 }

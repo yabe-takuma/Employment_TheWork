@@ -55,6 +55,18 @@ public class EnemyGeneretor : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        enemycaunter = 0;
+        InstatiatePos();
+        InstatiateRotate();
+    }
+    // Update is called once per frame
+    void Update()
+    {
+        InstatiateUpdate();
+    }
+
+    void InstatiatePos()
+    {
         //雑魚敵の配置と雑魚敵の数を格納する変数の初期化
         enemyposition[0] = new Vector3(974.509f, 0.999f, 51.15654f);
         enemyposition[1] = new Vector3(904.509f, 0.999f, 51.15654f);
@@ -66,23 +78,21 @@ public class EnemyGeneretor : MonoBehaviour
         enemyposition[7] = new Vector3(1015.5f, 0.999f, 11.15654f);
         enemyposition[8] = new Vector3(980f, 0.999f, 139.15654f);
         enemyposition[9] = new Vector3(1026.4f, 0.999f, 139.9f);
-        enemycaunter = 0;
 
         //宝箱の配置と格納する変数の初期化
         chestsposition[0] = new Vector3(954.509f, 0, 51.15654f);
-        chestsposition[1] = new Vector3(909.509f, 0, 51.15654f);
+        chestsposition[1] = new Vector3(1000.509f, 0, 81.15654f);
         chestsposition[2] = new Vector3(1045.5f, 0, 11.15654f);
-        chestsposition[3] = new Vector3(904f, 0, 154.15654f);
-        //chestsposition[4] = new Vector3(1050.4f, 0, 155.9f);
+        chestsposition[3] = new Vector3(950f, 0, 104.15654f);
+    }
 
-
+    void InstatiateRotate()
+    {
         chestsrotation[0] = Quaternion.Euler(0, 180f, 0);
         chestsrotation[3] = Quaternion.Euler(0, -180f, 0);
-        //chestsrotation[4] = Quaternion.Euler(0, -180f, 0);
-
     }
-    // Update is called once per frame
-    void Update()
+
+    void InstatiateUpdate()
     {
         //プレハブ化したものにスクリプトやエフェクトなどの情報を渡す処理
         for (int i = 0; i < 4; i++)
@@ -99,7 +109,7 @@ public class EnemyGeneretor : MonoBehaviour
 
         }
 
-        for(int i=0;i<10;i++)
+        for (int i = 0; i < 10; i++)
         {
             if (enemycaunter == i)
             {
@@ -116,8 +126,6 @@ public class EnemyGeneretor : MonoBehaviour
                 enemycaunter += 1;
             }
         }
-        
     }
 
-   
 }

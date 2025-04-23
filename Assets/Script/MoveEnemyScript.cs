@@ -107,7 +107,6 @@ public class MoveEnemyScript : MonoBehaviour
         velocity = Vector3.zero;
         arrived = false;
         elapsedTime = 0f;
-        //SetState(EnemyState.Walk);
         handCollider = GetComponentInChildren<SphereCollider>();
         playerscript= GameObject.Find("Character_Female_Hotel Owner").GetComponent<PlayerScript>();
         navMeshAgent = GetComponent<NavMeshAgent>();
@@ -118,106 +117,7 @@ public class MoveEnemyScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (state!=EnemyState.Dead)
-        {
-            //見回りまたはキャラクターを追いかける状態
-            if (state == EnemyState.Walk || state == EnemyState.Chase)
-            {
-                if (!arrived)
-                {
-                    //キャラクターを追いかける状態であればキャラクターの目的地を再設定
-                    if (state == EnemyState.Chase)
-                    {
-                        setPosition.SetDestination(playerTransform.position);
-                        navMeshAgent.SetDestination(setPosition.GetDestination());
-                    }
-
-                    animator.SetFloat("Speed", navMeshAgent.desiredVelocity.magnitude);
-               
-                    if (state == EnemyState.Walk)
-                    {
-
-                        if (navMeshAgent.pathStatus != NavMeshPathStatus.PathInvalid)
-                        {
-                            //目的地に到着したかどうかの判定
-                            if (navMeshAgent.remainingDistance < 0.1f)
-                            {
-                                Debug.Log("目的地に着いた");
-                                SetState(EnemyState.Wait);
-                                animator.SetFloat("Speed", 0.0f);
-                            }
-                        }
-                    }
-                    else if (state == EnemyState.Chase)
-                    {
-                        //攻撃する距離だったら攻撃
-                        if (navMeshAgent.remainingDistance<1.2f)
-                        {
-                            SetState(EnemyState.Attack);
-
-                        }
-                    }
-                }
-
-            }
-            //到着していたら一定時間待つ
-            else if (state == EnemyState.Wait)
-            {
-                elapsedTime += Time.deltaTime;
-
-                //待ち時間を超えたら次の目的地を設定
-                if (elapsedTime > waitTime)
-                {
-                    SetState(EnemyState.Walk);
-                }
-            }
-            else if (state == EnemyState.Freeze)
-            {
-                elapsedTime += Time.deltaTime;
-
-                if (elapsedTime > freezeTime)
-                {
-                    SetState(EnemyState.Walk);
-                }
-            }
-            else if(state==EnemyState.Attack)
-            {
-                //プレイヤーの方向を取得
-                var playerDirection = new Vector3(playerTransform.position.x, transform.position.y, playerTransform.position.z) - transform.position;
-                //敵の向きをプレイヤーの向きに少しづつ変える
-                var dir = Vector3.RotateTowards(transform.forward, playerDirection, rotateSpeed * Time.deltaTime, 0f);
-                //算出した方向の角度を敵の角度に設定
-                transform.rotation = Quaternion.LookRotation(dir);
-            }
-            velocity.y += Physics.gravity.y * Time.deltaTime;
-           
-        }
-        //体力が0になると倒される処理
-        if (enemyStatus.GetHp() <= 0&&isabnormal&&!isDead)
-        {
-            SetState(EnemyState.Dead);
-            Dead();
-            isDead = true;
-        }
-
-        if(isabnormal)
-        {
-            abnormalcounter++;
-            enemyStatus.SetHp(enemyStatus.GetHp() - 0.02f);
-            if (!fireEffectIns)
-            {
-                fireEffectIns = Instantiate<GameObject>(fireeffect);
-            }
-            fireEffectIns.transform.position = transform.position;
-        }
-
-        if(abnormalcounter>1000)
-        {
-            isabnormal = false;
-            abnormalcounter = 0;
-            Destroy(fireEffectIns);
-        }
-       
+        Enemyhauding();
     }
 
 
@@ -416,5 +316,108 @@ public class MoveEnemyScript : MonoBehaviour
         Destroy(fireEffectIns);
         isabnormal = false;
         abnormalcounter = 0;
+    }
+
+    void Enemyhauding()
+    {
+        if (state != EnemyState.Dead)
+        {
+            //見回りまたはキャラクターを追いかける状態
+            if (state == EnemyState.Walk || state == EnemyState.Chase)
+            {
+                if (!arrived)
+                {
+                    //キャラクターを追いかける状態であればキャラクターの目的地を再設定
+                    if (state == EnemyState.Chase)
+                    {
+                        setPosition.SetDestination(playerTransform.position);
+                        navMeshAgent.SetDestination(setPosition.GetDestination());
+                    }
+
+                    animator.SetFloat("Speed", navMeshAgent.desiredVelocity.magnitude);
+
+                    if (state == EnemyState.Walk)
+                    {
+
+                        if (navMeshAgent.pathStatus != NavMeshPathStatus.PathInvalid)
+                        {
+                            //目的地に到着したかどうかの判定
+                            if (navMeshAgent.remainingDistance < 0.1f)
+                            {
+                                Debug.Log("目的地に着いた");
+                                SetState(EnemyState.Wait);
+                                animator.SetFloat("Speed", 0.0f);
+                            }
+                        }
+                    }
+                    else if (state == EnemyState.Chase)
+                    {
+                        //攻撃する距離だったら攻撃
+                        if (navMeshAgent.remainingDistance < 1.2f)
+                        {
+                            SetState(EnemyState.Attack);
+
+                        }
+                    }
+                }
+
+            }
+            //到着していたら一定時間待つ
+            else if (state == EnemyState.Wait)
+            {
+                elapsedTime += Time.deltaTime;
+
+                //待ち時間を超えたら次の目的地を設定
+                if (elapsedTime > waitTime)
+                {
+                    SetState(EnemyState.Walk);
+                }
+            }
+            else if (state == EnemyState.Freeze)
+            {
+                elapsedTime += Time.deltaTime;
+
+                if (elapsedTime > freezeTime)
+                {
+                    SetState(EnemyState.Walk);
+                }
+            }
+            else if (state == EnemyState.Attack||state==EnemyState.Attack2||state==EnemyState.Attack3)
+            {
+                //プレイヤーの方向を取得
+                var playerDirection = new Vector3(playerTransform.position.x, transform.position.y, playerTransform.position.z) - transform.position;
+                //敵の向きをプレイヤーの向きに少しづつ変える
+                var dir = Vector3.RotateTowards(transform.forward, playerDirection, rotateSpeed * Time.deltaTime, 0f);
+                //算出した方向の角度を敵の角度に設定
+                transform.rotation = Quaternion.LookRotation(dir);
+            }
+            velocity.y += Physics.gravity.y * Time.deltaTime;
+
+        }
+        //体力が0になると倒される処理
+        if (enemyStatus.GetHp() <= 0 && isabnormal && !isDead)
+        {
+            SetState(EnemyState.Dead);
+            Dead();
+            isDead = true;
+        }
+
+        if (isabnormal)
+        {
+            abnormalcounter++;
+            enemyStatus.SetHp(enemyStatus.GetHp() - 0.02f);
+            if (!fireEffectIns)
+            {
+                fireEffectIns = Instantiate<GameObject>(fireeffect);
+            }
+            fireEffectIns.transform.position = transform.position;
+        }
+
+        if (abnormalcounter > 1000)
+        {
+            isabnormal = false;
+            abnormalcounter = 0;
+            Destroy(fireEffectIns);
+        }
     }
 }

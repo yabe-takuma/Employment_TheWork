@@ -19,7 +19,6 @@ public class GameManagerScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Screen.SetResolution(1920, 1080, false);
         grayscript.enabled = false;
         material.SetFloat("_Threshold", 0.0f);
         colorcounter = 0.0f;

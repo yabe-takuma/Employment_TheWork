@@ -10,7 +10,10 @@ public class ProcessCharaAnimEventScript : MonoBehaviour
     //装備品の親のTransform
     [SerializeField]
     private Transform equip;
-
+    //ジャンプに必要なアニメーション
+    [SerializeField]
+    private Animator animator;
+   
     // Start is called before the first frame update
     void Start()
     {
@@ -54,6 +57,20 @@ public class ProcessCharaAnimEventScript : MonoBehaviour
             Debug.Log("プレイヤー食らい終わった");
         }
     }
+
+    public void JumpStop()
+    {
+        animator.SetFloat("JumpAnimation", 0.0f);
+        Debug.Log("硬直中");
+    }
+
+    public void JumpStart()
+    {
+        if (playerscript.GetPosition().y <= 0.1f)
+        {
+            animator.SetFloat("JumpAnimation", 1.0f);
+        }
+    }
     //複数の武器のコライダーを格納するための関数
     public void SetCollider(Collider col)
     {
@@ -64,6 +81,6 @@ public class ProcessCharaAnimEventScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       
+        JumpStart();
     }
 }

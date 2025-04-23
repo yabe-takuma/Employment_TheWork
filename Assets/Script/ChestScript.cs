@@ -24,6 +24,8 @@ public class ChestScript : MonoBehaviour
     private GameObject collisionUI;
     [SerializeField]
     private int opentimer;
+
+    private bool isKey;
     // Start is called before the first frame update
     void Start()
     {
@@ -37,80 +39,21 @@ public class ChestScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       
-        //複数の宝箱それぞれに違うUIを一括で変える処理
-        for (int i = 0; i < chestsOpenUI.Count; i++)
-        {
-            if (isEndOpen && opentimer >= 187)
-            {
-                chestsOpenUI[chestindex].SetActive(true);
-                Debug.Log("宝箱開け切った");
-                isOpen = false;
-                isEndOpen = false;
-            }
-            if (chestsOpenUI[chestindex].activeSelf && Input.GetKeyDown(KeyCode.J)/* && !isClick*/ ||
-                chestsOpenUI[chestindex].activeSelf && Input.GetKeyDown("joystick button 4") /*&& !isClick*/)
-            {
-                chestsOpenUI[chestindex].SetActive(false);
-                collisionUI.SetActive(false);
-                chestcounter++;
-                changeEquipScript.SetChestCounter(chestcounter);
-                isClick = true;
-                if (chestindex < chestsOpenUI.Count-1)
-                {
-                    chestindex++;
-                    chestsOpenUI[i] = chestsOpenUI[chestindex];
-                    isClick = true;
-                }
-            }
-        }
-        if (isCollision && Input.GetKeyDown(KeyCode.Q) && !isClick || isCollision && Input.GetKeyDown("joystick button 1")&&!isClick)
-        {
-            isOpen = true;
-            
-        }
-        //if(chestanimation.isPlaying)
-        //{
-        //    opentimer++;
-        //}
-        if(isOpen)
-        {
-            opentimer++;
-        }
+        ChestAnimation();
     }
 
     private void OnTriggerStay(Collider col)
     {
-       
         if (col.tag=="Player")
         {
-            isCollision = true;
-            if (!isClick)
-            {
-                collisionUI.SetActive(true);
-            }
-            Debug.Log("プレイヤーが来た");
-            //キーを押すと宝箱を開く
-            if (isOpen)
-            {
-                //opentimer++;
-                isEndOpen = true;
-                chestanimation.Play();
-                Debug.Log("宝箱を開けた");
-            }
+            CollisionChest();
         }
-       
-
     }
 
     private void OnTriggerExit(Collider other)
     {
         isCollision = false;
         collisionUI.SetActive(false);
-        //if (other.tag == "Player"&&opentimer<187)
-        //{
-        //    isClick = false;
-        //}
 
     }
 
@@ -133,5 +76,63 @@ public class ChestScript : MonoBehaviour
     {
         changeEquipScript = changeequipscript;
     }
+
+    void CollisionChest()
+    {
+        isCollision = true;
+        if (!isClick)
+        {
+            collisionUI.SetActive(true);
+        }
+        Debug.Log("プレイヤーが来た");
+        //キーを押すと宝箱を開く
+        if (isOpen)
+        {
+            isEndOpen = true;
+            chestanimation.Play();
+            Debug.Log("宝箱を開けた");
+        }
+    }
     
+    void ChestAnimation()
+    {
+        //複数の宝箱それぞれに違うUIを一括で変える処理
+        for (int i = 0; i < chestsOpenUI.Count; i++)
+        {
+            if (isEndOpen && opentimer >= 187)
+            {
+                chestsOpenUI[chestindex].SetActive(true);
+                Debug.Log("宝箱開け切った");
+                isOpen = false;
+                isEndOpen = false;
+                isKey = true;
+            }
+            if (chestsOpenUI[chestindex].activeSelf && Input.GetKeyDown(KeyCode.J) ||
+                chestsOpenUI[chestindex].activeSelf && Input.GetKeyDown("joystick button 4"))
+            {
+                chestsOpenUI[chestindex].SetActive(false);
+                collisionUI.SetActive(false);
+                chestcounter++;
+                changeEquipScript.SetChestCounter(chestcounter);
+                isClick = true;
+                if (chestindex < chestsOpenUI.Count - 1)
+                {
+                    chestindex++;
+                    chestsOpenUI[i] = chestsOpenUI[chestindex];
+                    isClick = true;
+                }
+            }
+        }
+        if (isCollision && Input.GetKeyDown(KeyCode.Q) && !isClick && !isKey || isCollision && Input.GetKeyDown("joystick button 1") && !isClick && !isKey)
+        {
+            isOpen = true;
+
+        }
+
+        if (isOpen)
+        {
+            opentimer++;
+        }
+    }
+
 }

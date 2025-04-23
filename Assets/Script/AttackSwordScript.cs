@@ -86,7 +86,7 @@ public class AttackSwordScript : MonoBehaviour
                 swordobj.transform.SetParent(other.transform);
             }
         }
-        //剣がボスに当たった時の処理
+        //普通の剣がボスに当たった時の処理
         if (other.tag == "Boss" && this.gameObject.tag != "FireSword" && this.gameObject.tag != "WaterSword"&&!isAttack)
         {
             var trollScript = other.GetComponentInParent<TrollScript>();
@@ -101,6 +101,7 @@ public class AttackSwordScript : MonoBehaviour
                 Debug.Log("ボスに当たった");
             }
         }
+        //炎の剣がボスに当たった時の処理
         else if (other.tag == "Boss" && this.gameObject.tag == "FireSword" && !isAttack)
         {
 
@@ -120,6 +121,7 @@ public class AttackSwordScript : MonoBehaviour
                 swordobj.transform.SetParent(other.transform);
             }
         }
+        //水の剣がボスに当たった時の処理
         else if (other.tag == "Boss" && this.gameObject.tag == "WaterSword" && !isAttack)
         {
             var trollScript = other.GetComponentInParent<TrollScript>();

@@ -115,6 +115,8 @@ public class TrollScript : MonoBehaviour
     private int loopcount;
     private const int maxloop = 3;
 
+    private bool isstarttimeline;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -123,7 +125,6 @@ public class TrollScript : MonoBehaviour
         defaultPos = transform.position;
         setposition1 = GetComponent<SetPosition1>();
         SetRandomDestination();
-        //SetState(TrollState.idle);
         timeline[0].Stop();
         timeline[1].Stop();
         loopcount = 0;
@@ -175,47 +176,8 @@ public class TrollScript : MonoBehaviour
             ContinuousAttack();
             Debug.Log("連続攻撃5");
         }
-
-        if (trollStatus.GetHp() <= 0)
-        {
-            Time.timeScale = 0.2f;
-        }
-        //敵が炎上している時
-        if (isabnormal)
-        {
-            abnormalcounter++;
-            if (!fireEffectIns)
-            {
-                fireEffectIns = Instantiate<GameObject>(fireeffect);
-            }
-            fireEffectIns.transform.position = transform.position;
-        }
-
-        if (abnormalcounter > 1000)
-        {
-            isabnormal = false;
-            abnormalcounter = 0;
-            Destroy(fireEffectIns);
-        }
-        //移動処理
-        velocity.y += Physics.gravity.y * Time.deltaTime;
-        characterController.Move(velocity * Time.deltaTime);
-        
-
-        if (timeline[1].time >= timeline[1].duration)
-        {
-            Isinstallation = false;
-        }
-        if (receiveAttackEventScript.GetIsExplocion())
-        {
-            Isexplocion = false;
-        }
-
-        if(animator.GetCurrentAnimatorStateInfo(0).IsName("ShockwaveAttack")||
-           animator.GetCurrentAnimatorStateInfo(0).IsName("WaveAttack"))
-        {
-            velocity = new Vector3(0f, velocity.y, 0f);
-        }
+        TrollUpdate();
+       
     }
 
     //目的地を設定する
@@ -280,7 +242,6 @@ public class TrollScript : MonoBehaviour
             Isinstallation = false;
             Isexplocion = false;
             Iscontinuous = false;
-            //navMeshAgent.isStopped = true;
             Debug.Log("衝撃波攻撃");
         }
         else if(trollState == TrollState.charge)
@@ -292,7 +253,6 @@ public class TrollScript : MonoBehaviour
         else if(trollState == TrollState.chase)
         {
             animator.SetBool("Chase", true);
-            //timeline[0].Stop();
             attackTargetTransform = playerTransform;
            
             Debug.Log("チェイス");
@@ -349,9 +309,7 @@ public class TrollScript : MonoBehaviour
             attackTargetTransform = playerTransform;
             attackTargetPos = attackTargetTransform.position;
             velocity = new Vector3(0f, velocity.y, 0f);
-            //animator.SetTrigger("ContinuousAttack");
             animator.SetBool("Wave", true);
-            //timeline[0].Play();
             animator.SetBool("Chase", false);
             Isshockwave = false;
             Isinstallation = false;
@@ -412,7 +370,7 @@ public class TrollScript : MonoBehaviour
         }
         
         //目的地に着いたらidle状態にする
-        if (Vector3.Distance(transform.position,destination)<2.0f/*||isCollision==true*//*&&collisiontimer>=10*/)
+        if (Vector3.Distance(transform.position,destination)<2.0f)
         {
             SetState(TrollState.idle);
            
@@ -552,8 +510,6 @@ public class TrollScript : MonoBehaviour
     private void ContinuousAttack()
     {
 
-        Debug.Log("8");
-
         //攻撃状態になった時のキャラクターの向きを計算し、徐々にそちらの向きに回転させる
         var targetRot = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(attackTargetPos - transform.position), Time.deltaTime * 2f);
         transform.rotation = Quaternion.Euler(transform.eulerAngles.x, targetRot.eulerAngles.y, transform.eulerAngles.z);
@@ -569,11 +525,7 @@ public class TrollScript : MonoBehaviour
 
     public void TakeDamage(int damage,Vector3 attackedPlace)
     {
-        //SetState(TrollState.Damage);
-        //maceCapsuleCollider.enabled = false;
-        //maceSphereCollider.enabled = false;
         //WeakUIをインスタンス化。登場位置はコライダの中心からカメラの方向に少し寄せた位置
-      
         trollStatus.SetHp(trollStatus.GetHp() - damage);
         //navMeshAgent.isStopped = true;
         if (trollStatus.GetHp()<=0)
@@ -612,43 +564,9 @@ public class TrollScript : MonoBehaviour
         return transform.rotation;
     }
 
-    private void OnTriggerStay(Collider other)
-    {
-        if(other.tag=="Collision"&&collisiontimer< 10)
-        {
-            trollState = TrollState.idle;
-            collisiontimer++;
-            
-        }
-        else if(other.tag == "Collision" && collisiontimer > 10 )
-        {
-            trollState = TrollState.patrol;
-            //isCollision = false;
-            //collisiontimer = 0;
-            
-        }
-        if (other.tag == "Tree" && collisiontimer < 10)
-        {
-            trollState = TrollState.idle;
-            collisiontimer++;
-            Debug.Log("木にぶつかった");
-        }
-        else if (other.tag == "Tree" && collisiontimer > 10)
-        {
-            trollState = TrollState.patrol;
-            //isCollision = false;
-            //collisiontimer = 0;
+   
 
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if(other.tag=="Collision")
-        {
-            collisiontimer = 0;
-        }
-    }
+   
 
     public Vector3 GetPosition()
     {
@@ -674,6 +592,61 @@ public class TrollScript : MonoBehaviour
     public void DestroyFire()
     {
         Destroy(fireEffectIns);
+    }
+
+    public void ContinuousOff()
+    {
+        isstarttimeline = false;
+    }
+
+    public void ContinuousOn()
+    {
+        isstarttimeline = true;
+    }
+
+    void TrollUpdate()
+    {
+        if (trollStatus.GetHp() <= 0)
+        {
+            Time.timeScale = 0.2f;
+        }
+        //敵が炎上している時
+        if (isabnormal)
+        {
+            abnormalcounter++;
+            if (!fireEffectIns)
+            {
+                fireEffectIns = Instantiate<GameObject>(fireeffect);
+            }
+            fireEffectIns.transform.position = transform.position;
+        }
+
+        if (abnormalcounter > 1000)
+        {
+            isabnormal = false;
+            abnormalcounter = 0;
+            Destroy(fireEffectIns);
+        }
+        //移動処理
+        velocity.y += Physics.gravity.y * Time.deltaTime;
+        characterController.Move(velocity * Time.deltaTime);
+
+
+        if (timeline[1].time >= timeline[1].duration)
+        {
+            Isinstallation = false;
+        }
+        if (receiveAttackEventScript.GetIsExplocion())
+        {
+            Isexplocion = false;
+        }
+
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName("ShockwaveAttack") ||
+           animator.GetCurrentAnimatorStateInfo(0).IsName("WaveAttack") ||
+           isstarttimeline)
+        {
+            velocity = new Vector3(0f, velocity.y, 0f);
+        }
     }
 
 }

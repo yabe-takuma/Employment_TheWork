@@ -8,6 +8,7 @@ public class ExplanationScript : MonoBehaviour
     
     [SerializeField]
     private Material material;　　　//シェーダーを参照するための変数
+    [SerializeField]
     private float colorcounter;     //ディゾルブするために必要な変数
     private bool isInput;           //ボタンを押したかを検知する変数
     // Start is called before the first frame update
@@ -21,13 +22,18 @@ public class ExplanationScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        FadeOutUpdate();
+    }
+
+    void FadeOutUpdate()
+    {
         //ゲーム説明画面の時ゲーム画面に行くための処理
-        if (Input.GetKeyDown(KeyCode.Space)|| Input.GetKeyDown("joystick button 1"))
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown("joystick button 1"))
         {
             isInput = true;
         }
         //押していないときは徐々に消えていく処理
-        if (!isInput)
+        if (!isInput && colorcounter < 1.0f)
         {
             colorcounter += 0.004f;
             if (material.GetFloat("_Threshold") <= 1.0f)
@@ -38,7 +44,7 @@ public class ExplanationScript : MonoBehaviour
         //押したときは徐々に画面を見えなくして次のシーンに行くための処理
         else
         {
-            colorcounter -= 0.008f;
+            colorcounter -= 0.004f;
             if (material.GetFloat("_Threshold") >= 0.0f)
             {
                 material.SetFloat("_Threshold", colorcounter);

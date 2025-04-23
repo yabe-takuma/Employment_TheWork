@@ -30,6 +30,7 @@ public class PlayerAttackStateBehaviour : StateMachineBehaviour
         {
             animator.SetBool("Jump", true);
             animator.ResetTrigger("Attack");
+            animator.SetBool("Attack", false);
         }
         //攻撃用のコライダーを表示するための処理
         processCharaAnimEvent.AttackStart();
