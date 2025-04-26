@@ -129,6 +129,25 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
+    public void KnockBack(int damage)
+    {
+        //ただダメージUIをどこでもよいので表示したい用の処理
+        if (state != MyState.Dead)
+        {
+            animator.SetTrigger("KnockBack");
+            velocity = new Vector3(0f, velocity.y, 0f);
+            move = Vector3.zero;
+            state = MyState.Damage;
+            var damageEffectIns = Instantiate<GameObject>(damageEffect, new Vector3(transform.position.x, transform.position.y - 1, transform.position.z), Quaternion.identity);
+            Destroy(damageEffectIns, 1f);
+            myStatus.SetHp(myStatus.GetHp() - damage);
+        }
+        if (myStatus.GetHp() <= 0)
+        {
+            Dead();
+        }
+    }
+
     public void SetState(MyState tempState)
     {
         if(tempState == MyState.Normal)
@@ -448,6 +467,11 @@ public class PlayerScript : MonoBehaviour
     public void PlayerSpeedOn()
     {
         Move();
+    }
+
+    public Rigidbody SetRigitbody()
+    {
+        return rb;
     }
 
 }

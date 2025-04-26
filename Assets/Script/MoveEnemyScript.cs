@@ -16,6 +16,7 @@ public class MoveEnemyScript : MonoBehaviour
         Attack,
         Freeze,
         Damage,
+        KnockBack,
         Dead,
         Attack2,
         Attack3
@@ -184,6 +185,16 @@ public class MoveEnemyScript : MonoBehaviour
             animator.SetTrigger("Damage");
             navMeshAgent.isStopped = true;
         }
+        else if(tempState==EnemyState.KnockBack)
+        {
+            //ダメージ時も歩かないようにするさらに攻撃もやめる
+            velocity = Vector3.zero;
+            animator.ResetTrigger("Attack");
+            animator.ResetTrigger("Attack2");
+            animator.ResetTrigger("Attack3");
+            animator.SetTrigger("KnockBack");
+            navMeshAgent.isStopped = true;
+        }
         else if(tempState == EnemyState.Dead)
         {
             //倒されるときアニメーションをして消滅をする
@@ -223,6 +234,27 @@ public class MoveEnemyScript : MonoBehaviour
             //ダメージを受ける時攻撃用のコライダーを非表示にし、エフェクトを生成
             //さらに体力を減らす処理
             SetState(EnemyState.Damage);
+            handCollider.enabled = false;
+            var damageEffectIns = Instantiate<GameObject>(damageEffect);
+            damageEffectIns.transform.position = attackedPlace;
+            Destroy(damageEffectIns, 1f);
+            enemyStatus.SetHp(enemyStatus.GetHp() - damage);
+        }
+        ////体力が0になると倒される処理
+        if (enemyStatus.GetHp() <= 0.0f && !isDead)
+        {
+            Dead();
+            isDead = true;
+        }
+    }
+
+    public void KnockBackDamage(int damage, Vector3 attackedPlace)
+    {
+        if (enemyStatus.GetHp() >= 0.0f)
+        {
+            //ダメージを受ける時攻撃用のコライダーを非表示にし、エフェクトを生成
+            //さらに体力を減らす処理
+            SetState(EnemyState.KnockBack);
             handCollider.enabled = false;
             var damageEffectIns = Instantiate<GameObject>(damageEffect);
             damageEffectIns.transform.position = attackedPlace;

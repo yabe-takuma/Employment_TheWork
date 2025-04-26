@@ -43,7 +43,7 @@ public class ExplocionEmptyScript : MonoBehaviour
         if (other.tag == "Player" && playerScript.GetState() != PlayerScript.MyState.Damage && playerScript.GetState() != PlayerScript.MyState.Dead &&
           playerScript.GetAvoid() == false && playerScript.GetState() != PlayerScript.MyState.SkillAttack && trollScript.GetState() != TrollScript.TrollState.Dead)
         {
-            playerScript.Damage(2);
+            playerScript.KnockBack(2);
         }
     }
 }

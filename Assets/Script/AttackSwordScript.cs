@@ -15,13 +15,16 @@ public class AttackSwordScript : MonoBehaviour
     [SerializeField]
     private GameObject damageEffect;
     private bool isAttack;
-
+    //3段目の攻撃時敵をダウンさせるためにAnimatorを参照
+    [SerializeField]
+    private Animator animator;
   
     // Start is called before the first frame update
     private void Start()
     {
         myStatus = transform.root.GetComponent<MyStatus>();
         playerscript = transform.root.GetComponent<PlayerScript>();
+        animator = transform.root.GetComponent<Animator>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -31,7 +34,7 @@ public class AttackSwordScript : MonoBehaviour
         {
            
             var enemyScript = other.GetComponent<MoveEnemyScript>();
-            if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead)
+            if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead && enemyScript.GetState() == MoveEnemyScript.EnemyState.Chase)
             {
                 other.GetComponent<MoveEnemyScript>().TakeDamage(myStatus.GetAttackPower(),other.ClosestPointOnBounds(transform.position));
                 var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y-1.0f, other.bounds.center.z), Quaternion.identity);
@@ -145,6 +148,11 @@ public class AttackSwordScript : MonoBehaviour
                 var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 1.0f, other.bounds.center.z), Quaternion.identity);
                 swordobj.transform.SetParent(other.transform);
             }
+        }
+        if(animator.GetCurrentAnimatorStateInfo(0).IsName("Attack03")&&other.tag=="Enemy")
+        {
+            var enemyScript = other.GetComponent<MoveEnemyScript>();
+            other.GetComponentInParent<MoveEnemyScript>().KnockBackDamage(myStatus.GetAttackPower(), other.ClosestPointOnBounds(transform.position));
         }
     }
 

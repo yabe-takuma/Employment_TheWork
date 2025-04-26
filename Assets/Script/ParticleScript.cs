@@ -20,6 +20,10 @@ public class ParticleScript : MonoBehaviour
     //当たり判定に必要
     [SerializeField]
     private TrollScript trollScript;
+    [SerializeField]
+    private float _futtobiPower;
+
+    private List<ParticleSystem.Particle> enterParticles = new List<ParticleSystem.Particle>();
 
     // Start is called before the first frame update
     void Start()
@@ -70,7 +74,20 @@ public class ParticleScript : MonoBehaviour
                 if(playerScript.GetState()!=PlayerScript.MyState.Damage&&playerScript.GetState()!=PlayerScript.MyState.Dead&&
                     playerScript.GetAvoid()==false&&trollScript.GetState()!=TrollScript.TrollState.Dead)
                 {
-                    playerScript.Damage(1);
+                    foreach(var particle in enterParticles)
+                    {
+                        Collider[] colliders = Physics.OverlapSphere(particle.position, 0.5f);
+                        foreach (var collider in colliders)
+                        {
+                            Rigidbody rb = collider.GetComponent<Rigidbody>();
+                            if(rb !=null)
+                            {
+                                Vector3 forceDirection = (collider.transform.position - transform.position).normalized;
+                                rb.AddForce(forceDirection* _futtobiPower);
+                            }
+                        }
+                    }
+                    playerScript.KnockBack(1);
                     for (int i = 0; i < numEnter; i++)
                     {
                         ParticleSystem.Particle p = enter[i];
