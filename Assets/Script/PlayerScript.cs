@@ -269,7 +269,8 @@ public class PlayerScript : MonoBehaviour
                    && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack2")
                    && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack03"))
         {
-            animator.SetFloat("Speed", rb.velocity.magnitude);
+           animator.SetFloat("Speed", rb.velocity.magnitude);
+            
             //入力している方向に回避するための処理y
             if (!camera3D.rock)
             {
@@ -328,13 +329,11 @@ public class PlayerScript : MonoBehaviour
     public void OnAttack(InputAction.CallbackContext context)
     {
         //地面にいて武器を持っていたら攻撃する処理
-        if (characterController.isGrounded)
+        if (context.started && !animator.IsInTransition(0) && !animator.GetCurrentAnimatorStateInfo(0).IsName("Jump") && changeequipscript.GetEquipment() >= 0)
         {
-            if (context.started && !animator.IsInTransition(0) && changeequipscript.GetEquipment() >= 0)
-            {
-                SetState(MyState.Attack);
-            }
+            SetState(MyState.Attack);
         }
+        
     }
 
     public void OnSkillAttack(InputAction.CallbackContext context)
@@ -379,7 +378,7 @@ public class PlayerScript : MonoBehaviour
                
             }
         }
-      
+       
     }
 
     public bool GetAvoid()
@@ -413,14 +412,14 @@ public class PlayerScript : MonoBehaviour
 
     void Playerhauding()
     {
-        if (Input.GetKeyDown(KeyCode.F) && transform.position.y < 0 || Input.GetKeyDown("joystick button 3") && transform.position.y < 0)
+        if (Input.GetKeyDown(KeyCode.F) && transform.position.y < 0&& !animator.GetCurrentAnimatorStateInfo(0).IsName("Jump") || Input.GetKeyDown("joystick button 3") && transform.position.y < 0)
         {
             animator.SetBool("Jump", true);
             rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
             rb.velocity = new Vector3(0, rb.velocity.y + jumpPower, 0);
             isJump = true;
         }
-        else
+        else 
         {
             isJump = false;
             animator.SetBool("Jump", false);
@@ -438,6 +437,17 @@ public class PlayerScript : MonoBehaviour
         
         characterController.Move(rb.velocity * Time.deltaTime);
         
+    }
+
+    public void PlayerSpeedOff()
+    {
+        rb.velocity = Vector3.zero;
+        move = Vector3.zero;
+    }
+
+    public void PlayerSpeedOn()
+    {
+        Move();
     }
 
 }

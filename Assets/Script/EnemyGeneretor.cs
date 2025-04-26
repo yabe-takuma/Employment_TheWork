@@ -69,15 +69,15 @@ public class EnemyGeneretor : MonoBehaviour
     {
         //雑魚敵の配置と雑魚敵の数を格納する変数の初期化
         enemyposition[0] = new Vector3(974.509f, 0.999f, 51.15654f);
-        enemyposition[1] = new Vector3(904.509f, 0.999f, 51.15654f);
+        enemyposition[1] = new Vector3(984.509f, 0.999f, 51.15654f);
         enemyposition[2] = new Vector3(1015.5f, 0.999f, 51.15654f);
-        enemyposition[3] = new Vector3(910f, 0.999f, 121.15654f);
-        enemyposition[4] = new Vector3(1026.4f, 0.999f, 110.9f);
-        enemyposition[5] = new Vector3(974.509f, 0.999f, 11.15654f);
-        enemyposition[6] = new Vector3(904.509f, 0.999f, 11.15654f);
-        enemyposition[7] = new Vector3(1015.5f, 0.999f, 11.15654f);
-        enemyposition[8] = new Vector3(980f, 0.999f, 139.15654f);
-        enemyposition[9] = new Vector3(1026.4f, 0.999f, 139.9f);
+        enemyposition[3] = new Vector3(940f, 0.999f, 101.15654f);
+        enemyposition[4] = new Vector3(990.4f, 0.999f, 110.9f);
+        enemyposition[5] = new Vector3(974.509f, 0.999f, 15.15654f);
+        enemyposition[6] = new Vector3(934.509f, 0.999f, 15.15654f);
+        enemyposition[7] = new Vector3(1015.5f, 0.999f, 15.15654f);
+        enemyposition[8] = new Vector3(980f, 0.999f, 40.15654f);
+        enemyposition[9] = new Vector3(1000.4f, 0.999f, 80.9f);
 
         //宝箱の配置と格納する変数の初期化
         chestsposition[0] = new Vector3(954.509f, 0, 51.15654f);

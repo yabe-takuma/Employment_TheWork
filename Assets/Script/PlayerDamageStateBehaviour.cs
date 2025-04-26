@@ -7,17 +7,18 @@ public class PlayerDamageStateBehaviour : StateMachineBehaviour
     //プレイヤーのアニメーションに割り込む関数がある変数
     private ProcessCharaAnimEventScript processCharaAnimEvent;
 
+    private PlayerScript playerScript;
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
-    //override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    //{
-    //    
-    //}
+    override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        playerScript = animator.GetComponent<PlayerScript>();
+    }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
-    //override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    //{
-    //    
-    //}
+    override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        playerScript.PlayerSpeedOff();
+    }
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -25,6 +26,8 @@ public class PlayerDamageStateBehaviour : StateMachineBehaviour
         processCharaAnimEvent = animator.transform.GetComponent<ProcessCharaAnimEventScript>();
         //アニメーションが終わったらすぐに待機状態に戻る処理
         processCharaAnimEvent.EndDamage();
+
+        //playerScript.PlayerSpeedOn();
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

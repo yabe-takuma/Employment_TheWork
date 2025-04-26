@@ -7,6 +7,8 @@ public class ChestScript : MonoBehaviour
     [SerializeField]
     private Animation chestanimation;  //宝箱のアニメーション
     [SerializeField]
+    private Animator chestanimator;
+    [SerializeField]
     private bool isOpen;  //宝箱を開けたかを検知する変数
     private bool isEndOpen;  //宝箱の処理に必要な変数
     [SerializeField]
@@ -89,7 +91,8 @@ public class ChestScript : MonoBehaviour
         if (isOpen)
         {
             isEndOpen = true;
-            chestanimation.Play();
+            //chestanimation.Play();
+            chestanimator.SetTrigger("Open");
             Debug.Log("宝箱を開けた");
         }
     }
@@ -132,6 +135,7 @@ public class ChestScript : MonoBehaviour
         if (isOpen)
         {
             opentimer++;
+            Time.timeScale = 0;
         }
     }
 

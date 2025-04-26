@@ -1,3 +1,4 @@
+using RPGCharacterAnims.Lookups;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -27,6 +28,9 @@ public class ChangeEquipScript : MonoBehaviour
     private int chestcounter;
     [SerializeField]
     private GameExplanationScript gameExplanationScript;
+    //武器の情報のみ(生成はしない)
+    [SerializeField]
+    private GameObject weaponinfo;
     //他のスクリプトに参照するための関数
     public int GetEquipment()
     {
@@ -100,19 +104,20 @@ public class ChangeEquipScript : MonoBehaviour
             //新しく装備する武器をインスタンス化
             var weapon = Instantiate<GameObject>(weapons[equipment]);
             processCharaAnimEvent.SetCollider(weapon.GetComponent<Collider>());
+            
 
             //武器の位置や角度を設定
-            if(equipment ==0)
+            if (equipment ==0)
             {
                 weapon.transform.SetParent(equipTransform);
-                weapon.transform.localPosition = new Vector3(-0.24f, 0.03f, 0f);
-                weapon.transform.localEulerAngles = new Vector3(291.87f, 6.4f, 80f);
+                weapon.transform.localPosition = new Vector3(-0.1f, 0.03f, 0.1f);
+                weapon.transform.localEulerAngles = new Vector3(291.87f, 90.4f/*6.4f*/, 80f);
                 weapon.transform.localScale = new Vector3(1f, 1f, 1f);
             }
             else if(equipment==1)
             {
                 weapon.transform.SetParent(equipTransform);
-                weapon.transform.localPosition = new Vector3(-0.1f, 0.05f, 0.5f);
+                weapon.transform.localPosition = new Vector3(-0.1f, 0.05f, 0.05f);
                 weapon.transform.localEulerAngles = new Vector3(90.0f, 0.0f, 0.0f);
                 weapon.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
             }
@@ -158,9 +163,10 @@ public class ChangeEquipScript : MonoBehaviour
         processCharaAnimEvent.SetCollider(weapon.GetComponent<Collider>());
 
         weapon.transform.SetParent(equipTransform);
-        weapon.transform.localPosition = new Vector3(-0.24f, 0.03f, 0f);
-        weapon.transform.localEulerAngles = new Vector3(291.87f, 6.4f, 80f);
+        weapon.transform.localPosition = new Vector3(-0.1f, 0.03f, 0.05f);
+        weapon.transform.localEulerAngles = new Vector3(291.87f, 90.4f, 80f);
         weapon.transform.localScale = new Vector3(1f, 1f, 1f);
+      
         myStatus.SetEquip(weapon);
     }
     //宝箱を開けた回数を記録するための関数
@@ -169,4 +175,29 @@ public class ChangeEquipScript : MonoBehaviour
         chestcounter = counter;
     }
 
+    public void SwordRotation()
+    {
+      
+        //新しく装備する武器をインスタンス化
+        //var weapon = Instantiate<GameObject>(weapons[equipment]);
+        //processCharaAnimEvent.SetCollider(weapon.GetComponent<Collider>());
+        //weapon.transform.SetParent(equipTransform);
+        //weapon.transform.localPosition = new Vector3(-0.24f, 0.03f, 0f);
+        //weapon.transform.localEulerAngles = new Vector3(291.87f, 6.4f, 80f);
+        //weapon.transform.localScale = new Vector3(1f, 1f, 1f);
+        //myStatus.SetEquip(weapon);
+    }
+
+    public void OriginalSwordRotation()
+    {
+        //新しく装備する武器をインスタンス化
+        //var weapon = Instantiate<GameObject>(weapons[equipment]);
+        //processCharaAnimEvent.SetCollider(weapon.GetComponent<Collider>());
+
+        //weapon.transform.SetParent(equipTransform);
+        //weapon.transform.localPosition = new Vector3(-0.1f, 0.03f, 0.05f);
+        //weapon.transform.localEulerAngles = new Vector3(291.87f, 90.4f, 80f);
+        //weapon.transform.localScale = new Vector3(1f, 1f, 1f);
+        //myStatus.SetEquip(weapon);
+    }
 }
