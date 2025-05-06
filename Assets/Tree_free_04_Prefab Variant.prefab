@@ -51,6 +51,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6351742822515365747, guid: de901f52742455849b49d839fac5da61, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6623376574347072683, guid: de901f52742455849b49d839fac5da61, type: 3}
       propertyPath: m_Name
       value: Tree_free_04_Prefab Variant

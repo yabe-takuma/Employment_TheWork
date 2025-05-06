@@ -102,39 +102,32 @@ public class GameExplanationScript : MonoBehaviour
 
 
         //操作説明やゲームオーバーの際敵やボスの時間を止める処理
-        if (isExplanation == true || grayscript.enabled == true && playerScript.IsGameOver())
+        if (grayscript.enabled == true && playerScript.IsGameOver())
         {
             Time.timeScale = 0;
+        }
+        else if(isExplanation)
+        {
+            StartCoroutine("ExplanationCoroutine");
         }
         //敵からドロップした斧を入手する時に表示されるUIの処理
         else if (myItem.GetItemCounter() == 1 && islevelup == false)
         {
-            LevelUpUI.SetActive(true);
-            Time.timeScale = 0;
-            isAxeExplocion = true;
-            Debug.Log("レベルが2になった");
+            StartCoroutine("ItemCoroutine");
         }
         else
         {
-            Time.timeScale = 1;
-        }
-        //敵が一体倒されると表示されるUIをキーやボタンを押したら消す処理
-        if (Input.GetKeyDown(KeyCode.J) && playerScript.SetDeadCaunter() == 1
-            || Input.GetKeyDown("joystick button 4") && playerScript.SetDeadCaunter() == 1)
-        {
-            LevelUpUI.SetActive(false);
-            islevelup = true;
-            Time.timeScale = 0;
-            Debug.Log("レベル説明終了");
+            //Time.timeScale = 1;
         }
         //宝箱の説明が表示か非表示か確認する処理
         for (int i = 0; i < chestsUI.Count; i++)
         {
-            if (chestsUI[i].activeSelf)
+            if(chestsUI[i].activeSelf)
             {
-                Time.timeScale = 0;
+                StartCoroutine("ChestCoroutine");
             }
         }
+        
         //コントローラーのボタンを押したらコントローラーの操作説明が表示される処理
         if (isInput && !isKeyInput)
         {
@@ -164,5 +157,39 @@ public class GameExplanationScript : MonoBehaviour
                 }
             }
         }
+    }
+    //敵が一体倒されて斧を拾うと表示されるUIをキーやボタンを押したら消す処理
+    private IEnumerator ItemCoroutine()
+    {
+        Time.timeScale = 0;
+
+        LevelUpUI.SetActive(true);
+        isAxeExplocion = true;
+        Debug.Log("レベルが2になった");
+
+       
+        yield return new WaitUntil(()=>Input.GetKeyDown(KeyCode.J) && playerScript.SetDeadCaunter() == 1
+            || Input.GetKeyDown("joystick button 4") && playerScript.SetDeadCaunter() == 1);
+        
+
+        LevelUpUI.SetActive(false);
+        islevelup = true;
+
+        Time.timeScale = 1;
+    }
+
+    private IEnumerator ChestCoroutine()
+    {
+        Time.timeScale = 0;
+        yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.J) || Input.GetKeyDown("joystick button 4"));
+        Time.timeScale = 1;
+    }
+
+    private IEnumerator ExplanationCoroutine()
+    {
+        Debug.Log("コルーチン");
+        Time.timeScale = 0;
+        yield return new WaitUntil(() => Input.GetKeyDown("joystick button 2") || Input.GetKeyDown(KeyCode.Y));
+        Time.timeScale = 1;
     }
 }

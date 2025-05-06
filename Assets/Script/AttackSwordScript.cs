@@ -34,8 +34,9 @@ public class AttackSwordScript : MonoBehaviour
         {
            
             var enemyScript = other.GetComponent<MoveEnemyScript>();
-            if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead && enemyScript.GetState() == MoveEnemyScript.EnemyState.Chase)
+            if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead /*&& enemyScript.GetState() == MoveEnemyScript.EnemyState.Chase*/)
             {
+                //HitStopScript.instance.StartHitStop(1.0f);
                 other.GetComponent<MoveEnemyScript>().TakeDamage(myStatus.GetAttackPower(),other.ClosestPointOnBounds(transform.position));
                 var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y-1.0f, other.bounds.center.z), Quaternion.identity);
                 swordobj.transform.SetParent(other.transform);

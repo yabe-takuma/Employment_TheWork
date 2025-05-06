@@ -135,7 +135,7 @@ public class ChestScript : MonoBehaviour
         if (isOpen)
         {
             opentimer++;
-            Time.timeScale = 0;
+            //Time.timeScale = 0;
         }
     }
 

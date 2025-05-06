@@ -13,7 +13,9 @@ public class ProcessCharaAnimEventScript : MonoBehaviour
     //ジャンプに必要なアニメーション
     [SerializeField]
     private Animator animator;
-   
+    //足元にパーティクルを入れるのに必要
+    [SerializeField]
+    private ParticleSystem footStepParticle;
     // Start is called before the first frame update
     void Start()
     {
@@ -70,6 +72,11 @@ public class ProcessCharaAnimEventScript : MonoBehaviour
         {
             animator.SetFloat("JumpAnimation", 1.0f);
         }
+    }
+
+    public void PlayFootStepEffect()
+    {
+        footStepParticle.Play();
     }
     //複数の武器のコライダーを格納するための関数
     public void SetCollider(Collider col)

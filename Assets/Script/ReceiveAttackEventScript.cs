@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class ReceiveAttackEventScript : MonoBehaviour
@@ -67,9 +68,20 @@ public class ReceiveAttackEventScript : MonoBehaviour
     //地面を大きく踏みつけた時座標
     [SerializeField]
     private GameObject tramplingPoint;
+    //地面がめり込む演出で参照する座標
+    [SerializeField]
+    private Transform groundEffectPoint;
     //メイスを振りかざした時のパーティクル
     [SerializeField]
     private GameObject brandish;
+    //ゲーム開始時にトロルの所にカメラを移動するための変数
+    [SerializeField]
+    private CameraScript cameraScript;
+    [SerializeField]
+    private GameObject gameStartText;
+
+    private bool isStartAnimation;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -77,6 +89,7 @@ public class ReceiveAttackEventScript : MonoBehaviour
         rotation = new Quaternion(wave.transform.rotation.x, wave.transform.rotation.y + trollScript.GetRotation().y, wave.transform.rotation.z, wave.transform.rotation.w);
         isAttack = true;
         isWaveAttack = false;
+        isStartAnimation = false;
     }
 
     //攻撃開始時
@@ -146,13 +159,12 @@ public class ReceiveAttackEventScript : MonoBehaviour
             iscontinuous = false;
             isExplocion = true;
         }
-        
 
     }
     //メイスの振りかざした地面にパーティクルを出す
     public void BrandishPoint()
     {
-        Instantiate(brandish, createShockwavePoint.position, shockwavePrefab.transform.rotation);
+        //Instantiate(brandish, new Vector3(groundEffectPoint.position.x, groundEffectPoint.position.y, groundEffectPoint.position.z), shockwavePrefab.transform.rotation);
     }
 
     public void WaveAttack()
@@ -160,6 +172,22 @@ public class ReceiveAttackEventScript : MonoBehaviour
         Instantiate(wave, wavePoint.position, wave.transform.rotation);
         Instantiate(trampling, tramplingPoint.transform.position, trampling.transform.rotation);
         Debug.Log("波");
+    }
+
+    public void StartAnimation()
+    {
+        Time.timeScale = 1.0f;
+        animator.updateMode = AnimatorUpdateMode.Normal;
+        cameraScript.StartCameraEnd();
+        gameStartText.SetActive(false);
+        isStartAnimation = true;
+        Debug.Log("怒っている");
+    }
+
+    public void StartAnimationEnd()
+    {
+        cameraScript.StartCameraEnd();
+        Debug.Log("怒っている終了");
     }
 
     // Update is called once per frame
@@ -186,6 +214,11 @@ public class ReceiveAttackEventScript : MonoBehaviour
     public bool GetIsExplocion()
     {
         return isExplocion;
+    }
+
+    public bool GetIsStartAnimation()
+    {
+        return isStartAnimation;
     }
 
     void Explocionhauding()

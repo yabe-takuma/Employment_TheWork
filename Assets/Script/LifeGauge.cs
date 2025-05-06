@@ -10,8 +10,8 @@ public class LifeGauge : MonoBehaviour
     [SerializeField]
     private int Hp;
 
-    
-
+    [SerializeField]
+    private ReceiveAttackEventScript receiveAttackEventScript;
     //ライフゲージ全削除&HP分作成
     public void SetLifeGauge(int hp)
     {
@@ -23,7 +23,10 @@ public class LifeGauge : MonoBehaviour
         //現在の体力数分のライフゲージを作成
         for (int i=0;i<hp;i++)
         {
-            Instantiate<GameObject>(hpObj, transform);
+            if (receiveAttackEventScript.GetIsStartAnimation())
+            {
+                Instantiate<GameObject>(hpObj, transform);
+            }
         }
        
         Hp = hp;

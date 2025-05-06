@@ -96,6 +96,13 @@ public class MoveEnemyScript : MonoBehaviour
     private GameObject fireEffectIns;
 
     private bool isDead;
+    //敵に武器を分けるために必要な変数
+    [SerializeField]
+    private ProcessEnemyAnimEventScript processEnemyAnimEventScript;
+
+    //ジャスト回避出来る時間
+    [SerializeField]
+    private int justAvoidCaunter;
 
     // Start is called before the first frame update
     void Start()
@@ -109,10 +116,12 @@ public class MoveEnemyScript : MonoBehaviour
         arrived = false;
         elapsedTime = 0f;
         handCollider = GetComponentInChildren<SphereCollider>();
+        processEnemyAnimEventScript = transform.root.GetComponent<ProcessEnemyAnimEventScript>();
         playerscript= GameObject.Find("Character_Female_Hotel Owner").GetComponent<PlayerScript>();
         navMeshAgent = GetComponent<NavMeshAgent>();
         SetState(EnemyState.Wait);
         isDead = false;
+        justAvoidCaunter = 0;
     }
 
     // Update is called once per frame
@@ -131,6 +140,8 @@ public class MoveEnemyScript : MonoBehaviour
         {
             arrived = false;
             elapsedTime = 0f;
+            //攻撃時以外はジャスト回避出来る時間をリセットする
+            //justAvoidCaunter = 0;
             setPosition.CreateRandomPosition();
             if (navMeshAgent.pathStatus != NavMeshPathStatus.PathInvalid)
             {
@@ -142,6 +153,8 @@ public class MoveEnemyScript : MonoBehaviour
         { 
             //待機状態から追いかける場合もあるのでoff
             arrived = false;
+            //攻撃時以外はジャスト回避出来る時間をリセットする
+            //justAvoidCaunter = 0;
             //追いかける対象をセット
             playerTransform = targetObj;
             navMeshAgent.SetDestination(playerTransform.position);
@@ -153,6 +166,8 @@ public class MoveEnemyScript : MonoBehaviour
             elapsedTime = 0f;
             //待機状態にする
             arrived = true;
+            //攻撃時以外はジャスト回避出来る時間をリセットする
+            justAvoidCaunter = 0;
             //スピードやアニメーションもゼロにする
             velocity = Vector3.zero;
             animator.SetFloat("Speed", 0f);
@@ -163,6 +178,14 @@ public class MoveEnemyScript : MonoBehaviour
             velocity = Vector3.zero;
             animator.SetFloat("Speed", 0f);
             animator.SetBool("Attack", true);
+            //if (processEnemyAnimEventScript.GetWeaponCaunter() == 1)
+            //{
+            //    animator.SetBool("Attack2", true);
+            //}
+            //else if (processEnemyAnimEventScript.GetWeaponCaunter() == 0)
+            //{
+            //    animator.SetBool("Attack3", true);
+            //}
             navMeshAgent.isStopped = true;
         }
         else if(tempState == EnemyState.Freeze)
@@ -182,6 +205,10 @@ public class MoveEnemyScript : MonoBehaviour
             animator.ResetTrigger("Attack");
             animator.ResetTrigger("Attack2");
             animator.ResetTrigger("Attack3");
+            if (!playerscript.IsJustAvoidAttack())
+            {
+                HitStopScript.instance.StartHitStop(0.5f);
+            }
             animator.SetTrigger("Damage");
             navMeshAgent.isStopped = true;
         }
@@ -209,7 +236,14 @@ public class MoveEnemyScript : MonoBehaviour
         {
             velocity = Vector3.zero;
             animator.SetFloat("Speed", 0f);
-            animator.SetBool("Attack2", true);
+            if (processEnemyAnimEventScript.GetWeaponCaunter() == 1)
+            {
+                animator.SetBool("Attack2", true);
+            }
+            else if(processEnemyAnimEventScript.GetWeaponCaunter()==0)
+            {
+                animator.SetBool("Attack3", true);
+            }
             navMeshAgent.isStopped = true;
         }
         else if(tempState == EnemyState.Attack3)
@@ -299,6 +333,11 @@ public class MoveEnemyScript : MonoBehaviour
     {
         trollScript = trollscript;
     }
+    //他のスクリプトからデータを参照するための関数
+    public int GetJustAvoidCaunter()
+    {
+        return justAvoidCaunter;
+    }
 
     private void OnTriggerStay(Collider other)
     {
@@ -348,6 +387,11 @@ public class MoveEnemyScript : MonoBehaviour
         Destroy(fireEffectIns);
         isabnormal = false;
         abnormalcounter = 0;
+    }
+
+    public Animator GetAnimator()
+    {
+        return animator;
     }
 
     void Enemyhauding()
@@ -422,6 +466,8 @@ public class MoveEnemyScript : MonoBehaviour
                 var dir = Vector3.RotateTowards(transform.forward, playerDirection, rotateSpeed * Time.deltaTime, 0f);
                 //算出した方向の角度を敵の角度に設定
                 transform.rotation = Quaternion.LookRotation(dir);
+
+                justAvoidCaunter++;
             }
             velocity.y += Physics.gravity.y * Time.deltaTime;
 
@@ -452,4 +498,10 @@ public class MoveEnemyScript : MonoBehaviour
             Destroy(fireEffectIns);
         }
     }
+
+    public void JustAvoidEnd()
+    {
+        justAvoidCaunter = 0;
+    }
+
 }

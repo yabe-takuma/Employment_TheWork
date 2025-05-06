@@ -20,6 +20,7 @@ TagManager:
   - SearchItemArea
   - FireSword
   - WaterSword
+  - Sword
   layers:
   - Default
   - TransparentFX
@@ -30,7 +31,7 @@ TagManager:
   - Chara
   - Field
   - Item
-  - 
+  - Zombie
   - 
   - 
   - 

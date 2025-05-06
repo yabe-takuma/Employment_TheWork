@@ -7,10 +7,23 @@ public class ProcessEnemyAnimEventScript : MonoBehaviour
     private MoveEnemyScript enemy;  //敵の行動などがあるスクリプト
     [SerializeField]
     private SphereCollider sphereCollider;  //攻撃用のコライダー
+    [SerializeField]
+    private Transform equipment;
+    [SerializeField]
+    private GameObject weapon;
+
+    private GameObject wepon;
+
+    private bool isWeapon;
+
+    private int equipments;
     // Start is called before the first frame update
     void Start()
     {
         enemy = GetComponent<MoveEnemyScript>();
+        //equipment = GameObject.Find("WeponPoint").gameObject;
+        //wepon = Instantiate(weapon, equipment.position, equipment.rotation);
+        //Instantiate(equipment);
     }
 
      public void AttackStart()
@@ -48,5 +61,34 @@ public class ProcessEnemyAnimEventScript : MonoBehaviour
         {
             sphereCollider.enabled = false;
         }
+        //wepon = Instantiate(weapon, equipment.position, equipment.rotation);
+        //wepon.transform.SetParent(equipment);
+        //wepon.transform.localPosition=new Vector3(0, 0, 0);
+        //wepon.transform.localRotation = equipment.rotation;
+        ////wepon.transform.localEulerAngles = new Vector3(0,0,0);
+        //wepon.GetComponent<Animator>().runtimeAnimatorController = enemy.GetAnimator().runtimeAnimatorController;
+        //if(!isWeapon)
+        //{
+        //    Instantiate(weapon, transform.position, Quaternion.identity);
+        //    isWeapon = true;
+        //}
+        //if (weapon.tag == "Sword")
+        //{
+        //    equipments = 1;
+        //}
+        //else
+        //{
+        //    equipments = 0;
+        //}
+    }
+
+    public void SetWeapon(GameObject weapons)
+    {
+        weapon = weapons;
+    }
+
+    public int GetWeaponCaunter()
+    {
+        return equipments;
     }
 }

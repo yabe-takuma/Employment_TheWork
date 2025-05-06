@@ -1,7 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.XR;
 using UnityEngine.Playables;
 using UnityEngine.ProBuilder.MeshOperations;
 
@@ -28,6 +31,7 @@ public class PlayerScript : MonoBehaviour
 
     private ChangeEquipScript changeequipscript;
     //ロックオン関連
+    [SerializeField]
     private CameraScript camera3D;
     //ロックオン状態の時に代入する変数
     private Quaternion rotation;
@@ -72,7 +76,54 @@ public class PlayerScript : MonoBehaviour
     private bool isGameOver;
 
     //プレイヤースクリプトに敵のスプリクトを格納
-    private MoveEnemyScript MoveEnemyScript;
+    [SerializeField]
+    private MoveEnemyScript moveEnemyScript;
+
+    //走るスピード
+    [SerializeField]
+    private float dashSpeed = 32f;
+    //走っているかどうか
+    [SerializeField]
+    private bool run = false;
+    //最初に移動ボタンを押したかどうかの変数
+    [SerializeField]
+    private bool push = false;
+    //次に移動ボタンが押されるまでの時間
+    [SerializeField]
+    private float nextButtonDownTime = 0.3f;
+    //最初に移動ボタンが押されてからの経過時間
+    private float nowTime = 0f;
+
+    //最初に押した方向との違いの限度角度
+    [SerializeField]
+    private float limitAngle = 3f;
+    //移動キーの押した方向
+    private Vector2 direction = Vector2.zero;
+    //ジャスト回避が出来るかのフラグ
+    private bool isJustAvoid;
+    //ジャスト回避の後の攻撃が出来るかのフラグ
+    [SerializeField]
+    private bool isJustAvoidAttack;
+    //ジャスト回避時フラグを立たせると敵に移動する変数
+    [SerializeField]
+    private bool isJustAvoidMove;
+
+    [SerializeField]
+    private GameObject target;
+
+    [SerializeField]
+    private GameObject serchCircle;
+    [SerializeField]
+    private List<GameObject> enemies = new List<GameObject>();
+
+    [SerializeField]
+    private Vector3 debugposition;
+    [SerializeField]
+    List<Vector3> enemyPositions = new List<Vector3>();
+    [SerializeField]
+    private MoveEnemyScript nearestEnemyScript;
+    [SerializeField]
+    private int avoidCaunter;
 
     public enum MyState
     {
@@ -98,6 +149,7 @@ public class PlayerScript : MonoBehaviour
         timeline[1].Stop();
         gameclearUI.SetActive(false);
         isGameOver = false;
+        //enemies=GameObject.FindGameObjectsWithTag("Enemy").ToList();
     }
 
     // Update is called once per frame
@@ -105,6 +157,7 @@ public class PlayerScript : MonoBehaviour
     {
         //プレイヤーの行動関連の処理
         Playerhauding();
+        
     }
 
     public void TakeDamage(Transform enemyTransform,Vector3 attackedPlace,int damage)
@@ -113,8 +166,10 @@ public class PlayerScript : MonoBehaviour
         if (state != MyState.Dead)
         {
             state = MyState.Damage;
+            isJustAvoid = true;
             velocity = Vector3.zero;
             animator.SetTrigger("Damage");
+            camera3D.StartShake();
             var damageEffectIns = Instantiate<GameObject>(damageEffect, attackedPlace, Quaternion.identity);
             Destroy(damageEffectIns, 1f);
             myStatus.SetHp(myStatus.GetHp() - damage);
@@ -136,6 +191,7 @@ public class PlayerScript : MonoBehaviour
         {
             animator.SetTrigger("KnockBack");
             velocity = new Vector3(0f, velocity.y, 0f);
+            isJustAvoid = true;
             move = Vector3.zero;
             state = MyState.Damage;
             var damageEffectIns = Instantiate<GameObject>(damageEffect, new Vector3(transform.position.x, transform.position.y - 1, transform.position.z), Quaternion.identity);
@@ -153,12 +209,19 @@ public class PlayerScript : MonoBehaviour
         if(tempState == MyState.Normal)
         {
             state = MyState.Normal;
+            isJustAvoid = false;
         }else if(tempState==MyState.Attack)  //攻撃行動
         {
             velocity = Vector3.zero;
             state = MyState.Attack;
             move = Vector3.zero;
             rb.velocity = new Vector3(0, rb.velocity.y, 0);
+            
+            if (isJustAvoidAttack)
+            {
+                isJustAvoidMove = true;
+                Debug.Log("距離を詰める");
+            }
             //もし剣を装備していたら剣のアニメーションをする処理
             if (changeequipscript.GetEquipment() == 0|| changeequipscript.GetEquipment() == 2||
                 changeequipscript.GetEquipment() ==3)
@@ -209,6 +272,8 @@ public class PlayerScript : MonoBehaviour
         if (state != MyState.Dead)
         {
             animator.SetTrigger("Damage");
+            camera3D.StartShake();
+            isJustAvoid = true;
             velocity = new Vector3(0f, velocity.y, 0f);
             state = MyState.Damage;
             var damageEffectIns = Instantiate<GameObject>(damageEffect, new Vector3(transform.position.x,transform.position.y-1,transform.position.z), Quaternion.identity);
@@ -273,23 +338,37 @@ public class PlayerScript : MonoBehaviour
         moveForward = cameraForward * move.z + Camera.main.transform.right * move.x;
         moveForward = moveForward.normalized;
         //移動処理
-        if (move.magnitude > 0)
+        if (run)
         {
-            rb.velocity = moveForward * moveSpeed * move.magnitude + new Vector3(0, rb.velocity.y, 0);
+            rb.velocity = moveForward * dashSpeed * move.magnitude + new Vector3(0, rb.velocity.y, 0);
+        }
+        if (move.magnitude > 0)
+        { 
+            if(!run)
+            {
+                rb.velocity = moveForward * moveSpeed * move.magnitude + new Vector3(0, rb.velocity.y, 0);
+            }
+        }
+        else
+        {
+            rb.velocity = Vector3.zero;
+            animator.SetFloat("Speed", 0f);
         }
         //if(!isJump)
         //{
         //    rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
         //}
-        
+
         //入力された方向に応じてプレイヤーの向きを変える処理
         if (move.magnitude > 0
                    && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack1")
                    && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack2")
                    && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack03"))
         {
-           animator.SetFloat("Speed", rb.velocity.magnitude);
-            
+            if (!run)
+            {
+                animator.SetFloat("Speed", rb.velocity.magnitude);
+            }
             //入力している方向に回避するための処理y
             if (!camera3D.rock)
             {
@@ -309,7 +388,7 @@ public class PlayerScript : MonoBehaviour
         if(transform.position.y<0)
         {
             rb.useGravity = false;
-            rb.velocity = moveForward * moveSpeed * move.magnitude + new Vector3(0, rb.velocity.y, 0);
+            //rb.velocity = moveForward * moveSpeed * move.magnitude + new Vector3(0, rb.velocity.y, 0);
         }
         else
         {
@@ -409,14 +488,14 @@ public class PlayerScript : MonoBehaviour
     {
         return isGameOver;
     }
-    public void SetEnemyScript(MoveEnemyScript moveEnemyScript)
+    public void SetEnemyScript(MoveEnemyScript moveEnemyScripts)
     {
-        MoveEnemyScript = moveEnemyScript;
+        moveEnemyScript = moveEnemyScripts;
     }
 
     public MoveEnemyScript GetEnemyScript()
     {
-        return MoveEnemyScript;
+        return moveEnemyScript;
     }
 
     public Vector3 GetPosition()
@@ -427,6 +506,11 @@ public class PlayerScript : MonoBehaviour
     public Quaternion GetRotation()
     {
         return transform.rotation;
+    }
+
+    public bool GetIsJustAvoid()
+    {
+        return isJustAvoid;
     }
 
     void Playerhauding()
@@ -453,9 +537,91 @@ public class PlayerScript : MonoBehaviour
         {
             gameclearUI.SetActive(true);
         }
-        
-        characterController.Move(rb.velocity * Time.deltaTime);
-        
+        UpdateEnemyPositions();
+        nearestEnemyScript = FindNearestEnemyScript();
+       
+        if (nearestEnemyScript != null)
+        {
+            avoidCaunter = nearestEnemyScript.GetJustAvoidCaunter();
+        }
+
+        if (!isJustAvoidAttack)
+        {
+            characterController.Move(rb.velocity * Time.deltaTime);
+        }
+
+        if (nearestEnemyScript != null && nearestEnemyScript.GetJustAvoidCaunter() >= 20 && nearestEnemyScript.GetJustAvoidCaunter() <= 40 && !isJustAvoid && avoid)
+        {
+            StartCoroutine("JustAvoidCoroutine");
+        }
+
+        //走っていない時
+        if (!run)
+        {
+            //移動キーを押した
+            if ((Input.GetButtonDown("Horizontal") || Input.GetButtonDown("Vertical")))
+            {
+                //最初に1回押していない時は押した事にする
+                if(!push)
+                {
+                    push = true;
+                    // 最初に移動キーを押した時にその方向ベクトルを取得
+                    direction = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+                    nowTime = 0f;
+                }
+                else  //2回目のボタンだったら1→2までの制限時間内だったら走る
+                {
+                    //2回目に移動キーを押した時の方向ベクトルを取得
+                    var nowDirection = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+
+                    //確認の為,最初に押した方向と2回目に押した方向の角度をコンソールに出力
+                    Debug.Log(Vector2.Angle(nowDirection, direction));
+
+                    //押した方向がリミットの角度を超えていない かつ 制限時間内に移動キーが押されていれば走る
+                    if (Vector2.Angle(nowDirection, direction) < limitAngle
+                        && nowTime <= nextButtonDownTime)
+                    {
+                        run = true;
+                        animator.SetBool("Run", true);
+                    }
+                }
+            }
+            if(Input.GetKeyDown("joystick button 5"))
+            {
+                run = true;
+                
+            }
+        }
+        //走っているときにキーを押すのをやめたら走るのをやめる
+        else
+        {
+            animator.SetBool("Run", true);
+            if (/*!Input.GetButton("Horizontal") && !Input.GetButton("Vertical") || rb.velocity.magnitude<=0*/move.x==0&&move.z==0)
+            {
+                run = false;
+                push = false;
+                animator.SetBool("Run", false);
+            }
+        }
+        //最初の移動キーを押していれば時間計測
+        if(push)
+        {
+            //時間計測
+            nowTime += Time.deltaTime;
+
+            if(nowTime>nextButtonDownTime)
+            {
+                push = false;
+            }
+        }
+        //MoveTowardsClosestEnemy(this.transform);
+        if (isJustAvoidMove)
+        {
+            //MoveTowardsClosestEnemy(this.transform);
+            //徐々に移動する
+            //transform.position = Vector3.LerpUnclamped(this.transform.position, new Vector3(debugposition.x,transform.position.y,debugposition.z), Time.deltaTime * 1f);
+            
+        }
     }
 
     public void PlayerSpeedOff()
@@ -473,5 +639,89 @@ public class PlayerScript : MonoBehaviour
     {
         return rb;
     }
+
+    private IEnumerator JustAvoidCoroutine()
+    {
+        Debug.Log("ジャスト回避中");
+        Time.timeScale = 0.2f;
+        isJustAvoidAttack = true;
+        MoveTowardsClosestEnemy(this.transform);
+        yield return new WaitForSecondsRealtime(15.0f);
+        isJustAvoid = false;
+        isJustAvoidAttack = false;
+        isJustAvoidMove = false;
+        Time.timeScale = 1;
+    }
+
+    void UpdateEnemyPositions()
+    {
+        enemyPositions.Clear();
+        GameObject[] enemys = GameObject.FindGameObjectsWithTag("Enemy");
+        foreach (GameObject enemy in enemys)
+        {
+            if (enemy != null)
+            {
+                enemyPositions.Add(enemy.transform.position);
+            }
+        }
+        Debug.Log("敵の情報を格納");
+    }
+
+    void UpdateEnemyScripts()
+    {
+        //moveEnemyScripts.AddRange(FindObjectsOfType<MoveEnemyScript>());
+    }
+
+    void MoveTowardsClosestEnemy(Transform playerTransform)
+    {
+        if (enemyPositions.Count == 0) return;
+
+        //最も近い敵の座標を取得
+        Vector3 closestEnemyPos = enemyPositions[0];
+        float minDistance = Vector3.Distance(playerTransform.position, closestEnemyPos);
+        foreach (Vector3 enemyPos in enemyPositions)
+        {
+            float distance = Vector3.Distance(playerTransform.position, enemyPos);
+            if(distance<minDistance)
+            {
+                closestEnemyPos = enemyPos;
+                minDistance = distance;
+            }
+        }
+        Debug.Log("徐々に移動する");
+        debugposition = closestEnemyPos;
+        //徐々に移動する
+        transform.position = Vector3.Lerp(playerTransform.position, closestEnemyPos,1f);
+        //transform.position = Vector3.Lerp(playerTransform.position, new Vector3(975,0,90),1f);
+    }
+
+    
+
+    MoveEnemyScript FindNearestEnemyScript()
+    {
+        MoveEnemyScript[] enemyScripts = FindObjectsOfType<MoveEnemyScript>();
+        MoveEnemyScript closest = null;
+        float minDistance = Mathf.Infinity;
+        Vector3 currentPosition = transform.position;
+
+        foreach(MoveEnemyScript enemyScript in enemyScripts)
+        {
+            float distance = Vector3.Distance(currentPosition, enemyScript.transform.position);
+            if(distance<minDistance)
+            {
+                minDistance = distance;
+                closest = enemyScript;
+            }
+        }
+        return closest;
+    }
+
+   
+
+    public bool IsJustAvoidAttack()
+    {
+        return isJustAvoidAttack;
+    }
+
 
 }

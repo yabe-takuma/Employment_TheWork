@@ -67,11 +67,32 @@ public class CameraScript : MonoBehaviour
     private GameObject rockonPlayer;
 
     private float cameraRotateSpeed = 45f;
+
+    private float shakeDuration = 0.5f;  //揺れの時間
+    private float shakeMagnitude = 0.1f; //揺れの強さ
+
+    private Vector3 originalPosition;
+    private float elapsedTime = 0f;
+
+    //ゲーム開始時トロルに子関係にあるオブジェクトを参照
+    [SerializeField]
+    private GameObject startCamera;
+
+    private bool isStartAnimation;
+
     // Start is called before the first frame update
     void Start()
     {
         nowPos = TargetObject.transform.position;
         playerScript = GameObject.Find("Character_Female_Hotel Owner").GetComponent<PlayerScript>();
+        originalPosition = transform.position;
+        StartCamera();
+        isStartAnimation = false;
+    }
+    //カメラの揺れをelapsedTimeに代入する関数
+    public void StartShake()
+    {
+        elapsedTime = shakeDuration;
     }
 
     // Update is called once per frame
@@ -86,11 +107,14 @@ public class CameraScript : MonoBehaviour
     }
     public void OnCamera(InputAction.CallbackContext context)
     {
-        speed = new Vector3(context.ReadValue<Vector2>().x, 0f, context.ReadValue<Vector2>().y);
+        if (trollscript.GetState() != TrollScript.TrollState.Dead)
+        {
+            speed = new Vector3(context.ReadValue<Vector2>().x, 0f, context.ReadValue<Vector2>().y);
+        }
     }
     public void OnRockon(InputAction.CallbackContext context)
     {
-        if(context.started&& RockonTarget != null)
+        if(context.started&& RockonTarget != null&&trollscript.GetState()!=TrollScript.TrollState.Dead)
         {
             if(rock)
             {
@@ -186,13 +210,13 @@ public class CameraScript : MonoBehaviour
         var cz = -Mathf.Cos(nowRotAngle * deg) * Mathf.Cos(nowHeightAngle * deg) * Distance;
         var cy = Mathf.Sin(nowHeightAngle * deg) * Distance;
         //ロックオンじゃない時のカメラの座標
-        if (!rock)
+        if (!rock&&isStartAnimation)
         {
             transform.position = nowPos + new Vector3(cx, cy, cz);
         }
         //ロックオンじゃない時のカメラの回転
         var rot = Quaternion.LookRotation((nowPos - transform.position).normalized);
-        if (!rock) transform.rotation = rot;
+        if (!rock&&isStartAnimation) transform.rotation = rot;
         //ロックオン時のカメラの座標と回転
         if (rock&&RockonTarget.tag=="Boss")
         {
@@ -214,5 +238,28 @@ public class CameraScript : MonoBehaviour
 
             transform.rotation = rockonposition.transform.rotation;
         }
+        //変数が代入されることでカメラを揺らす処理
+        if(elapsedTime >0&&playerScript.GetState()!=PlayerScript.MyState.Dead)
+        {
+            transform.position = transform.position + (Vector3)Random.insideUnitCircle * shakeMagnitude;
+            elapsedTime -= Time.deltaTime;
+        }
+
+        
+    }
+
+    public void StartCamera()
+    {
+        transform.position = startCamera.transform.position;
+        transform.rotation = startCamera.transform.rotation;
+        Debug.Log("カメラ移動中");
+    }
+
+    public void StartCameraEnd()
+    {
+        isStartAnimation = true;
+        transform.position = TargetObject.transform.position;
+        transform.rotation = TargetObject.transform.rotation;
+        Debug.Log("カメラを切り替える");
     }
 }

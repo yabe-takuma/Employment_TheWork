@@ -26,6 +26,12 @@ public class AttackAxe : MonoBehaviour
     private MyItemScript myItemScript;
     [SerializeField]
     private bool isCollision;
+    //3段目の攻撃時敵をダウンさせるためにAnimatorを参照
+    [SerializeField]
+    private Animator animator;
+    //プレイヤーが斧を取得したらanimatorにデータを送るために必要な変数
+    [SerializeField]
+    private bool isItem;
 
     // Start is called before the first frame update
     private void Start()
@@ -36,6 +42,7 @@ public class AttackAxe : MonoBehaviour
         {
             sphereCollider.enabled = true;
         }
+        isItem = false;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -44,7 +51,7 @@ public class AttackAxe : MonoBehaviour
         if (other.tag == "Enemy"&&this.gameObject.tag!="Item"&&playerscript!=null)
         {
             var enemyScript = other.GetComponent<MoveEnemyScript>();
-            if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead)
+            if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead /*&& enemyScript.GetState() == MoveEnemyScript.EnemyState.Chase*/)
             {
                 other.GetComponent<MoveEnemyScript>().TakeDamage(myStatus.GetAxeAttackPower(), other.ClosestPointOnBounds(transform.position));
                 var axedamageobj = Instantiate(axenormaldamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y, other.bounds.center.z), Quaternion.identity);
@@ -75,8 +82,14 @@ public class AttackAxe : MonoBehaviour
         if(other.tag=="SearchItemArea")
         {
             sphereCollider.enabled = false;
+            isItem = true;
             Debug.Log("アイテムが削除");
         }
+        //if (animator.GetCurrentAnimatorStateInfo(0).IsName("AxeAttack3") && other.tag == "Enemy")
+        //{
+        //    var enemyScript = other.GetComponent<MoveEnemyScript>();
+        //    other.GetComponentInParent<MoveEnemyScript>().KnockBackDamage(myStatus.GetAttackPower(), other.ClosestPointOnBounds(transform.position));
+        //}
     }
   
 
@@ -106,6 +119,10 @@ public class AttackAxe : MonoBehaviour
         {
             sphereCollider.enabled = true;
         }
+        //if (isItem)
+        //{
+        //    animator = transform.root.GetComponent<Animator>();
+        //}
     }
    
 }

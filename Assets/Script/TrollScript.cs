@@ -128,7 +128,9 @@ public class TrollScript : MonoBehaviour
         timeline[0].Stop();
         timeline[1].Stop();
         loopcount = 0;
-       
+        animator.SetTrigger("ShockwaveAttack");
+        Time.timeScale = 0;
+        animator.updateMode = AnimatorUpdateMode.UnscaledTime;
     }
 
     // Update is called once per frame
@@ -254,7 +256,6 @@ public class TrollScript : MonoBehaviour
         {
             animator.SetBool("Chase", true);
             attackTargetTransform = playerTransform;
-           
             Debug.Log("チェイス");
         }
         else if(trollState == TrollState.Jump)
@@ -527,6 +528,7 @@ public class TrollScript : MonoBehaviour
     {
         //WeakUIをインスタンス化。登場位置はコライダの中心からカメラの方向に少し寄せた位置
         trollStatus.SetHp(trollStatus.GetHp() - damage);
+        HitStopScript.instance.StartHitStop(0.5f);
         //navMeshAgent.isStopped = true;
         if (trollStatus.GetHp()<=0)
         {

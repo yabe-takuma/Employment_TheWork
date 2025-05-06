@@ -17,6 +17,11 @@ public class EnemyGeneretor : MonoBehaviour
     [SerializeField]
     private GameObject damageEffect;        //敵のエフェクト
     private MoveEnemyScript moveEnemyScript; //敵の行動
+    //敵に武器を入れるのに必要な変数たち
+    private ProcessEnemyAnimEventScript processEnemyAnimEventScript;
+    [SerializeField]
+    private GameObject sword;
+    //---------------//
     [SerializeField]
     private TrollScript trollScript;         //ボスの行動
     //------------------------------//
@@ -41,6 +46,7 @@ public class EnemyGeneretor : MonoBehaviour
     private List<GameObject> chestOpensUI;  //宝箱を開ける時の複数の説明文
     [SerializeField]
     private ChangeEquipScript changeEquipScript;  //宝箱を何回開けたかの情報を代入するため
+    
 
     private int chestscaunter; //指定した数通りにすることで重くならないようにしている
 
@@ -122,6 +128,8 @@ public class EnemyGeneretor : MonoBehaviour
                 moveEnemyScript.SetAxeSword(axe);
                 moveEnemyScript.SetMyItem(myItemScript);
                 moveEnemyScript.SetFireEffect(fireEffect);
+                //processEnemyAnimEventScript = enemys.GetComponent<ProcessEnemyAnimEventScript>();
+                //processEnemyAnimEventScript.SetWeapon(sword);
                 playerScript.SetEnemyScript(moveEnemyScript);
                 enemycaunter += 1;
             }
