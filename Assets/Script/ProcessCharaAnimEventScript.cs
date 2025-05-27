@@ -30,6 +30,7 @@ public class ProcessCharaAnimEventScript : MonoBehaviour
         if (weaponCollider != null)
         {
             weaponCollider.enabled = true;
+            animator.applyRootMotion = false;
             Debug.Log("攻撃開始");
         }
        
@@ -41,6 +42,7 @@ public class ProcessCharaAnimEventScript : MonoBehaviour
         if (weaponCollider != null)
         {
             weaponCollider.enabled = false;
+            animator.applyRootMotion = true;
         }
         
     }
