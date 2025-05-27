@@ -75,7 +75,7 @@ public class TrollStatus : MonoBehaviour
     {
        if(Input.GetKeyDown(KeyCode.Delete))
        {
-            hp = hp - 800;
+            hp = hp - 950;
             UpdateHPValue();
        }
        

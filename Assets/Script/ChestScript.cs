@@ -50,6 +50,7 @@ public class ChestScript : MonoBehaviour
         {
             CollisionChest();
         }
+      
     }
 
     private void OnTriggerExit(Collider other)
@@ -130,6 +131,11 @@ public class ChestScript : MonoBehaviour
         {
             isOpen = true;
 
+        }
+
+        if(!isCollision)
+        {
+            isClick = false;
         }
 
         if (isOpen)

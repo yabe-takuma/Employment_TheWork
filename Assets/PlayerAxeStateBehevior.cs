@@ -6,12 +6,16 @@ public class PlayerAxeStateBehevior : StateMachineBehaviour
 {
     [SerializeField]
     private ProcessCharaAnimEventScript processCharaAnimEvent;
+    [SerializeField]
+    private ReceiveActionEvent receiveActionEvent;
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         processCharaAnimEvent = animator.transform.GetComponent<ProcessCharaAnimEventScript>();
         animator.ResetTrigger("AxeAttack");
+
+        receiveActionEvent = animator.transform.GetComponent<ReceiveActionEvent>();
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -22,6 +26,7 @@ public class PlayerAxeStateBehevior : StateMachineBehaviour
             animator.SetBool("AxeAttack", true);
         }
         processCharaAnimEvent.AttackStart();
+        receiveActionEvent.StartSwordTrail();
     }
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
@@ -34,6 +39,8 @@ public class PlayerAxeStateBehevior : StateMachineBehaviour
         //アタック状態を抜け出す前に武器のコライダーも無効化する
         processCharaAnimEvent.AttackEnd();
         processCharaAnimEvent.StateEnd();
+
+        receiveActionEvent.EndSwordTrail();
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

@@ -80,6 +80,16 @@ public class CameraScript : MonoBehaviour
 
     private bool isStartAnimation;
 
+    //カメラ
+    public Transform target;
+
+    [SerializeField]
+    private new Camera camera;
+
+    private float angleSpeed=0.5f;
+
+    private bool isCameraAngle;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -88,6 +98,9 @@ public class CameraScript : MonoBehaviour
         originalPosition = transform.position;
         StartCamera();
         isStartAnimation = false;
+        offset = new Vector3(0, 2, -5);
+        isCameraAngle = false;
+        
     }
     //カメラの揺れをelapsedTimeに代入する関数
     public void StartShake()
@@ -96,14 +109,9 @@ public class CameraScript : MonoBehaviour
     }
 
     // Update is called once per frame
-    void LateUpdate()
-    {
-        //Camera();
-    }
-
     void Update()
     {
-        Camera();
+        CameraUpdate();
     }
     public void OnCamera(InputAction.CallbackContext context)
     {
@@ -149,7 +157,7 @@ public class CameraScript : MonoBehaviour
             targetIcon.SetActive(true);
             targetIcon.transform.position = new Vector3(RockonTarget.transform.position.x,RockonTarget.transform.position.y+2.0f,RockonTarget.transform.position.z);
         }
-        else if (rock && RockonTarget != null && RockonTarget.transform.GetChild(1) != null && RockonTarget.tag == "Boss")
+        else if (rock && RockonTarget != null && RockonTarget.transform.GetChild(1) != null && RockonTarget.tag == "Troll")
         {
             targetIcon.SetActive(true);
             targetIcon.transform.position = new Vector3(RockonTarget.transform.position.x, RockonTarget.transform.position.y + 2.0f, RockonTarget.transform.position.z);
@@ -160,7 +168,7 @@ public class CameraScript : MonoBehaviour
         }
     }
 
-    void Camera()
+    void CameraUpdate()
     {
         //カメラの回転
         RotAngle -= speed.x * Time.deltaTime * 100.0f;
@@ -217,13 +225,18 @@ public class CameraScript : MonoBehaviour
         //ロックオンじゃない時のカメラの回転
         var rot = Quaternion.LookRotation((nowPos - transform.position).normalized);
         if (!rock&&isStartAnimation) transform.rotation = rot;
-        //ロックオン時のカメラの座標と回転
-        if (rock&&RockonTarget.tag=="Boss")
+      
+        if(rock && RockonTarget.tag == "Enemy")
         {
-            transform.rotation = rockonposition.transform.rotation;
-            transform.position = rockonposition.transform.position;
+            transform.rotation = rockonEnemyposition.transform.rotation;
+            transform.position = rockonEnemyposition.transform.position;
         }
-        else if(rock && RockonTarget.tag == "Enemy")
+        if(rock && RockonTarget.tag!="Enemy"&&!isCameraAngle)
+        {
+            transform.rotation = new Quaternion(transform.rotation.x,rockonEnemyposition.transform.rotation.y, rockonEnemyposition.transform.rotation.z, rockonEnemyposition.transform.rotation.w);
+            AdjustCamera();
+        }
+        else if(rock && RockonTarget.tag != "Enemy"&&isCameraAngle)
         {
             transform.rotation = rockonEnemyposition.transform.rotation;
             transform.position = rockonEnemyposition.transform.position;
@@ -233,10 +246,9 @@ public class CameraScript : MonoBehaviour
         //ボスが倒された時特定の座標に行く処理
         if (RockonTarget != null && trollscript.GetState() == TrollScript.TrollState.Dead)
         {
-            transform.position = new Vector3(rockonposition.transform.position.x,
-            rockonposition.transform.position.y + 3.0f, rockonposition.transform.position.z);
-
-            transform.rotation = rockonposition.transform.rotation;
+           
+            transform.rotation = new Quaternion(transform.rotation.x, rockonEnemyposition.transform.rotation.y, rockonEnemyposition.transform.rotation.z, rockonEnemyposition.transform.rotation.w);
+            AdjustCamera();
         }
         //変数が代入されることでカメラを揺らす処理
         if(elapsedTime >0&&playerScript.GetState()!=PlayerScript.MyState.Dead)
@@ -245,6 +257,16 @@ public class CameraScript : MonoBehaviour
             elapsedTime -= Time.deltaTime;
         }
 
+        if(rock && RockonTarget.tag != "Enemy"&&Input.GetKeyDown(KeyCode.RightArrow)||
+            rock && RockonTarget.tag != "Enemy" && speed.x<=-0.1f)
+        {
+            isCameraAngle = true;
+        }
+        else if(rock && RockonTarget.tag != "Enemy"&&Input.GetKeyDown(KeyCode.LeftArrow)||
+                 rock && RockonTarget.tag != "Enemy" && speed.x>=0.1f)
+        {
+            isCameraAngle = false;
+        }
         
     }
 
@@ -257,9 +279,41 @@ public class CameraScript : MonoBehaviour
 
     public void StartCameraEnd()
     {
+        if (!isStartAnimation)
+        {
+            StartCoroutine("StartCameraCoroutine");
+        }
+       
+        Debug.Log("カメラを切り替える");
+    }
+
+    IEnumerator StartCameraCoroutine()
+    {
+        transform.position = new Vector3(975, 0.4f, 45);
+        yield return new WaitForSecondsRealtime(1.0f);
         isStartAnimation = true;
         transform.position = TargetObject.transform.position;
         transform.rotation = TargetObject.transform.rotation;
-        Debug.Log("カメラを切り替える");
+    }
+
+   
+
+    private void AdjustCamera()
+    {
+        //オブジェクトの境界ボックスを取得
+        Bounds bounds = new Bounds(RockonTarget.transform.position, Vector3.zero);
+        foreach(Renderer renderer in RockonTarget.GetComponentsInChildren<Renderer>())
+        {
+            bounds.Encapsulate(renderer.bounds);
+        }
+
+        //オブジェクトのサイズから最適な距離を計算
+        float objectSize = bounds.extents.magnitude;
+        float zoomFactor = 0.7f;  //調整用の倍率 (小さいほどカメラに近づく)
+        float distance = (objectSize / Mathf.Tan(Mathf.Deg2Rad * camera.fieldOfView / 2)) * zoomFactor;
+
+        //カメラの位置を調整
+        camera.transform.position = bounds.center - camera.transform.forward * (distance + 0.5f);
+        camera.transform.LookAt(bounds.center);
     }
 }

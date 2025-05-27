@@ -25,7 +25,7 @@ public class SensorScript : MonoBehaviour
         //当たった時のレイヤーの名前を格納する処理
         string layerName = LayerMask.LayerToName(other.gameObject.layer);
         //当たった時のタグやレイヤーが指定通りだったら当たったオブジェクトを変数に格納する処理
-        if (other.tag=="Boss" &&layerName=="Enemy"&& !enemyList.Contains(other.gameObject)|| other.tag == "Enemy" && !enemyList.Contains(other.gameObject))
+        if (other.tag=="Troll" &&layerName=="Enemy"&& !enemyList.Contains(other.gameObject)|| other.tag == "Enemy" && !enemyList.Contains(other.gameObject))
         {
             enemyList.Add(other.gameObject);
             if (other.tag == null)
@@ -41,7 +41,7 @@ public class SensorScript : MonoBehaviour
     void OnTriggerExit(Collider other)
     {
         //当たっていなかったり指定したタグやレイヤーではなかったら変数を削除する
-        if (other.tag=="Boss" && enemyList.Contains(other.gameObject) || other.tag == "Enemy" && enemyList.Contains(other.gameObject))
+        if (other.tag=="Troll" && enemyList.Contains(other.gameObject) || other.tag == "Enemy" && enemyList.Contains(other.gameObject))
         {
             if (other.tag == null)
             {

@@ -187,7 +187,6 @@ public class GameExplanationScript : MonoBehaviour
 
     private IEnumerator ExplanationCoroutine()
     {
-        Debug.Log("コルーチン");
         Time.timeScale = 0;
         yield return new WaitUntil(() => Input.GetKeyDown("joystick button 2") || Input.GetKeyDown(KeyCode.Y));
         Time.timeScale = 1;

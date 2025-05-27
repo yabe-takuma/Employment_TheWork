@@ -207,7 +207,7 @@ public class MoveEnemyScript : MonoBehaviour
             animator.ResetTrigger("Attack3");
             if (!playerscript.IsJustAvoidAttack())
             {
-                HitStopScript.instance.StartHitStop(0.5f);
+                HitStopScript.instance.StartHitStop(0.2f);
             }
             animator.SetTrigger("Damage");
             navMeshAgent.isStopped = true;

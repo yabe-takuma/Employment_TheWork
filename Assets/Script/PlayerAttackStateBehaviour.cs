@@ -7,7 +7,9 @@ public class PlayerAttackStateBehaviour : StateMachineBehaviour
     //プレイヤーがアニメーション中に割り込むための変数
     [SerializeField]
     private ProcessCharaAnimEventScript processCharaAnimEvent;
-
+    //プレイヤーがアニメーション中に割り込むための変数
+    [SerializeField]
+    private ReceiveActionEvent receiveActionEvent;
     private PlayerScript playerScript;
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -15,8 +17,11 @@ public class PlayerAttackStateBehaviour : StateMachineBehaviour
         //アニメーションする前にデータを格納したり攻撃状態を解除する処理
         processCharaAnimEvent = animator.transform.GetComponent<ProcessCharaAnimEventScript>();
         animator.ResetTrigger("Attack");
+        //アニメーションする前にデータを格納したり攻撃状態を解除する処理
+        receiveActionEvent = animator.transform.GetComponent<ReceiveActionEvent>();
 
         playerScript = animator.transform.GetComponent<PlayerScript>();
+
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -38,6 +43,8 @@ public class PlayerAttackStateBehaviour : StateMachineBehaviour
         processCharaAnimEvent.AttackStart();
 
         playerScript.PlayerSpeedOff();
+
+        receiveActionEvent.StartSwordTrail();
     }
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
@@ -54,6 +61,7 @@ public class PlayerAttackStateBehaviour : StateMachineBehaviour
         processCharaAnimEvent.AttackEnd();
         processCharaAnimEvent.StateEnd();
 
+        receiveActionEvent.EndSwordTrail();
         //playerScript.PlayerSpeedOn();
     }
 

@@ -58,6 +58,8 @@ public class EnemyGeneretor : MonoBehaviour
     [SerializeField]
     private GameObject collisionUI;
 
+   
+
     // Start is called before the first frame update
     void Start()
     {
@@ -75,20 +77,20 @@ public class EnemyGeneretor : MonoBehaviour
     {
         //雑魚敵の配置と雑魚敵の数を格納する変数の初期化
         enemyposition[0] = new Vector3(974.509f, 0.999f, 51.15654f);
-        enemyposition[1] = new Vector3(984.509f, 0.999f, 51.15654f);
+        enemyposition[1] = new Vector3(942.509f, 0.999f, 64.15654f);
         enemyposition[2] = new Vector3(1015.5f, 0.999f, 51.15654f);
         enemyposition[3] = new Vector3(940f, 0.999f, 101.15654f);
         enemyposition[4] = new Vector3(990.4f, 0.999f, 110.9f);
         enemyposition[5] = new Vector3(974.509f, 0.999f, 15.15654f);
         enemyposition[6] = new Vector3(934.509f, 0.999f, 15.15654f);
         enemyposition[7] = new Vector3(1015.5f, 0.999f, 15.15654f);
-        enemyposition[8] = new Vector3(980f, 0.999f, 40.15654f);
+        enemyposition[8] = new Vector3(1010f, 0.999f, 104.15654f);
         enemyposition[9] = new Vector3(1000.4f, 0.999f, 80.9f);
 
         //宝箱の配置と格納する変数の初期化
         chestsposition[0] = new Vector3(954.509f, 0, 51.15654f);
         chestsposition[1] = new Vector3(1000.509f, 0, 81.15654f);
-        chestsposition[2] = new Vector3(1045.5f, 0, 11.15654f);
+        chestsposition[2] = new Vector3(1015.5f, 0, 24.15654f);
         chestsposition[3] = new Vector3(950f, 0, 104.15654f);
     }
 

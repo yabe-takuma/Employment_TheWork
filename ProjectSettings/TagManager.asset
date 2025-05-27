@@ -21,6 +21,11 @@ TagManager:
   - FireSword
   - WaterSword
   - Sword
+  - Troll
+  - NormalSword
+  - ChildSword
+  - NormalAxe
+  - ChildAxe
   layers:
   - Default
   - TransparentFX
