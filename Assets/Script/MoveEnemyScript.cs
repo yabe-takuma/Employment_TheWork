@@ -207,7 +207,7 @@ public class MoveEnemyScript : MonoBehaviour
             animator.ResetTrigger("Attack3");
             if (!playerscript.IsJustAvoidAttack())
             {
-                HitStopScript.instance.StartHitStop(0.2f);
+                HitStopScript.instance.StartHitStop(0.08f);
             }
             animator.SetTrigger("Damage");
             navMeshAgent.isStopped = true;
@@ -229,6 +229,7 @@ public class MoveEnemyScript : MonoBehaviour
             Destroy(this.gameObject, 3f);
             Destroy(fireEffectIns, 3f);
             velocity = Vector3.zero;
+            navMeshAgent.speed = 0f;
             navMeshAgent.isStopped = true;
         }
         //敵が別の攻撃をする処理(まだ未実装)

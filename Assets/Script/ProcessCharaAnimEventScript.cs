@@ -52,6 +52,11 @@ public class ProcessCharaAnimEventScript : MonoBehaviour
         playerscript.SetState(PlayerScript.MyState.Normal);
     }
 
+    public void StartDamage()
+    {
+        animator.applyRootMotion = false;
+    }
+
     public void EndDamage()
     {
         //ダメージアニメーションが終わったら待機状態に戻る関数
@@ -59,6 +64,7 @@ public class ProcessCharaAnimEventScript : MonoBehaviour
         {
             playerscript.SetState(PlayerScript.MyState.Normal);
             Debug.Log("プレイヤー食らい終わった");
+            animator.applyRootMotion = true;
         }
     }
 

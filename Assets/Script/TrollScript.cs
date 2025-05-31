@@ -465,11 +465,6 @@ public class TrollScript : MonoBehaviour
         
     }
 
-    private void JumpAttack()
-    {
-        
-    }
-
     private void Installation()
     {
         // 攻撃状態になった時のキャラクターの向きを計算し、徐々にそちらの向きに回転させる
@@ -528,7 +523,7 @@ public class TrollScript : MonoBehaviour
     {
         //WeakUIをインスタンス化。登場位置はコライダの中心からカメラの方向に少し寄せた位置
         trollStatus.SetHp(trollStatus.GetHp() - damage);
-        HitStopScript.instance.StartHitStop(0.5f);
+        HitStopScript.instance.StartHitStop(0.1f);
         //navMeshAgent.isStopped = true;
         if (trollStatus.GetHp()<=0)
         {

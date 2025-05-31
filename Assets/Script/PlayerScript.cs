@@ -293,7 +293,7 @@ public class PlayerScript : MonoBehaviour
             Dead();
         }
     }
-    //ここまでCompotに見てもらったところ
+   
 
     public void DeadCaunter(int caunter)
     {
@@ -457,7 +457,11 @@ public class PlayerScript : MonoBehaviour
     public void OnMoveOff() { mov = false; }
     public void RotationOn() { rotate = true; }
     public void RotationOff() { rotate = false; }
-    public void ActionFlagReset() { avoid = false; }
+    public void ActionFlagReset() 
+    { 
+        avoid = false;
+        animator.applyRootMotion = true;
+    }
     
     public void OnAvoid(InputAction.CallbackContext context)
     {
@@ -471,7 +475,7 @@ public class PlayerScript : MonoBehaviour
                     timeline[0].Play();
                     RotationOff();
                     Debug.Log("後ろ回避");
-
+                    animator.applyRootMotion = false;
                 }
                 else
                 {
@@ -479,9 +483,10 @@ public class PlayerScript : MonoBehaviour
                     OnMoveOff();
                     RotationOff();
                     Debug.Log("移動回避");
+                    
                 }
                 avoid = true;
-               
+                
             }
         }
        
@@ -525,22 +530,28 @@ public class PlayerScript : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.F) && transform.position.y < 0/*&&!isJump*//*&& !animator.GetCurrentAnimatorStateInfo(0).IsName("Jump")*/ || Input.GetKeyDown("joystick button 3") && transform.position.y < 0)
         {
-            animator.SetBool("Jump", true);
+           
             //rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
             rb.AddForce(new Vector3(rb.velocity.x, /*rb.velocity.y + */jumpPower, rb.velocity.z),ForceMode.VelocityChange);
             //rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y + jumpPower, rb.velocity.z);
-            isJump = true;
+            
             Debug.Log("ジャンプ");
+           
+        }
+        if(transform.position.y>0.1f)
+        {
+            isJump = true;
+            animator.SetBool("Jump", true);
             animator.applyRootMotion = false;
         }
-        else
+        else if(transform.position.y<0)
         {
 
             isJump = false;
             animator.SetBool("Jump", false);
         }
-       
-        if (transform.position.y <= 0 && !isJump)
+
+        if (transform.position.y <= 0 && !isJump && !avoid) 
         {
             rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
             animator.applyRootMotion = true;

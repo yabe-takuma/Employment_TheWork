@@ -15,7 +15,10 @@ public class HitStopScript : MonoBehaviour
 
     public void StartHitStop(float duration)
     {
-        instance.StartCoroutine(instance.HitStopCoroutine(duration));
+        if (this.gameObject != null)
+        {
+            instance.StartCoroutine(instance.HitStopCoroutine(duration));
+        }
     }
 
     private IEnumerator HitStopCoroutine(float duration)

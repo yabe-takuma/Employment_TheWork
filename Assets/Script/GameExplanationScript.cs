@@ -42,6 +42,15 @@ public class GameExplanationScript : MonoBehaviour
     private bool isInput;
     [SerializeField]
     private bool isKeyInput;
+
+    private bool isExplocionflag;
+    private bool isTitle;
+    private bool isGame;
+    [SerializeField]
+    private GameObject pauseUI;
+    [SerializeField]
+    private PauseScript pauseScript;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -72,9 +81,11 @@ public class GameExplanationScript : MonoBehaviour
         //キーやボタンを押した際にUIが出るか消えるかの処理
         if (Input.GetKeyDown("joystick button 2") && isExplanation == false || Input.GetKeyDown(KeyCode.Y) && isExplanation == false)
         {
-            isExplanation = true;
-            BackGround.SetActive(true);
+            //isExplanation = true;
+            //BackGround.SetActive(true);
             ExplanationUI.SetActive(true);
+            pauseUI.SetActive(true);
+            pauseScript.MoveIcon();
             textmeshpro.SetActive(false);
         }
         else if (Input.GetKeyDown("joystick button 2") && isExplanation == true || Input.GetKeyDown(KeyCode.Y) && isExplanation == true)
@@ -82,6 +93,7 @@ public class GameExplanationScript : MonoBehaviour
             isExplanation = false;
             ExplanationUI.SetActive(false);
             BackGround.SetActive(false);
+            pauseUI.SetActive(false);
             Keys.SetActive(false);
             textmeshpro.SetActive(true);
         }
@@ -115,10 +127,7 @@ public class GameExplanationScript : MonoBehaviour
         {
             StartCoroutine("ItemCoroutine");
         }
-        else
-        {
-            //Time.timeScale = 1;
-        }
+       
         //宝箱の説明が表示か非表示か確認する処理
         for (int i = 0; i < chestsUI.Count; i++)
         {
