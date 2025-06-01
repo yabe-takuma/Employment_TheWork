@@ -50,6 +50,10 @@ public class GameExplanationScript : MonoBehaviour
     private GameObject pauseUI;
     [SerializeField]
     private PauseScript pauseScript;
+    private bool isMoveUI;
+    //タイトルに戻るためにSceneScriptを参照
+    [SerializeField]
+    private SceneScript sceneScript;
 
     // Start is called before the first frame update
     void Start()
@@ -79,48 +83,66 @@ public class GameExplanationScript : MonoBehaviour
     void Keyshanding()
     {
         //キーやボタンを押した際にUIが出るか消えるかの処理
-        if (Input.GetKeyDown("joystick button 2") && isExplanation == false || Input.GetKeyDown(KeyCode.Y) && isExplanation == false)
+        if (Input.GetKeyDown("joystick button 2")  || Input.GetKeyDown(KeyCode.Y))
         {
-            //isExplanation = true;
-            //BackGround.SetActive(true);
-            ExplanationUI.SetActive(true);
+            isExplanation = true;
             pauseUI.SetActive(true);
-            pauseScript.MoveIcon();
             textmeshpro.SetActive(false);
+            isMoveUI = false;
+            PauseScript.Instance.ChangeState(PauseScript.GameState.Pause);
         }
-        else if (Input.GetKeyDown("joystick button 2") && isExplanation == true || Input.GetKeyDown(KeyCode.Y) && isExplanation == true)
+       
+        if(!isMoveUI&&isExplanation&&PauseScript.Instance.currentState == PauseScript.GameState.Instructions)
         {
-            isExplanation = false;
+            BackGround.SetActive(true);
+            ExplanationUI.SetActive(true);
+            pauseUI.SetActive(false);
+        }
+        if (Input.GetKeyDown("joystick button 2")  || Input.GetKeyDown(KeyCode.Y))
+        {
             ExplanationUI.SetActive(false);
             BackGround.SetActive(false);
-            pauseUI.SetActive(false);
+            PauseScript.Instance.ChangeState(PauseScript.GameState.Pause);
             Keys.SetActive(false);
             textmeshpro.SetActive(true);
         }
         //--------------//
         //UIが出現する時次のページに行ったり戻ったり出来る処理
-        if (Input.GetKeyDown(KeyCode.L) || Input.GetKeyDown("joystick button 5") && isExplanation == true)
+        if (Input.GetKeyDown(KeyCode.L) && PauseScript.Instance.currentState == PauseScript.GameState.Instructions || Input.GetKeyDown("joystick button 5") && PauseScript.Instance.currentState == PauseScript.GameState.Instructions)
         {
             ExplanationUI.SetActive(true);
             BackGround.SetActive(false);
             Keys.SetActive(true);
+            isMoveUI = true;
         }
-        else if (Input.GetKeyDown(KeyCode.R) || Input.GetKeyDown("joystick button 4") && isExplanation == true)
+        else if (Input.GetKeyDown(KeyCode.R) && PauseScript.Instance.currentState == PauseScript.GameState.Instructions || Input.GetKeyDown("joystick button 4") && PauseScript.Instance.currentState == PauseScript.GameState.Instructions)
         {
             ExplanationUI.SetActive(true);
             BackGround.SetActive(true);
             Keys.SetActive(false);
+            isMoveUI = false;
         }
-
+        //ポーズ画面で再開やタイトルに戻る場合の処理
+        if(isExplanation&&PauseScript.Instance.currentState==PauseScript.GameState.Playing|| isExplanation && PauseScript.Instance.currentState == PauseScript.GameState.Title)
+        {
+            isExplanation = false;
+            pauseUI.SetActive(false);
+        }
+        if(PauseScript.Instance!=null&&PauseScript.Instance.currentState == PauseScript.GameState.Title)
+        {
+            sceneScript.Title();
+        }
 
         //操作説明やゲームオーバーの際敵やボスの時間を止める処理
         if (grayscript.enabled == true && playerScript.IsGameOver())
         {
             Time.timeScale = 0;
         }
-        else if(isExplanation)
+        else if (isExplanation)
         {
             StartCoroutine("ExplanationCoroutine");
+            pauseScript.MoveIcon();
+            pauseScript.PushBotton();
         }
         //敵からドロップした斧を入手する時に表示されるUIの処理
         else if (myItem.GetItemCounter() == 1 && islevelup == false)
@@ -197,7 +219,7 @@ public class GameExplanationScript : MonoBehaviour
     private IEnumerator ExplanationCoroutine()
     {
         Time.timeScale = 0;
-        yield return new WaitUntil(() => Input.GetKeyDown("joystick button 2") || Input.GetKeyDown(KeyCode.Y));
+        yield return new WaitUntil(() => PauseScript.Instance.currentState == PauseScript.GameState.Playing || PauseScript.Instance.currentState == PauseScript.GameState.Title);
         Time.timeScale = 1;
     }
 }

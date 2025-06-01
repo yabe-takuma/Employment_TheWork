@@ -10623,6 +10623,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   icon: {fileID: 1160767174}
+  imageTransform: {fileID: 1160767175}
 --- !u!1 &1185591932
 GameObject:
   m_ObjectHideFlags: 0
