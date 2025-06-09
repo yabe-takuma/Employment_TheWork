@@ -78,7 +78,7 @@ public class MoveEnemyScript : MonoBehaviour
     private TrollScript trollScript;  //ボス
 
     [SerializeField]
-    private PlayerScript playerscript;  //プレイヤー
+    private PlayerScript playerscript;  //繝励Ξ繧､繝､繝ｼ
 
     [SerializeField]
     private int collisiontimer;  //当たっている時間
@@ -88,7 +88,7 @@ public class MoveEnemyScript : MonoBehaviour
     private AttackAxe attackAxe;  //一つ上と同じ理由
 
     [SerializeField]
-    private bool isabnormal;  //状態異常になったかのトリガー
+    private bool isabnormal;  //迥ｶ諷狗焚蟶ｸ縺ｫ縺ｪ縺｣縺溘°縺ｮ繝医Μ繧ｬ繝ｼ
     [SerializeField]
     private int abnormalcounter;  //状態異常になっている時間
     [SerializeField]
@@ -233,7 +233,7 @@ public class MoveEnemyScript : MonoBehaviour
             navMeshAgent.isStopped = true;
         }
         //敵が別の攻撃をする処理(まだ未実装)
-        else if(tempState ==EnemyState.Attack2)
+        else if (tempState ==EnemyState.Attack2)
         {
             velocity = Vector3.zero;
             animator.SetFloat("Speed", 0f);
@@ -274,6 +274,8 @@ public class MoveEnemyScript : MonoBehaviour
             damageEffectIns.transform.position = attackedPlace;
             Destroy(damageEffectIns, 1f);
             enemyStatus.SetHp(enemyStatus.GetHp() - damage);
+            
+            
         }
         ////体力が0になると倒される処理
         if (enemyStatus.GetHp() <= 0.0f && !isDead)
