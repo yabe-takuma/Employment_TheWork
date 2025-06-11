@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor.Rendering;
@@ -89,6 +89,8 @@ public class CameraScript : MonoBehaviour
     private float angleSpeed=0.5f;
 
     private bool isCameraAngle;
+    [SerializeField]
+    private Quaternion rockonCameraRotation; //ロックオン時のカメラの回転を保存
 
     // Start is called before the first frame update
     void Start()
@@ -127,10 +129,12 @@ public class CameraScript : MonoBehaviour
             if(rock)
             {
                 rock = false;
+                transform.rotation = rockonCameraRotation;
             }
             else 
             {
                 rock = true;
+                rockonCameraRotation = transform.rotation;
             }
         }
     }
@@ -221,6 +225,7 @@ public class CameraScript : MonoBehaviour
         if (!rock&&isStartAnimation)
         {
             transform.position = nowPos + new Vector3(cx, cy, cz);
+            transform.rotation = rockonCameraRotation; //ロックオン時の回転を維持
         }
         //ロックオンじゃない時のカメラの回転
         var rot = Quaternion.LookRotation((nowPos - transform.position).normalized);
@@ -267,7 +272,9 @@ public class CameraScript : MonoBehaviour
         {
             isCameraAngle = false;
         }
-        
+       
+
+
     }
 
     public void StartCamera()

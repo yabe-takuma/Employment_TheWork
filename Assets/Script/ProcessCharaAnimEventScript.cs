@@ -42,7 +42,7 @@ public class ProcessCharaAnimEventScript : MonoBehaviour
         if (weaponCollider != null)
         {
             weaponCollider.enabled = false;
-            animator.applyRootMotion = true;
+            //animator.applyRootMotion = true;
         }
         
     }
@@ -64,7 +64,7 @@ public class ProcessCharaAnimEventScript : MonoBehaviour
         {
             playerscript.SetState(PlayerScript.MyState.Normal);
             Debug.Log("プレイヤー食らい終わった");
-            animator.applyRootMotion = true;
+            //animator.applyRootMotion = true;
         }
     }
 

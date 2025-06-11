@@ -78,7 +78,7 @@ public class MoveEnemyScript : MonoBehaviour
     private TrollScript trollScript;  //ボス
 
     [SerializeField]
-    private PlayerScript playerscript;  //繝励Ξ繧､繝､繝ｼ
+    private PlayerScript playerscript;  //プレイヤー
 
     [SerializeField]
     private int collisiontimer;  //当たっている時間
@@ -88,7 +88,7 @@ public class MoveEnemyScript : MonoBehaviour
     private AttackAxe attackAxe;  //一つ上と同じ理由
 
     [SerializeField]
-    private bool isabnormal;  //迥ｶ諷狗焚蟶ｸ縺ｫ縺ｪ縺｣縺溘°縺ｮ繝医Μ繧ｬ繝ｼ
+    private bool isabnormal;  //炎上フラグ
     [SerializeField]
     private int abnormalcounter;  //状態異常になっている時間
     [SerializeField]
@@ -150,7 +150,7 @@ public class MoveEnemyScript : MonoBehaviour
             }
         }
         else if(tempState == EnemyState.Chase)
-        { 
+        {
             //待機状態から追いかける場合もあるのでoff
             arrived = false;
             //攻撃時以外はジャスト回避出来る時間をリセットする
@@ -297,6 +297,8 @@ public class MoveEnemyScript : MonoBehaviour
             damageEffectIns.transform.position = attackedPlace;
             Destroy(damageEffectIns, 1f);
             enemyStatus.SetHp(enemyStatus.GetHp() - damage);
+            //ノックバック
+            StartCoroutine(KnockBackCoroutine(attackedPlace));
         }
         ////体力が0になると倒される処理
         if (enemyStatus.GetHp() <= 0.0f && !isDead)
@@ -423,7 +425,7 @@ public class MoveEnemyScript : MonoBehaviour
                             //目的地に到着したかどうかの判定
                             if (navMeshAgent.remainingDistance < 0.1f)
                             {
-                                Debug.Log("目的地に着いた");
+                                Debug.Log("目的地に到着した");
                                 SetState(EnemyState.Wait);
                                 animator.SetFloat("Speed", 0.0f);
                             }
@@ -505,6 +507,21 @@ public class MoveEnemyScript : MonoBehaviour
     public void JustAvoidEnd()
     {
         justAvoidCaunter = 0;
+    }
+
+    private IEnumerator KnockBackCoroutine(Vector3 attackDirection)
+    {
+        float knockbackTime = 0.2f;  //ノックバックの継続時間
+        float knockbackStrength = 2.0f; //ノックバックの初期値
+        float elapsed = 0f;
+
+        while (elapsed<knockbackTime)
+        {
+            enemyController.Move(attackDirection.normalized * knockbackStrength * Time.deltaTime);
+            knockbackStrength *= 0.9f; //ノックバックの減衰
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
     }
 
 }

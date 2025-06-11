@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -92,8 +92,8 @@ public class ChestScript : MonoBehaviour
         if (isOpen)
         {
             isEndOpen = true;
-            //chestanimation.Play();
-            chestanimator.SetTrigger("Open");
+            chestanimation.Play();
+            //chestanimator.SetTrigger("Open");
             Debug.Log("宝箱を開けた");
         }
     }

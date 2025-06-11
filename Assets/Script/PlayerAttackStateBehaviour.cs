@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,6 +11,7 @@ public class PlayerAttackStateBehaviour : StateMachineBehaviour
     [SerializeField]
     private ReceiveActionEvent receiveActionEvent;
     private PlayerScript playerScript;
+    private int attackCooltime;
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -28,9 +29,10 @@ public class PlayerAttackStateBehaviour : StateMachineBehaviour
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         //攻撃する時アニメーション中だったら次の攻撃に行く処理
-        if(Input.GetKey(KeyCode.Space))
+        if(Input.GetKey(KeyCode.Space)&&attackCooltime>=10)
         {
             animator.SetBool("Attack", true);
+            attackCooltime = 0;
         }
         //攻撃しているときジャンプすると攻撃をキャンセルする処理
         else if(animator.GetBool("Jump")==true)
@@ -42,9 +44,10 @@ public class PlayerAttackStateBehaviour : StateMachineBehaviour
         //攻撃用のコライダーを表示するための処理
         processCharaAnimEvent.AttackStart();
 
-        playerScript.PlayerSpeedOff();
+        playerScript.OnMoveOff();
 
         receiveActionEvent.StartSwordTrail();
+        attackCooltime++;
     }
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
@@ -62,7 +65,8 @@ public class PlayerAttackStateBehaviour : StateMachineBehaviour
         processCharaAnimEvent.StateEnd();
 
         receiveActionEvent.EndSwordTrail();
-        //playerScript.PlayerSpeedOn();
+        playerScript.OnMoveOn();
+        attackCooltime = 0;
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

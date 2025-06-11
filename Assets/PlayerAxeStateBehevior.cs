@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,6 +8,9 @@ public class PlayerAxeStateBehevior : StateMachineBehaviour
     private ProcessCharaAnimEventScript processCharaAnimEvent;
     [SerializeField]
     private ReceiveActionEvent receiveActionEvent;
+    [SerializeField]
+    private PlayerScript playerScript;
+    private int attackCooltime;
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -16,6 +19,7 @@ public class PlayerAxeStateBehevior : StateMachineBehaviour
         animator.ResetTrigger("AxeAttack");
 
         receiveActionEvent = animator.transform.GetComponent<ReceiveActionEvent>();
+        playerScript = animator.transform.GetComponent<PlayerScript>();
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -24,9 +28,12 @@ public class PlayerAxeStateBehevior : StateMachineBehaviour
         if(Input.GetKey(KeyCode.Space))
         {
             animator.SetBool("AxeAttack", true);
+            attackCooltime = 0;
         }
         processCharaAnimEvent.AttackStart();
         receiveActionEvent.StartSwordTrail();
+        playerScript.OnMoveOff();
+        attackCooltime++;
     }
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
@@ -39,8 +46,9 @@ public class PlayerAxeStateBehevior : StateMachineBehaviour
         //アタック状態を抜け出す前に武器のコライダーも無効化する
         processCharaAnimEvent.AttackEnd();
         processCharaAnimEvent.StateEnd();
-
+        playerScript.OnMoveOn();
         receiveActionEvent.EndSwordTrail();
+        attackCooltime = 0;
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

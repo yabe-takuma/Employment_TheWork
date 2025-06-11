@@ -60,6 +60,10 @@ PrefabInstance:
       value: Tree_free_02_Prefab Variant
       objectReference: {fileID: 0}
     - target: {fileID: 7701789366413758832, guid: 7747ca1e6da17354aaed616c8a2d3e8d, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7701789366413758832, guid: 7747ca1e6da17354aaed616c8a2d3e8d, type: 3}
       propertyPath: m_TagString
       value: Tree
       objectReference: {fileID: 0}

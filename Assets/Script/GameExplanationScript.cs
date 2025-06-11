@@ -54,6 +54,7 @@ public class GameExplanationScript : MonoBehaviour
     //タイトルに戻るためにSceneScriptを参照
     [SerializeField]
     private SceneScript sceneScript;
+   
 
     // Start is called before the first frame update
     void Start()
@@ -188,6 +189,7 @@ public class GameExplanationScript : MonoBehaviour
                 }
             }
         }
+        
     }
     //敵が一体倒されて斧を拾うと表示されるUIをキーやボタンを押したら消す処理
     private IEnumerator ItemCoroutine()
@@ -219,7 +221,9 @@ public class GameExplanationScript : MonoBehaviour
     private IEnumerator ExplanationCoroutine()
     {
         Time.timeScale = 0;
+        playerScript.StopPlayerMotion();
         yield return new WaitUntil(() => PauseScript.Instance.currentState == PauseScript.GameState.Playing || PauseScript.Instance.currentState == PauseScript.GameState.Title);
+        playerScript.StartPlayerMotion();
         Time.timeScale = 1;
     }
 }

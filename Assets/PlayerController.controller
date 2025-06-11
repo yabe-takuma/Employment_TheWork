@@ -488,6 +488,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   processCharaAnimEvent: {fileID: 0}
   receiveActionEvent: {fileID: 0}
+  playerScript: {fileID: 0}
 --- !u!1101 &-4033152847718755771
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -617,6 +618,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   processCharaAnimEvent: {fileID: 0}
   receiveActionEvent: {fileID: 0}
+  playerScript: {fileID: 0}
 --- !u!1101 &-2671077335307346345
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -800,6 +802,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   processCharaAnimEvent: {fileID: 0}
   receiveActionEvent: {fileID: 0}
+  playerScript: {fileID: 0}
 --- !u!1102 &-75137799104714994
 AnimatorState:
   serializedVersion: 6

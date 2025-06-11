@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -43,14 +43,27 @@ public class CreateSwordTrail : MonoBehaviour
     [SerializeField]
     private bool isSwordTrail=false;
 
+    Vector3 previousStartPosition;
+    Vector3 previousEndPosition;
+
+
     // Start is called before the first frame update
     void Start()
     {
         mesh = GetComponent<MeshFilter>().mesh;
+
+        FindWeaponPositions();
     }
 
     void LateUpdate()
     {
+        //Debug.Log($"前フレームのstartPosition: {previousStartPosition}, 現フレーム: {startPosition.position}");
+        //Debug.Log($"前フレームのendPosition: {previousEndPosition}, 現フレーム: {endPosition.position}");
+
+        //previousStartPosition = startPosition.position;
+        //previousEndPosition = endPosition.position;
+
+
         //必要頂点数を超えたら削除
         if (startPoints.Count >= saveMeshNum + 3)   
         {
@@ -225,31 +238,15 @@ public class CreateSwordTrail : MonoBehaviour
     {
 
 
-        if (changeEquipScript.GetEquipment() == 0||changeEquipScript.GetEquipment() == 2|| changeEquipScript.GetEquipment() == 3)
-        {
-            emptyStartPosition = GameObject.FindGameObjectWithTag("NormalSword");
-            emptyEndPosition = GameObject.FindGameObjectWithTag("ChildSword");
-
-            startPosition = emptyStartPosition.transform;
-            endPosition = emptyEndPosition.transform;
-        }
-        else if(changeEquipScript.GetEquipment()==1||changeEquipScript.GetEquipment()>=4)
-        {
-            emptyStartPosition = GameObject.FindGameObjectWithTag("NormalAxe");
-            emptyEndPosition = GameObject.FindGameObjectWithTag("ChildAxe");
-
-            startPosition = emptyStartPosition.transform;
-            endPosition = emptyEndPosition.transform;
-        }
-        //else if (changeEquipScript.GetEquipment() == 2)//炎の剣
+        //if (changeEquipScript.GetEquipment() == 0||changeEquipScript.GetEquipment() == 2|| changeEquipScript.GetEquipment() == 3)
         //{
-        //    emptyStartPosition = GameObject.FindGameObjectWithTag("FireSword");
-        //    emptyEndPosition = GameObject.FindGameObjectWithTag("FireSword");
+        //    emptyStartPosition = GameObject.FindGameObjectWithTag("NormalSword");
+        //    emptyEndPosition = GameObject.FindGameObjectWithTag("ChildSword");
 
         //    startPosition = emptyStartPosition.transform;
         //    endPosition = emptyEndPosition.transform;
         //}
-        //else if (changeEquipScript.GetEquipment() == 3)//水の剣
+        //else if(changeEquipScript.GetEquipment()==1||changeEquipScript.GetEquipment()>=4)
         //{
         //    emptyStartPosition = GameObject.FindGameObjectWithTag("NormalAxe");
         //    emptyEndPosition = GameObject.FindGameObjectWithTag("ChildAxe");
@@ -257,21 +254,21 @@ public class CreateSwordTrail : MonoBehaviour
         //    startPosition = emptyStartPosition.transform;
         //    endPosition = emptyEndPosition.transform;
         //}
-        //else if (changeEquipScript.GetEquipment() == 4)//小さい斧
+        //if(emptyStartPosition!=null)
         //{
-        //    emptyStartPosition = GameObject.FindGameObjectWithTag("NormalAxe");
-        //    emptyEndPosition = GameObject.FindGameObjectWithTag("ChildAxe");
-
         //    startPosition = emptyStartPosition.transform;
+        //}
+        //else
+        //{
+        //    Debug.LogError("NormalSwordが見つかりません");
+        //}
+        //if (emptyEndPosition != null)
+        //{
         //    endPosition = emptyEndPosition.transform;
         //}
-        //else if (changeEquipScript.GetEquipment() == 5)//大きい斧
+        //else
         //{
-        //    emptyStartPosition = GameObject.FindGameObjectWithTag("NormalAxe");
-        //    emptyEndPosition = GameObject.FindGameObjectWithTag("ChildAxe");
-
-        //    startPosition = emptyStartPosition.transform;
-        //    endPosition = emptyEndPosition.transform;
+        //    Debug.LogError("ChildSwordが見つかりません");
         //}
     }
 
@@ -283,5 +280,41 @@ public class CreateSwordTrail : MonoBehaviour
     public Transform GetEndPosition()
     {
         return endPosition;
+    }
+
+    void FindWeaponPositions()
+    {
+        if (changeEquipScript.GetEquipment() == 0 || changeEquipScript.GetEquipment() == 2 || changeEquipScript.GetEquipment() == 3)
+        {
+            emptyStartPosition = GameObject.FindGameObjectWithTag("NormalSword");
+            emptyEndPosition = GameObject.FindGameObjectWithTag("ChildSword");
+
+            startPosition = emptyStartPosition.transform;
+            endPosition = emptyEndPosition.transform;
+        }
+        else if (changeEquipScript.GetEquipment() == 1 || changeEquipScript.GetEquipment() >= 4)
+        {
+            emptyStartPosition = GameObject.FindGameObjectWithTag("NormalAxe");
+            emptyEndPosition = GameObject.FindGameObjectWithTag("ChildAxe");
+
+            startPosition = emptyStartPosition.transform;
+            endPosition = emptyEndPosition.transform;
+        }
+        if (emptyStartPosition != null)
+        {
+            startPosition = emptyStartPosition.transform;
+        }
+        else
+        {
+            Debug.LogError("NormalSwordが見つかりません");
+        }
+        if (emptyEndPosition != null)
+        {
+            endPosition = emptyEndPosition.transform;
+        }
+        else
+        {
+            Debug.LogError("ChildSwordが見つかりません");
+        }
     }
 }

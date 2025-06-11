@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,6 +18,7 @@ public class PlayerDamageStateBehaviour : StateMachineBehaviour
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         playerScript.PlayerSpeedOff();
+        playerScript.OnDamage();
     }
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
@@ -26,7 +27,7 @@ public class PlayerDamageStateBehaviour : StateMachineBehaviour
         processCharaAnimEvent = animator.transform.GetComponent<ProcessCharaAnimEventScript>();
         //アニメーションが終わったらすぐに待機状態に戻る処理
         processCharaAnimEvent.EndDamage();
-
+        playerScript.OffDamage();
         //playerScript.PlayerSpeedOn();
     }
 
