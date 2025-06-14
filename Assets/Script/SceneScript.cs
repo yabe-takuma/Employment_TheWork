@@ -21,7 +21,7 @@ public class SceneScript : MonoBehaviour
     void Update()
     {
         //ゲームオーバーになった時やゲームクリアになった時キーやボタンを押したらタイトルシーンに行くための処理
-        if (playerScript.GetState() == PlayerScript.MyState.Dead && Input.GetKeyDown("joystick button 3") || 
+        if (playerScript.GetState() == PlayerScript.MyState.Dead && Input.GetKeyDown("joystick button 0") || 
             Input.GetKeyDown(KeyCode.K)&& playerScript.GetState() == PlayerScript.MyState.Dead)
         {
             SceneManager.LoadScene("TitleScene");

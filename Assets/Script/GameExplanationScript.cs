@@ -222,6 +222,10 @@ public class GameExplanationScript : MonoBehaviour
     {
         Time.timeScale = 0;
         playerScript.StopPlayerMotion();
+        explanationsUI[0].SetActive(false);
+        explanationsUI[1].SetActive(false);
+        explanationsUI[2].SetActive(false);
+        explanationsUI[3].SetActive(false);
         yield return new WaitUntil(() => PauseScript.Instance.currentState == PauseScript.GameState.Playing || PauseScript.Instance.currentState == PauseScript.GameState.Title);
         playerScript.StartPlayerMotion();
         Time.timeScale = 1;

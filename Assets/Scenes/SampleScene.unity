@@ -3276,7 +3276,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "(\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\u30FC)View\u30DC\u30BF\u30F3(\u274F\u30DC\u30BF\u30F3):\u30BF\u30A4\u30C8\u30EB\u306B\u623B\u308B\n(\u30AD\u30FC\u30DC\u30FC\u30C9)T\u30AD\u30FC:\u30BF\u30A4\u30C8\u30EB\u306B\u623B\u308B\n"
+  m_text: "(\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\u30FC)Y\u30DC\u30BF\u30F3:\u30BF\u30A4\u30C8\u30EB\u306B\u623B\u308B\n(\u30AD\u30FC\u30DC\u30FC\u30C9)K\u30AD\u30FC:\u30BF\u30A4\u30C8\u30EB\u306B\u623B\u308B\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3c3579ed987915241acbf2d6f951d6c3, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 8f211edfcae57dd4a84be8b84622a77a, type: 2}
@@ -8707,6 +8707,8 @@ MonoBehaviour:
   startCamera: {fileID: 1942229260}
   target: {fileID: 1709877997}
   camera: {fileID: 963194227}
+  rockonCameraRotation: {x: 0, y: 0, z: 0, w: 0}
+  initialRotation: {x: 0, y: 0, z: 0, w: 0}
 --- !u!114 &963194233
 MonoBehaviour:
   m_ObjectHideFlags: 0

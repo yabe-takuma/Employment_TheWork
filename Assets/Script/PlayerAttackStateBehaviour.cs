@@ -12,6 +12,9 @@ public class PlayerAttackStateBehaviour : StateMachineBehaviour
     private ReceiveActionEvent receiveActionEvent;
     private PlayerScript playerScript;
     private int attackCooltime;
+
+    private AttackSwordScript attackSword; // AttackSword の参照を取得
+
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -23,6 +26,15 @@ public class PlayerAttackStateBehaviour : StateMachineBehaviour
 
         playerScript = animator.transform.GetComponent<PlayerScript>();
 
+        if (attackSword == null)
+        {
+            attackSword = animator.GetComponent<AttackSwordScript>(); // 必要なら取得
+        }
+
+        attackSword.offIsCollision(); // AttackSword 内のフラグをリセット
+
+
+
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -32,6 +44,7 @@ public class PlayerAttackStateBehaviour : StateMachineBehaviour
         if(Input.GetKey(KeyCode.Space)&&attackCooltime>=10)
         {
             animator.SetBool("Attack", true);
+            processCharaAnimEvent.EndWeponCollision();
             attackCooltime = 0;
         }
         //攻撃しているときジャンプすると攻撃をキャンセルする処理
@@ -45,7 +58,10 @@ public class PlayerAttackStateBehaviour : StateMachineBehaviour
         processCharaAnimEvent.AttackStart();
 
         playerScript.OnMoveOff();
-
+        if (!Input.GetKey(KeyCode.Space))
+        {
+            processCharaAnimEvent.StartWeponCollision();
+        }
         receiveActionEvent.StartSwordTrail();
         attackCooltime++;
     }
@@ -66,6 +82,7 @@ public class PlayerAttackStateBehaviour : StateMachineBehaviour
 
         receiveActionEvent.EndSwordTrail();
         playerScript.OnMoveOn();
+        processCharaAnimEvent.EndWeponCollision();
         attackCooltime = 0;
     }
 

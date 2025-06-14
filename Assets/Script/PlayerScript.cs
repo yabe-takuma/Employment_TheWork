@@ -277,7 +277,7 @@ public class PlayerScript : MonoBehaviour
             {
                 animator.SetTrigger("AxeAttack");
             }
-            
+            PlayerSpeedOff();
         }
         else if(tempState==MyState.SkillAttack)
         {
@@ -456,6 +456,11 @@ public class PlayerScript : MonoBehaviour
         {
             rb.useGravity = true;
         }
+
+        if(state==MyState.Attack)
+        {
+            PlayerSpeedOff();
+        }
         
         
     }
@@ -596,6 +601,8 @@ public class PlayerScript : MonoBehaviour
     {
         return isJustAvoid;
     }
+
+
 
     void Playerhauding()
     {

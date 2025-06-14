@@ -16,6 +16,10 @@ public class ProcessCharaAnimEventScript : MonoBehaviour
     //足元にパーティクルを入れるのに必要
     [SerializeField]
     private ParticleSystem footStepParticle;
+    //武器の当たり判定を受け付けるフラグ
+    [SerializeField]
+    private bool isWeponCollision;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -50,6 +54,21 @@ public class ProcessCharaAnimEventScript : MonoBehaviour
     public void StateEnd()
     {
         playerscript.SetState(PlayerScript.MyState.Normal);
+    }
+
+    public void StartWeponCollision()
+    {
+        isWeponCollision = true;
+    }
+
+    public bool IsWeponCollision()
+    {
+        return isWeponCollision;
+    }
+
+    public void EndWeponCollision()
+    {
+        isWeponCollision = false;
     }
 
     public void StartDamage()
@@ -97,5 +116,9 @@ public class ProcessCharaAnimEventScript : MonoBehaviour
     void Update()
     {
         JumpStart();
+        if (playerscript.GetPosition().y >= 0.1f)
+        {
+            footStepParticle.Pause();
+        }
     }
 }

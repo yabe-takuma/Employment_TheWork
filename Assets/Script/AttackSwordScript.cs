@@ -11,6 +11,8 @@ public class AttackSwordScript : MonoBehaviour
     [SerializeField]
     private PlayerScript playerscript;
     [SerializeField]
+    private ProcessCharaAnimEventScript processCharaAnimEvent;
+    [SerializeField]
     private GameObject sworddamageUI;
     [SerializeField]
     private GameObject damageEffect;
@@ -18,6 +20,8 @@ public class AttackSwordScript : MonoBehaviour
     //3段目の攻撃時敵をダウンさせるためにAnimatorを参照
     [SerializeField]
     private Animator animator;
+    [SerializeField]
+    private bool isCollision;
   
     // Start is called before the first frame update
     private void Start()
@@ -25,6 +29,7 @@ public class AttackSwordScript : MonoBehaviour
         myStatus = transform.root.GetComponent<MyStatus>();
         playerscript = transform.root.GetComponent<PlayerScript>();
         animator = transform.root.GetComponent<Animator>();
+        processCharaAnimEvent = transform.root.GetComponent<ProcessCharaAnimEventScript>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -32,10 +37,12 @@ public class AttackSwordScript : MonoBehaviour
         //剣が雑魚敵に当たった時の処理
         if(other.tag=="Enemy" && this.gameObject.tag != "FireSword"&&this.gameObject.tag!="WaterSword")
         {
-           
             var enemyScript = other.GetComponent<MoveEnemyScript>();
-            if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead /*&& enemyScript.GetState() == MoveEnemyScript.EnemyState.Chase*/)
+            // ここでアニメーションの時間をチェックし、特定の範囲のみヒットを許可
+            float animTime = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+            if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead &&  animTime > 0.2f && animTime < 0.4f/*&& enemyScript.GetState() == MoveEnemyScript.EnemyState.Chase*/)
             {
+                isCollision = true;
                 //HitStopScript.instance.StartHitStop(1.0f);
                 other.GetComponent<MoveEnemyScript>().TakeDamage(myStatus.GetAttackPower(),other.ClosestPointOnBounds(transform.position));
                 var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y-1.0f, other.bounds.center.z), Quaternion.identity);
@@ -48,7 +55,9 @@ public class AttackSwordScript : MonoBehaviour
         {
 
             var enemyScript = other.GetComponent<MoveEnemyScript>();
-            if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead&&playerscript.GetState()!=PlayerScript.MyState.SkillAttack)
+            // ここでアニメーションの時間をチェックし、特定の範囲のみヒットを許可
+            float animTime = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+            if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead&& animTime > 0.2f && animTime < 0.4f&&playerscript.GetState()!=PlayerScript.MyState.SkillAttack)
             {
                 other.GetComponent<MoveEnemyScript>().TakeDamage(myStatus.GetAttackPower(), other.ClosestPointOnBounds(transform.position));
                 var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 1.0f, other.bounds.center.z), Quaternion.identity);
@@ -68,7 +77,9 @@ public class AttackSwordScript : MonoBehaviour
         {
 
             var enemyScript = other.GetComponent<MoveEnemyScript>();
-            if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead && playerscript.GetState() != PlayerScript.MyState.SkillAttack)
+            // ここでアニメーションの時間をチェックし、特定の範囲のみヒットを許可
+            float animTime = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+            if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead && animTime > 0.2f && animTime < 0.4f && playerscript.GetState() != PlayerScript.MyState.SkillAttack)
             {
                 other.GetComponent<MoveEnemyScript>().TakeDamage(myStatus.GetAttackPower(), other.ClosestPointOnBounds(transform.position));
                 var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 1.0f, other.bounds.center.z), Quaternion.identity);
@@ -150,12 +161,15 @@ public class AttackSwordScript : MonoBehaviour
                 swordobj.transform.SetParent(other.transform);
             }
         }
-        if(animator.GetCurrentAnimatorStateInfo(0).IsName("Attack03")&&other.tag=="Enemy")
+       
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack03") && other.tag == "Enemy")
         {
             var enemyScript = other.GetComponent<MoveEnemyScript>();
             other.GetComponentInParent<MoveEnemyScript>().KnockBackDamage(myStatus.GetAttackPower(), other.ClosestPointOnBounds(transform.position));
         }
     }
+
+  
 
     // Update is called once per frame
     void Update()
@@ -165,11 +179,24 @@ public class AttackSwordScript : MonoBehaviour
         {
             isAttack = false;
         }
-       
+        if (!processCharaAnimEvent.IsWeponCollision())
+        {
+            isCollision = false;
+        }
     }
     //他のスクリプトに参照できるようにする関数です。
     public bool IsAttack()
     {
         return isAttack;
+    }
+
+    public bool IsCollision()
+    {
+        return isCollision;
+    }
+
+    public void offIsCollision()
+    {
+        isCollision = false;
     }
 }

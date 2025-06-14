@@ -178,14 +178,7 @@ public class MoveEnemyScript : MonoBehaviour
             velocity = Vector3.zero;
             animator.SetFloat("Speed", 0f);
             animator.SetBool("Attack", true);
-            //if (processEnemyAnimEventScript.GetWeaponCaunter() == 1)
-            //{
-            //    animator.SetBool("Attack2", true);
-            //}
-            //else if (processEnemyAnimEventScript.GetWeaponCaunter() == 0)
-            //{
-            //    animator.SetBool("Attack3", true);
-            //}
+           
             navMeshAgent.isStopped = true;
         }
         else if(tempState == EnemyState.Freeze)
@@ -404,7 +397,7 @@ public class MoveEnemyScript : MonoBehaviour
         if (state != EnemyState.Dead)
         {
             //見回りまたはキャラクターを追いかける状態
-            if (state == EnemyState.Walk || state == EnemyState.Chase)
+            if (state == EnemyState.Walk/*&& abnormalcounter == 1*/ || state == EnemyState.Chase /*&& abnormalcounter ==1 */)
             {
                 if (!arrived)
                 {
@@ -436,8 +429,7 @@ public class MoveEnemyScript : MonoBehaviour
                         //攻撃する距離だったら攻撃
                         if (navMeshAgent.remainingDistance < 1.2f)
                         {
-                            SetState(EnemyState.Attack);
-
+                             SetState(EnemyState.Attack);
                         }
                     }
                 }
