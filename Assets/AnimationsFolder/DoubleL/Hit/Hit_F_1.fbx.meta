@@ -64,14 +64,14 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.79999995
+      - time: 0.77288127
         functionName: OnMoveOn
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.8542392
+      - time: 0.86101896
         functionName: EndDamage
         data: 
         objectReferenceParameter: {instanceID: 0}

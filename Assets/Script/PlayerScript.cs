@@ -130,6 +130,13 @@ public class PlayerScript : MonoBehaviour
     private MoveEnemyScript nearestEnemyScript;
     [SerializeField]
     private int avoidCaunter;
+    [SerializeField]
+    private bool isDamage;
+    private int damageCoolTime;
+    [SerializeField]
+    private Renderer playerRenderer;
+    [SerializeField]
+    private int blinkCount = 5;
 
     private bool isPause;
     private bool pauseEnded;
@@ -142,6 +149,7 @@ public class PlayerScript : MonoBehaviour
     {
         public float moveSpeed = 5.0f;
         public float dashSpeed = 9.0f;
+        public float decelerationRate=5.0f;
         //public float sprintSpeed = 50.0f;
     }
     private MoveSettings moveSettings;
@@ -189,10 +197,9 @@ public class PlayerScript : MonoBehaviour
 
         characterController.skinWidth = 0.08f; // **デフォルト（0.05f）より少し広めに**
 
+        isDamage = false;
 
-
-
-
+        playerRenderer = GetComponentInChildren<Renderer>();
     }
 
     // Update is called once per frame
@@ -206,7 +213,7 @@ public class PlayerScript : MonoBehaviour
     public void TakeDamage(Transform enemyTransform,Vector3 attackedPlace,int damage)
     {
         //倒されていなかったらHPを減らしたりアニメーションなどをする処理
-        if (state != MyState.Dead)
+        if (state != MyState.Dead && !isDamage)
         {
             state = MyState.Damage;
             isJustAvoid = true;
@@ -218,7 +225,8 @@ public class PlayerScript : MonoBehaviour
             myStatus.SetHp(myStatus.GetHp() - damage);
            
             hpgauge.SetDamageLifeGauge(damage);
-            
+            isDamage = true;
+            StartCoroutine(StartInvincibilityBlink());
         }
         //HPが0になったら倒される処理
         if(myStatus.GetHp()<=0)
@@ -230,7 +238,7 @@ public class PlayerScript : MonoBehaviour
     public void KnockBack(int damage)
     {
         //ただダメージUIをどこでもよいので表示したい用の処理
-        if (state != MyState.Dead)
+        if (state != MyState.Dead && !isDamage)
         {
             animator.SetTrigger("KnockBack");
             velocity = new Vector3(0f, velocity.y, 0f);
@@ -240,6 +248,8 @@ public class PlayerScript : MonoBehaviour
             var damageEffectIns = Instantiate<GameObject>(damageEffect, new Vector3(transform.position.x, transform.position.y - 1, transform.position.z), Quaternion.identity);
             Destroy(damageEffectIns, 1f);
             myStatus.SetHp(myStatus.GetHp() - damage);
+            isDamage = true;
+            StartCoroutine(StartInvincibilityBlink());
         }
         if (myStatus.GetHp() <= 0)
         {
@@ -312,7 +322,7 @@ public class PlayerScript : MonoBehaviour
     public void Damage(int damage)
     {   
         //ただダメージUIをどこでもよいので表示したい用の処理
-        if (state != MyState.Dead)
+        if (state != MyState.Dead&&!isDamage)
         {
             animator.SetTrigger("Damage");
             camera3D.StartShake();
@@ -322,6 +332,8 @@ public class PlayerScript : MonoBehaviour
             var damageEffectIns = Instantiate<GameObject>(damageEffect, new Vector3(transform.position.x,transform.position.y-1,transform.position.z), Quaternion.identity);
             Destroy(damageEffectIns, 1f);
             myStatus.SetHp(myStatus.GetHp() - damage);
+            isDamage = true;
+            StartCoroutine(StartInvincibilityBlink());
         }
         if (myStatus.GetHp() <= 0)
         {
@@ -373,20 +385,6 @@ public class PlayerScript : MonoBehaviour
                 Rotation();
             }
         }
-        //RaycastHit hit;
-        //if (Physics.Raycast(transform.position, transform.forward, out hit, 1.5f))
-        //{
-        //    if (hit.collider.CompareTag("Collision"))
-        //    {
-        //        rb.MovePosition(fixedPosition); // 物理的に移動を制限
-        //    }
-        //}
-
-
-      
-
-
-
     }
 
     bool CanMove()
@@ -459,10 +457,16 @@ public class PlayerScript : MonoBehaviour
 
         if(state==MyState.Attack)
         {
-            PlayerSpeedOff();
+            //PlayerSpeedOff();
+            Vector3 horizontalVelocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+            horizontalVelocity = Vector3.Lerp(horizontalVelocity, Vector3.zero, Time.deltaTime * moveSettings.decelerationRate);
+            rb.velocity = new Vector3(horizontalVelocity.x, rb.velocity.y, horizontalVelocity.z);
+            animator.SetFloat("Speed", horizontalVelocity.magnitude);
+
+
         }
-        
-        
+
+
     }
 
     private void Rotation()
@@ -522,21 +526,12 @@ public class PlayerScript : MonoBehaviour
     { 
         avoid = false;
         inAvoid = false;
-        //animator.applyRootMotion = false;
-        //if (transform.position.z <= 12.5f)
-        //{
-        //    animator.applyRootMotion = false;
-        //}
+       
     }
     public void StartAvoid()
     {
         inAvoid = true;
-       // animator.applyRootMotion = true;
-        //if (transform.position.z <= 12.5f)
-        //{
-        //    animator.applyRootMotion = true;
-        //    Debug.Log("モーション");
-        //}
+     
     }
     
     public void OnAvoid(InputAction.CallbackContext context)
@@ -796,8 +791,17 @@ public class PlayerScript : MonoBehaviour
        // Debug.Log($"現在位置: X={transform.position.x}, Z={transform.position.z}");
         Debug.Log($"CanMove(): {CanMove()}"); // 移動許可が適切に判定されているか確認
 
+        if(isDamage)
+        {
+            damageCoolTime++;
+            StartCoroutine(StartInvincibilityBlink());
 
+        }
 
+        if (damageCoolTime>540)
+        {
+            isDamage = false;
+        }
 
         //MoveTowardsClosestEnemy(this.transform);
         //if (isJustAvoidMove)
@@ -954,7 +958,41 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
- 
+    private IEnumerator StartInvincibilityBlink()
+    {
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+
+        foreach (Renderer r in renderers)
+        {
+            Color c = r.material.GetColor("_Color");
+            c.a = 0.4f;
+            r.material.SetColor("_Color", c);
+        }
+
+        Color transparentColor = new Color(1f, 1f, 1f, 0.4f);
+        Color opaqueColor = new Color(1f, 1f, 1f, 1f);
+
+        for (int i = 0; i < blinkCount; i++)
+        {
+            foreach (Renderer r in renderers)
+                r.material.SetColor("_Color", transparentColor);
+
+            yield return new WaitForSeconds(0.1f);
+
+            foreach (Renderer r in renderers)
+                r.material.SetColor("_Color", opaqueColor);
+
+            yield return new WaitForSeconds(0.1f);
+        }
+
+
+
+
+
+
+
+
+    }
 
 
 

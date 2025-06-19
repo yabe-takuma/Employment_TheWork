@@ -13,6 +13,14 @@ public class ChaseCharaScript : MonoBehaviour
     //プレイヤーが来るのを検知する変数
     private GameObject target;
 
+    public Transform bossTransform;  // ボスの位置
+    public GameObject barrierPrefab; // バリアのプレハブ
+    public float barrierDistance = 5f; // ボスからの距離
+
+    private List<GameObject> barriers = new List<GameObject>();
+
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -34,6 +42,7 @@ public class ChaseCharaScript : MonoBehaviour
             trollScript.SetState(TrollScript.TrollState.chase, other.transform);
             HPUI.SetActive(true);
             target = other.gameObject;
+            StartBossBattle();
         }
        
     }
@@ -47,6 +56,7 @@ public class ChaseCharaScript : MonoBehaviour
             trollScript.SetState(TrollScript.TrollState.idle);
             HPUI.SetActive(false);
             target = null;
+            EndBossBattle();
         }
        
     }
@@ -61,4 +71,43 @@ public class ChaseCharaScript : MonoBehaviour
     {
         return this.target;
     }
+
+    void CreateBossBarrier()
+    {
+        Vector3[] barrierPositions = new Vector3[]
+        {
+        bossTransform.position + Vector3.forward * barrierDistance,  // 前側
+        bossTransform.position - Vector3.forward * barrierDistance,  // 後側
+        bossTransform.position + Vector3.right * barrierDistance,    // 右側
+        bossTransform.position - Vector3.right * barrierDistance     // 左側
+        };
+
+        foreach (Vector3 pos in barrierPositions)
+        {
+            GameObject barrier = Instantiate(barrierPrefab, pos, Quaternion.identity);
+            barriers.Add(barrier);
+        }
+    }
+
+    void RemoveBossBarrier()
+    {
+        foreach (GameObject barrier in barriers)
+        {
+            Destroy(barrier); // バリア削除
+        }
+        barriers.Clear();
+    }
+
+    void StartBossBattle()
+    {
+        CreateBossBarrier();  // バリア設置
+    }
+
+    void EndBossBattle()
+    {
+        RemoveBossBarrier();  // バリア解除
+    }
+
+
+
 }

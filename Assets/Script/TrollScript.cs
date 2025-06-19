@@ -116,6 +116,8 @@ public class TrollScript : MonoBehaviour
     private const int maxloop = 3;
 
     private bool isstarttimeline;
+    [SerializeField]
+   // private NavMeshAgent navMeshAgent;
 
     // Start is called before the first frame update
     void Start()
@@ -131,6 +133,8 @@ public class TrollScript : MonoBehaviour
         animator.SetTrigger("ShockwaveAttack");
         Time.timeScale = 0;
         animator.updateMode = AnimatorUpdateMode.UnscaledTime;
+        //navMeshAgent = GetComponent<NavMeshAgent>();
+        //navMeshAgent.isStopped = true;
     }
 
     // Update is called once per frame
@@ -179,7 +183,14 @@ public class TrollScript : MonoBehaviour
             Debug.Log("連続攻撃5");
         }
         TrollUpdate();
-       
+
+        //if (!navMeshAgent.pathPending && navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance && trollState == TrollState.patrol)
+        //{
+        //    SetState(TrollState.idle);
+        //}
+
+
+
     }
 
     //目的地を設定する
@@ -187,7 +198,7 @@ public class TrollScript : MonoBehaviour
     {
         //最初の位置から有効範囲のランダム位置を取得
 
-        var randomPos = defaultPos + Random.insideUnitSphere*movementRange;
+        var randomPos = defaultPos + Random.insideUnitSphere * movementRange;
         var ray = new Ray(randomPos + Vector3.up * 10f, Vector3.down);
         RaycastHit hit;
         //目的地が地面になるように再設定
@@ -199,6 +210,16 @@ public class TrollScript : MonoBehaviour
         {
             SetRandomDestination();
         }
+        //for (int i = 0; i < 5; i++) // 試行を5回に制限
+        //{
+        //    var randomPos = defaultPos + Random.insideUnitSphere * movementRange;
+        //    if (NavMesh.SamplePosition(randomPos, out NavMeshHit hit, 3f, NavMesh.AllAreas))
+        //    {
+        //        navMeshAgent.SetDestination(hit.position);
+        //        return;
+        //    }
+        //}
+        //Debug.LogWarning("目的地設定失敗");
     }
 
     //状態変更メソッド
@@ -207,7 +228,8 @@ public class TrollScript : MonoBehaviour
         trollState = tmpState;
         if(trollState == TrollState.idle)
         {
-            velocity = new Vector3(0f, velocity.y, 0f);
+            //velocity = new Vector3(0f, velocity.y, 0f);
+            //navMeshAgent.isStopped = true;
             animator.SetFloat("WalkSpeed", 0f);
             animator.SetBool("Chase", false);
             animator.ResetTrigger("WaveAttack");
@@ -222,6 +244,8 @@ public class TrollScript : MonoBehaviour
         else if(trollState == TrollState.patrol)
         {
             Debug.Log("パトロール");
+            SetRandomDestination();
+           // navMeshAgent.isStopped = false;
         }
         else if(trollState == TrollState.attack)
         {
@@ -257,6 +281,7 @@ public class TrollScript : MonoBehaviour
             animator.SetBool("Chase", true);
             attackTargetTransform = playerTransform;
             Debug.Log("チェイス");
+           // navMeshAgent.isStopped = false;
         }
         else if(trollState == TrollState.Jump)
         {
@@ -345,6 +370,7 @@ public class TrollScript : MonoBehaviour
     //Idle状態の時の処理
     private void Idle()
     {
+       // navMeshAgent.isStopped = true;
         elapsedTimeOfIdleState += Time.deltaTime;
         //一定時間が経過したらpatrol状態にする
         if(elapsedTimeOfIdleState >= timeToStayInIdle)
@@ -369,33 +395,64 @@ public class TrollScript : MonoBehaviour
             dis = Vector3.Distance(transform.position, destination);
             //pos = destination;
         }
-        
+
         //目的地に着いたらidle状態にする
-        if (Vector3.Distance(transform.position,destination)<2.0f)
+        if (Vector3.Distance(transform.position, destination) < 2.0f)
         {
             SetState(TrollState.idle);
-           
+
         }
 
-        if(elapsedCollisionWall>=avoidanceTimeCollisionWall)
+        Vector3[] directions = new Vector3[]
         {
-            if (Physics.Linecast(rayTransform.position, rayTransform.position + rayTransform.forward * rayDistance, LayerMask.GetMask("Field"))
-                ||Physics.Linecast(rayTransform.position,rayTransform.position+(rayTransform.forward+rayTransform.right).normalized*rayDistance,LayerMask.GetMask("Field"))
-                ||Physics.Linecast(rayTransform.position,rayTransform.position+(rayTransform.forward-rayTransform.right).normalized*rayDistance,LayerMask.GetMask("Field"))
-                )
+            rayTransform.forward,
+            (rayTransform.forward + rayTransform.right).normalized,
+            (rayTransform.forward - rayTransform.right).normalized,
+            (rayTransform.forward + rayTransform.up * 0.5f).normalized,  // 上斜め前
+            (rayTransform.forward - rayTransform.up * 0.5f).normalized   // 下斜め前
+        };
+
+
+
+        if (elapsedCollisionWall >= avoidanceTimeCollisionWall)
+        {
+            foreach (var dir in directions)
             {
-                Debug.Log("壁と接触");
-                elapsedCollisionWall = 0f;
-                SetState(TrollState.idle);
+                if (Physics.Linecast(rayTransform.position, rayTransform.position + dir * rayDistance, LayerMask.GetMask("Tree")))
+                {
+                    {
+                        // 回避方向に少しランダムな角度で回転
+                        float angle = Random.Range(90f, 180f);
+                        transform.Rotate(0, angle, 0);
+
+                        // 新しい目的地を設定
+                        SetRandomDestination();
+
+                        velocity = transform.forward * walkSpeed; // 進ませる力を即時与える
+
+
+
+                        // 回避猶予リセット
+                        elapsedCollisionWall = 0f;
+
+
+                    }
+                }
             }
         }
         //一旦目的地を再設定したら一定の回避時間を設ける
         elapsedCollisionWall += Time.deltaTime;
-        if(elapsedCollisionWall >= avoidanceTimeCollisionWall)
+        if (elapsedCollisionWall >= avoidanceTimeCollisionWall)
         {
             elapsedCollisionWall = avoidanceTimeCollisionWall;
         }
-        
+        //if (navMeshAgent.isStopped)
+        //{
+        //    SetRandomDestination();
+        //    navMeshAgent.isStopped = false;
+        //}
+        //animator.SetFloat("WalkSpeed", navMeshAgent.velocity.magnitude);
+
     }
     //Chase状態の時の処理
     private void Chase()
@@ -408,12 +465,17 @@ public class TrollScript : MonoBehaviour
             velocity = Vector3.zero;
             //追いかける時はキャラクターの向きに回転して進ませる
             var direction = (destination - transform.position).normalized;
-            var targetRot = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(destination - transform.position),Time.deltaTime * rotateSpeed);
+            var targetRot = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(destination - transform.position), Time.deltaTime * rotateSpeed);
             transform.rotation = Quaternion.Euler(transform.eulerAngles.x, targetRot.eulerAngles.y, transform.eulerAngles.z);
             velocity = transform.forward * chaseSpeed;
             Debug.Log("追いかける");
         }
-       
+        //if (attackTargetTransform != null)
+        //{
+        //    navMeshAgent.SetDestination(attackTargetTransform.position);
+        //    animator.SetBool("Chase", true);
+        //}
+
     }
     //Attack状態の時の処理
     private void Attack()
@@ -427,6 +489,10 @@ public class TrollScript : MonoBehaviour
             && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
         {
             SetState(TrollState.idle);
+            //animator.ResetTrigger("Attack");
+            //animator.SetBool("Chase", false);
+
+            //navMeshAgent.isStopped = false;
             Debug.Log("トロル攻撃");
         }
     }
@@ -442,6 +508,10 @@ public class TrollScript : MonoBehaviour
             && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
         {
             SetState(TrollState.idle);
+            //animator.ResetTrigger("ShockwaveAttack");
+            //animator.SetBool("Chase", false);
+
+            //navMeshAgent.isStopped = false;
             Debug.Log("トロル強化攻撃");
         }
     }
@@ -461,6 +531,9 @@ public class TrollScript : MonoBehaviour
             && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
         {
             SetState(TrollState.idle);
+            //animator.ResetTrigger("WaveAttack");
+            //animator.SetBool("Chase", false);
+            //navMeshAgent.isStopped = false;
         }
         
     }
@@ -487,7 +560,10 @@ public class TrollScript : MonoBehaviour
             && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
         {
             SetState(TrollState.idle);
+            //animator.ResetTrigger("ExplocionAttack");
+            //animator.SetBool("Chase", false);
             Isexplocion = false;
+            //navMeshAgent.isStopped = false;
             Debug.Log("爆発発生");
         }
     }
@@ -515,6 +591,9 @@ public class TrollScript : MonoBehaviour
             && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 3)
         {
             SetState(TrollState.idle);
+            //animator.ResetTrigger("ContinuousAttack");
+            //animator.SetBool("Chase", false);
+            //navMeshAgent.isStopped = false;
             Debug.Log("連続波攻撃");
         }
     }
@@ -523,7 +602,7 @@ public class TrollScript : MonoBehaviour
     {
         //WeakUIをインスタンス化。登場位置はコライダの中心からカメラの方向に少し寄せた位置
         trollStatus.SetHp(trollStatus.GetHp() - damage);
-        HitStopScript.instance.StartHitStop(0.1f);
+        //HitStopScript.instance.StartHitStop(0.1f);
         //navMeshAgent.isStopped = true;
         if (trollStatus.GetHp()<=0)
         {
@@ -645,6 +724,21 @@ public class TrollScript : MonoBehaviour
             velocity = new Vector3(0f, velocity.y, 0f);
         }
     }
+
+    void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Tree"))
+        {
+            Debug.Log("ぶつかった！方向転換");
+
+            // 避ける処理
+            float angle = Random.Range(120f, 180f);
+            transform.Rotate(0, angle, 0);
+            SetRandomDestination();
+        }
+    }
+
+
 
 }
 

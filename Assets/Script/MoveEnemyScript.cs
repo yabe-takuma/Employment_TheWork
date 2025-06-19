@@ -503,17 +503,25 @@ public class MoveEnemyScript : MonoBehaviour
 
     private IEnumerator KnockBackCoroutine(Vector3 attackDirection)
     {
-        float knockbackTime = 0.2f;  //ノックバックの継続時間
-        float knockbackStrength = 2.0f; //ノックバックの初期値
+        float knockbackTime = 0.2f;
+        float knockbackStrength = 2.0f;
         float elapsed = 0f;
 
-        while (elapsed<knockbackTime)
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb == null)
+            yield break;
+
+        rb.velocity = Vector3.zero;
+
+        while (elapsed < knockbackTime)
         {
-            enemyController.Move(attackDirection.normalized * knockbackStrength * Time.deltaTime);
-            knockbackStrength *= 0.9f; //ノックバックの減衰
+            rb.AddForce(attackDirection.normalized * knockbackStrength, ForceMode.VelocityChange);
+            knockbackStrength *= 0.9f; // 減衰
             elapsed += Time.deltaTime;
             yield return null;
         }
+
+
     }
 
 }
