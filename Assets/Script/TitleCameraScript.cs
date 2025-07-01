@@ -18,11 +18,14 @@ public class TitleCameraScript : MonoBehaviour
     private GameObject textUI;
     [SerializeField]
     private GameObject panel;
+
+    private bool isAtDestination;
     // Start is called before the first frame update
     void Start()
     {
         isEvent = false;
         timeline.Stop();
+        isAtDestination = false;
     }
 
     // Update is called once per frame
@@ -53,6 +56,12 @@ public class TitleCameraScript : MonoBehaviour
         {
             textUI.SetActive(true);
             panel.SetActive(true);
+            isAtDestination = true;
         }
+    }
+
+    public bool IsAtDistination()
+    {
+        return isAtDestination;
     }
 }

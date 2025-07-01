@@ -114,20 +114,25 @@ public class CameraScript : MonoBehaviour
     private bool isUnlockTransitioning;
     private float unlockLerpTime;
     private bool isUnlockJustNow = false;
-
-
+    private bool skipLerpOnce;
+    private bool skipCameraUpdateOnce;
+    private Vector3 velocity;
+    [SerializeField]
+    private MyStatus myStatus;
 
     // Start is called before the first frame update
     void Start()
     {
-        nowPos = TargetObject.transform.position;
+        //nowPos = TargetObject.transform.position;
         playerScript = GameObject.Find("Character_Female_Hotel Owner").GetComponent<PlayerScript>();
         originalPosition = transform.position;
         StartCamera();
         isStartAnimation = false;
         offset = new Vector3(0, 2, -5);
         isCameraAngle = false;
-        nowPos = TargetObject.transform.position + new Vector3(0, 2, -5); // ← 背後にオフセット
+        skipLerpOnce = false;
+        skipCameraUpdateOnce = false;
+        //nowPos = TargetObject.transform.position + new Vector3(0, 2, -5); // ← 背後にオフセット
 
 
     }
@@ -146,7 +151,7 @@ public class CameraScript : MonoBehaviour
     {
         if (trollscript.GetState() != TrollScript.TrollState.Dead)
         {
-            speed = new Vector3(context.ReadValue<Vector2>().x, 0f, context.ReadValue<Vector2>().y);
+            speed = new Vector3(context.ReadValue<Vector2>().x * 3, 0f, context.ReadValue<Vector2>().y * 3);
         }
     }
     public void OnRockon(InputAction.CallbackContext context)
@@ -175,6 +180,11 @@ public class CameraScript : MonoBehaviour
     {
         rock = false;
        
+    }
+
+    public bool IsStartAnimation()
+    {
+        return isStartAnimation;
     }
 
     public void GetRockonTarget(GameObject target)
@@ -207,6 +217,15 @@ public class CameraScript : MonoBehaviour
 
     void CameraUpdate()
     {
+
+        if (skipCameraUpdateOnce)
+        {
+            skipCameraUpdateOnce = false;
+            return; // 1フレームだけ完全にスキップ
+        }
+
+
+
         //カメラの回転
         RotAngle -= speed.x * Time.deltaTime * 100.0f;
         HeightAngle += speed.z * Time.deltaTime * 50.0f;
@@ -281,13 +300,23 @@ public class CameraScript : MonoBehaviour
         //ロックオンじゃない時のカメラの座標
         if (!rock && isStartAnimation&&!justUnlocked)
         {
-            //transform.position = nowPos + new Vector3(cx, cy, cz);
-            //var rot = Quaternion.LookRotation((nowPos - transform.position).normalized);
-            //transform.rotation = rot;
+           
             float followSpeed = 5.0f;
 
-            transform.position = Vector3.Lerp(transform.position, nowPos + new Vector3(cx, cy, cz), Time.deltaTime * followSpeed);
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(nowPos - transform.position), Time.deltaTime * followSpeed);
+            if (skipLerpOnce)
+            {
+                // 初期化後は1フレームだけ瞬間移動（スムーズ補間せずに直接追従）
+                transform.position = nowPos + new Vector3(cx, cy, cz);
+                transform.rotation = Quaternion.LookRotation(nowPos - transform.position);
+                skipLerpOnce = false; // これで次フレームから通常処理に戻る
+            }
+            else
+            {
+                transform.position = Vector3.Lerp(transform.position, nowPos + new Vector3(cx, cy, cz), Time.deltaTime * followSpeed);
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(nowPos - transform.position), Time.deltaTime * followSpeed);
+            }
+
+
 
 
         }
@@ -302,9 +331,14 @@ public class CameraScript : MonoBehaviour
 
         if (rock && RockonTarget.tag == "Enemy")
         {
-            initialRotation = rockonEnemyposition.transform.rotation;
-            transform.rotation = initialRotation;
-            transform.position = rockonEnemyposition.transform.position;
+            //initialRotation = rockonEnemyposition.transform.rotation;
+            //transform.rotation = initialRotation;
+            //transform.position = rockonEnemyposition.transform.position;
+
+            transform.rotation = new Quaternion(transform.rotation.x, rockonEnemyposition.transform.rotation.y, rockonEnemyposition.transform.rotation.z, rockonEnemyposition.transform.rotation.w);
+            AdjustEnemyCamera();
+
+
 
         }
         if (rock && RockonTarget.tag!="Enemy"&&!isCameraAngle)
@@ -395,12 +429,32 @@ public class CameraScript : MonoBehaviour
     IEnumerator StartCameraCoroutine()
     {
         Debug.Log("StartCameraCoroutine 実行開始");
-        transform.position = new Vector3(975, 0.4f, 45);
         yield return new WaitForSecondsRealtime(1.0f);
         isStartAnimation = true;
-        transform.position = TargetObject.transform.position;
-        transform.rotation = TargetObject.transform.rotation;
+
+        // ↓↓↓ まず角度を正しい値に初期化する！
+        RotAngle = 0f;
+        HeightAngle = 15f;
+        nowRotAngle = RotAngle;
+        nowHeightAngle = HeightAngle;
+
+        // そのあとで nowPos を計算
+        var deg = Mathf.Deg2Rad;
+        var cx = Mathf.Sin(nowRotAngle * deg) * Mathf.Cos(nowHeightAngle * deg) * Distance;
+        var cz = -Mathf.Cos(nowRotAngle * deg) * Mathf.Cos(nowHeightAngle * deg) * Distance;
+        var cy = Mathf.Sin(nowHeightAngle * deg) * Distance;
+        nowPos = TargetObject.transform.position + new Vector3(cx, cy, cz);
+
+        // カメラ位置と回転を即設定
+        transform.position = nowPos;
+        transform.rotation = Quaternion.LookRotation(TargetObject.transform.position - nowPos);
+
+        // Lerp 無効化のためのフラグ
+        skipCameraUpdateOnce = true;
+        skipLerpOnce = true;
         Debug.Log("StartCameraCoroutine 実行終了: " + transform.position);
+        
+
 
 
     }
@@ -409,21 +463,59 @@ public class CameraScript : MonoBehaviour
 
     private void AdjustCamera()
     {
-        //オブジェクトの境界ボックスを取得
+        if (RockonTarget == null || TargetObject == null) return;
+
+        // プレイヤーと敵の位置を取得（視認性を考慮してやや上）
+        Vector3 playerPos = TargetObject.transform.position + Vector3.up * 1.5f;
+        Vector3 enemyPos = RockonTarget.transform.position + Vector3.up * 1.5f;
+
+        // 中間点を取得
+        Vector3 midPoint = (playerPos + enemyPos) * 0.5f;
+
+        // === ロックオン対象のサイズを取得 ===
         Bounds bounds = new Bounds(RockonTarget.transform.position, Vector3.zero);
-        foreach(Renderer renderer in RockonTarget.GetComponentsInChildren<Renderer>())
+        foreach (Renderer renderer in RockonTarget.GetComponentsInChildren<Renderer>())
         {
             bounds.Encapsulate(renderer.bounds);
         }
+        float targetSize = bounds.extents.magnitude;
 
-        //オブジェクトのサイズから最適な距離を計算
-        float objectSize = bounds.extents.magnitude;
-        float zoomFactor = 0.7f;  //調整用の倍率 (小さいほどカメラに近づく)
-        float distance = (objectSize / Mathf.Tan(Mathf.Deg2Rad * camera.fieldOfView / 2)) * zoomFactor;
+        // カメラ方向と距離の調整：サイズに応じて距離を動的に決定
+        Vector3 direction = (midPoint - enemyPos).normalized;
+        float baseDistance = Vector3.Distance(playerPos, enemyPos);
+        float dynamicDistance = Mathf.Max(baseDistance + 3.0f, targetSize * 2.0f); // オブジェクトが大きいときはもっと下がる
 
-        //カメラの位置を調整
-        camera.transform.position = bounds.center - camera.transform.forward * (distance + 0.5f);
-        camera.transform.LookAt(bounds.center);
+        // カメラ位置を計算
+        Vector3 cameraPos = midPoint + direction * dynamicDistance + Vector3.up * 2.5f;
+
+        // カメラをスムーズに移動＆注視
+        camera.transform.position = Vector3.SmoothDamp(camera.transform.position, cameraPos, ref velocity, 0.15f);
+        camera.transform.LookAt(midPoint);
+
+    }
+
+    private void AdjustEnemyCamera()
+    {
+        if (RockonTarget == null || TargetObject == null) return;
+
+        Vector3 playerPos = TargetObject.transform.position + Vector3.up * 1.5f;
+        Vector3 enemyPos = RockonTarget.transform.position + Vector3.up * 1.5f;
+
+        Vector3 directionToEnemy = (enemyPos - playerPos).normalized;
+        float distance = Vector3.Distance(playerPos, enemyPos);
+
+        // プレイヤーの背後から敵を見るようにカメラ位置を調整
+        Vector3 cameraOffset = -directionToEnemy * Mathf.Clamp(distance * 0.8f, 5f, 12f) + Vector3.up * 3.5f;
+        Vector3 desiredCameraPos = playerPos + cameraOffset;
+
+        camera.transform.position = Vector3.SmoothDamp(camera.transform.position, desiredCameraPos, ref velocity, 0.1f);
+
+        // プレイヤーと敵の間を常に注視
+        Vector3 lookTarget = (playerPos + enemyPos) * 0.5f;
+        camera.transform.LookAt(lookTarget);
+
+
+
     }
 
     IEnumerator ForceApplyRotation()

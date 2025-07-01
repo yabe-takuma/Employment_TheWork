@@ -551,6 +551,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterController: {fileID: 320040241}
   animator: {fileID: 320040239}
+  titleCameraScript: {fileID: 304081314}
+  animationCooltime: 0
 --- !u!95 &320040239 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 2770555403133662614, guid: 7690834c262e2c5468ce66884dbeb3d9, type: 3}
@@ -2365,6 +2367,25 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1729985574 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1862107410815556, guid: 4a2995c2dfa5ee447bb99406df3fd57e, type: 3}
+  m_PrefabInstance: {fileID: 2059356126}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1729985577
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1729985574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 109bcf654cad06a4298476b611460dee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  titleCameraScript: {fileID: 304081314}
+  animationCooltime: 0
 --- !u!1 &1883947737
 GameObject:
   m_ObjectHideFlags: 0

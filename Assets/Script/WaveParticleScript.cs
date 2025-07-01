@@ -25,15 +25,29 @@ public class WaveParticleScript : MonoBehaviour
     [SerializeField]
     private int timer;
 
+    private Quaternion fixedRotation;
+
+
+
     // Start is called before the first frame update
     void Start()
     {
-        ps = GetComponent<ParticleSystem>();
+        ps = GetComponentInChildren<ParticleSystem>();
         ps.GetComponent<Renderer>().enabled = false;
         playerScript = GameObject.Find("Character_Female_Hotel Owner").GetComponent<PlayerScript>();
         trollScript = GameObject.Find("GiantTroll").GetComponent<TrollScript>();
         receveattackevent = GameObject.Find("GiantTroll").GetComponent<ReceiveAttackEventScript>();
         ps.trigger.SetCollider(0, playerScript.transform);
+
+        // ボスのY軸の回転だけを取り出して、回転を明示的に設定
+        float yAngle = trollScript.GetRotation().eulerAngles.y;
+        fixedRotation = Quaternion.Euler(0f, yAngle, 0f);
+        transform.rotation = fixedRotation;
+
+
+
+
+
         //MaxParticlesを超えるパーティクルを生成するまでシミュレーションスピードを上げる
         var main = ps.main;
         main.simulationSpeed = 10f;
@@ -42,7 +56,10 @@ public class WaveParticleScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        transform.rotation = fixedRotation; // 常に固定された角度を使う
         WaveParticleUpdate();
+
+
     }
 
     public void OnParticleTrigger()
@@ -92,15 +109,27 @@ public class WaveParticleScript : MonoBehaviour
             main.simulationSpeed = 1f;
             flag = true;
             ps.GetComponent<Renderer>().enabled = true;
+
+            // TrollのYだけを使った正確な向きにする
+            float trollY = trollScript.GetRotation().eulerAngles.y;
+            Quaternion yOnlyRotation = Quaternion.Euler(0f, trollY, 0f);
+            transform.rotation = yOnlyRotation;
+
             var a = ps.velocityOverLifetime;
-            a.radial = 2f;
+            a.enabled = true;
+            a.space = ParticleSystemSimulationSpace.World;
+
+            // 「forward方向」に進ませたいとき（真上ではなく地面方向）
+            Vector3 forward = transform.forward.normalized;
+
+            // 上方向へ飛ばさないようにY成分をゼロにし、水平方向にのみ移動させる
+            a.x = new ParticleSystem.MinMaxCurve(forward.x * 5f); // X方向に速度（適宜調整）
+            a.y = new ParticleSystem.MinMaxCurve(0f); // Y方向はゼロで水平に
+            a.z = new ParticleSystem.MinMaxCurve(forward.z * 5f); // Z方向にも速度（適宜調整）
+
+
         }
-        if (timer <= 100 && trollScript != null)
-        {
-            timer++;
-            var targetRot = Quaternion.Lerp(transform.rotation, trollScript.GetRotation(), Time.deltaTime * 2f);
-            transform.rotation = Quaternion.Euler(transform.eulerAngles.x, targetRot.eulerAngles.y, transform.eulerAngles.z);
-        }
+       
         if (receveattackevent.GetIsWave())
         {
             timer++;

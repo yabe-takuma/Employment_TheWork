@@ -169,7 +169,12 @@ public class ReceiveAttackEventScript : MonoBehaviour
 
     public void WaveAttack()
     {
-        Instantiate(wave, wavePoint.position, wave.transform.rotation);
+        //Instantiate(wave, wavePoint.position, wave.transform.rotation);
+        var waveInstance = Instantiate(wave, wavePoint.position, wave.transform.rotation);
+        waveInstance.transform.parent = null; // 親子関係を解除
+                                              
+
+
         Instantiate(trampling, tramplingPoint.transform.position, trampling.transform.rotation);
         Debug.Log("波");
     }

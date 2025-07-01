@@ -198,10 +198,11 @@ public class MoveEnemyScript : MonoBehaviour
             animator.ResetTrigger("Attack");
             animator.ResetTrigger("Attack2");
             animator.ResetTrigger("Attack3");
-            if (!playerscript.IsJustAvoidAttack())
-            {
-                HitStopScript.instance.StartHitStop(0.08f);
-            }
+            //if (!playerscript.IsJustAvoidAttack())
+            //{
+            //    HitStopScript.instance.StartHitStop(0.1f);
+            //}
+            HitStopScript.instance.StartHitStop(1.0f);
             animator.SetTrigger("Damage");
             navMeshAgent.isStopped = true;
         }
@@ -267,8 +268,10 @@ public class MoveEnemyScript : MonoBehaviour
             damageEffectIns.transform.position = attackedPlace;
             Destroy(damageEffectIns, 1f);
             enemyStatus.SetHp(enemyStatus.GetHp() - damage);
-            
-            
+         
+            navMeshAgent.isStopped = true;
+            animator.SetFloat("Speed", 0f);
+            velocity = Vector3.zero;
         }
         ////体力が0になると倒される処理
         if (enemyStatus.GetHp() <= 0.0f && !isDead)
@@ -290,6 +293,7 @@ public class MoveEnemyScript : MonoBehaviour
             damageEffectIns.transform.position = attackedPlace;
             Destroy(damageEffectIns, 1f);
             enemyStatus.SetHp(enemyStatus.GetHp() - damage);
+           
             //ノックバック
             StartCoroutine(KnockBackCoroutine(attackedPlace));
         }
@@ -394,6 +398,11 @@ public class MoveEnemyScript : MonoBehaviour
 
     void Enemyhauding()
     {
+        // 攻撃距離に入っていないときだけSpeedを更新
+        if (navMeshAgent.remainingDistance > 1.3f)
+        {
+            animator.SetFloat("Speed", navMeshAgent.desiredVelocity.magnitude);
+        }
         if (state != EnemyState.Dead)
         {
             //見回りまたはキャラクターを追いかける状態
@@ -408,7 +417,7 @@ public class MoveEnemyScript : MonoBehaviour
                         navMeshAgent.SetDestination(setPosition.GetDestination());
                     }
 
-                    animator.SetFloat("Speed", navMeshAgent.desiredVelocity.magnitude);
+                   
 
                     if (state == EnemyState.Walk)
                     {
@@ -427,7 +436,7 @@ public class MoveEnemyScript : MonoBehaviour
                     else if (state == EnemyState.Chase)
                     {
                         //攻撃する距離だったら攻撃
-                        if (navMeshAgent.remainingDistance < 1.2f)
+                        if (navMeshAgent.remainingDistance < 1.3f)
                         {
                              SetState(EnemyState.Attack);
                         }
@@ -523,5 +532,13 @@ public class MoveEnemyScript : MonoBehaviour
 
 
     }
+
+    // 攻撃アニメーションイベントやタイミングで呼び出す
+    public void EndAttack()
+    {
+        SetState(EnemyState.Walk);
+    }
+
+
 
 }

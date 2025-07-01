@@ -182,6 +182,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myStatus: {fileID: 0}
   playerscript: {fileID: 0}
+  processCharaAnimEvent: {fileID: 0}
   sworddamageUI: {fileID: 2634239737505882867, guid: cfd24881922a2934a9ab244ac28c251b, type: 3}
   damageEffect: {fileID: 362261158077530393, guid: 20fda529c996a334da7fd65b48ea40df, type: 3}
   animator: {fileID: 0}
+  isCollision: 0
+--- !u!114 &5326979947200598388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2241308474654585159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d85052f6ac336ae438f83184441af901, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

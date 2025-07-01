@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -42,6 +43,10 @@ public class GameExplanationScript : MonoBehaviour
     private bool isInput;
     [SerializeField]
     private bool isKeyInput;
+    [SerializeField]
+    private List<GameObject> gameOverTextsUI;
+    [SerializeField]
+    private List<GameObject> gameClearTextsUI;
 
     private bool isExplocionflag;
     private bool isTitle;
@@ -54,7 +59,7 @@ public class GameExplanationScript : MonoBehaviour
     //タイトルに戻るためにSceneScriptを参照
     [SerializeField]
     private SceneScript sceneScript;
-   
+    private bool isChest;
 
     // Start is called before the first frame update
     void Start()
@@ -84,7 +89,7 @@ public class GameExplanationScript : MonoBehaviour
     void Keyshanding()
     {
         //キーやボタンを押した際にUIが出るか消えるかの処理
-        if (Input.GetKeyDown("joystick button 2")  || Input.GetKeyDown(KeyCode.Y))
+        if (Input.GetKeyDown("joystick button 7")&& grayscript.enabled == false && !playerScript.IsGameOver()&&!playerScript.IsGameClear() && !isChest || Input.GetKeyDown(KeyCode.Y)&& grayscript.enabled == false && !playerScript.IsGameOver() && !playerScript.IsGameClear()&&!isChest)
         {
             isExplanation = true;
             pauseUI.SetActive(true);
@@ -128,6 +133,8 @@ public class GameExplanationScript : MonoBehaviour
         {
             isExplanation = false;
             pauseUI.SetActive(false);
+            islevelup = true;
+            Time.timeScale = 1;
         }
         if(PauseScript.Instance!=null&&PauseScript.Instance.currentState == PauseScript.GameState.Title)
         {
@@ -189,7 +196,14 @@ public class GameExplanationScript : MonoBehaviour
                 }
             }
         }
-        
+        if (isExplanation || playerScript.IsGameOver()||playerScript.IsGameClear())
+        {
+            explanationsUI[0].SetActive(false);
+            explanationsUI[1].SetActive(false);
+            explanationsUI[2].SetActive(false);
+            explanationsUI[3].SetActive(false);
+        }
+
     }
     //敵が一体倒されて斧を拾うと表示されるUIをキーやボタンを押したら消す処理
     private IEnumerator ItemCoroutine()
@@ -214,7 +228,9 @@ public class GameExplanationScript : MonoBehaviour
     private IEnumerator ChestCoroutine()
     {
         Time.timeScale = 0;
+        isChest = true;
         yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.J) || Input.GetKeyDown("joystick button 4"));
+        isChest = false;
         Time.timeScale = 1;
     }
 
@@ -229,5 +245,38 @@ public class GameExplanationScript : MonoBehaviour
         yield return new WaitUntil(() => PauseScript.Instance.currentState == PauseScript.GameState.Playing || PauseScript.Instance.currentState == PauseScript.GameState.Title);
         playerScript.StartPlayerMotion();
         Time.timeScale = 1;
+    }
+
+    public bool IsKeyInput()
+    {
+        return isKeyInput;
+    }
+
+    public void GameOverText()
+    {
+        if(isKeyInput)
+        {
+           // gameOverTextsUI[0].SetActive(false);
+            gameOverTextsUI[1].SetActive(true);
+        }
+        else 
+        {
+            gameOverTextsUI[0].SetActive(true);
+            //gameOverTextsUI[1].SetActive(false);
+        }
+    }
+
+    public void GameClearText()
+    {
+        if (isKeyInput)
+        {
+            // gameOverTextsUI[0].SetActive(false);
+            gameClearTextsUI[1].SetActive(true);
+        }
+        else
+        {
+            gameClearTextsUI[0].SetActive(true);
+            //gameOverTextsUI[1].SetActive(false);
+        }
     }
 }

@@ -175,6 +175,18 @@ MonoBehaviour:
   isCollision: 0
   animator: {fileID: 0}
   isItem: 0
+--- !u!114 &6898444214391601784
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6858942416784417648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d85052f6ac336ae438f83184441af901, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &6858942416784523088 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7662201677264639631, guid: 7c7914412c682494dab87f3b00b75fa4, type: 3}

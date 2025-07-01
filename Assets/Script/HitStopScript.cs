@@ -7,10 +7,23 @@ public class HitStopScript : MonoBehaviour
     //どこからでも呼び出せるようにする
     public static HitStopScript instance;
 
+    void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+      
+    }
+
+
+
+
+
     // Start is called before the first frame update
     void Start()
     {
-        instance = this;
+        //instance = this;
     }
 
     public void StartHitStop(float duration)
@@ -18,7 +31,9 @@ public class HitStopScript : MonoBehaviour
         if (this.gameObject != null)
         {
             instance.StartCoroutine(instance.HitStopCoroutine(duration));
+            Debug.Log("ヒットストップ発生中");
         }
+
     }
 
     private IEnumerator HitStopCoroutine(float duration)

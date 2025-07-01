@@ -132,6 +132,7 @@ public class PlayerScript : MonoBehaviour
     private int avoidCaunter;
     [SerializeField]
     private bool isDamage;
+    [SerializeField]
     private int damageCoolTime;
     [SerializeField]
     private Renderer playerRenderer;
@@ -141,6 +142,9 @@ public class PlayerScript : MonoBehaviour
     private bool isPause;
     private bool pauseEnded;
     private int pauseCooldown;
+    [SerializeField]
+    private GameExplanationScript gameExplanationScript;  //テキストをプレイヤー側でもいじれるようにする変数
+    private bool isGameClear;  //ゲームクリアかどうかのフラグ
 
     private Vector3 fixedPosition;
 
@@ -163,6 +167,15 @@ public class PlayerScript : MonoBehaviour
     };
     [SerializeField]
     private MyState state;
+    private bool isInvincible;
+    [SerializeField] private float invincibleTime = 2f; // クールタイム時間
+    [SerializeField]
+    private Transform bossTransform;
+    public float horizontalBarrierDistance = 25f; // 左右のバリア距離（短くしたい）
+    public float verticalBarrierDistance = 30f;   // 前後のバリア距離（そのまま or 広く）
+
+    [SerializeField]
+    private ChaseCharaScript chaseCharaScript;
 
     // Start is called before the first frame update
     void Start()
@@ -177,6 +190,7 @@ public class PlayerScript : MonoBehaviour
         timeline[1].Stop();
         gameclearUI.SetActive(false);
         isGameOver = false;
+        isGameClear = false;
         //enemies=GameObject.FindGameObjectsWithTag("Enemy").ToList();
         moveSettings = new MoveSettings();
         pauseCooldown = 12;
@@ -200,6 +214,8 @@ public class PlayerScript : MonoBehaviour
         isDamage = false;
 
         playerRenderer = GetComponentInChildren<Renderer>();
+
+        myStatus.SetHp(myStatus.GetHp());
     }
 
     // Update is called once per frame
@@ -207,54 +223,72 @@ public class PlayerScript : MonoBehaviour
     {
         //プレイヤーの行動関連の処理
         Playerhauding();
-
     }
 
     public void TakeDamage(Transform enemyTransform,Vector3 attackedPlace,int damage)
     {
         //倒されていなかったらHPを減らしたりアニメーションなどをする処理
-        if (state != MyState.Dead && !isDamage)
+        if(state!=MyState.Dead)
         {
+            if (isInvincible)
+                return; // 無敵中は無視
+
             state = MyState.Damage;
             isJustAvoid = true;
             velocity = Vector3.zero;
             animator.SetTrigger("Damage");
+            myStatus.SetHp(myStatus.GetHp() - damage);
+
+            hpgauge.SetDamageLifeGauge(damage);
+
+            if (myStatus.GetHp() <= 0)
+            {
+                // GameOver 処理など
+                Dead();
+                ResetMaterialsToOpaque();
+                return;
+            }
+
+            StartCoroutine(HandleInvincibility()); // 無敵状態＋点滅開始
+
             camera3D.StartShake();
             var damageEffectIns = Instantiate<GameObject>(damageEffect, attackedPlace, Quaternion.identity);
             Destroy(damageEffectIns, 1f);
-            myStatus.SetHp(myStatus.GetHp() - damage);
-           
-            hpgauge.SetDamageLifeGauge(damage);
-            isDamage = true;
-            StartCoroutine(StartInvincibilityBlink());
         }
-        //HPが0になったら倒される処理
-        if(myStatus.GetHp()<=0)
-        {
-            Dead();
-        }
+       
     }
 
     public void KnockBack(int damage)
     {
         //ただダメージUIをどこでもよいので表示したい用の処理
-        if (state != MyState.Dead && !isDamage)
+        if (state != MyState.Dead)
         {
-            animator.SetTrigger("KnockBack");
-            velocity = new Vector3(0f, velocity.y, 0f);
-            isJustAvoid = true;
-            move = Vector3.zero;
+            if (isInvincible)
+                return; // 無敵中は無視
+
             state = MyState.Damage;
+            isJustAvoid = true;
+            velocity = Vector3.zero;
+            animator.SetTrigger("Damage");
+            camera3D.StartShake();
             var damageEffectIns = Instantiate<GameObject>(damageEffect, new Vector3(transform.position.x, transform.position.y - 1, transform.position.z), Quaternion.identity);
             Destroy(damageEffectIns, 1f);
             myStatus.SetHp(myStatus.GetHp() - damage);
-            isDamage = true;
-            StartCoroutine(StartInvincibilityBlink());
+
+            hpgauge.SetDamageLifeGauge(damage);
+
+            if (myStatus.GetHp() <= 0)
+            {
+                // GameOver 処理など
+                Dead();
+                ResetMaterialsToOpaque();
+                return;
+            }
+
+            StartCoroutine(HandleInvincibility()); // 無敵状態＋点滅開始
+
         }
-        if (myStatus.GetHp() <= 0)
-        {
-            Dead();
-        }
+      
     }
 
     public void SetState(MyState tempState)
@@ -320,24 +354,35 @@ public class PlayerScript : MonoBehaviour
     }
 
     public void Damage(int damage)
-    {   
-        //ただダメージUIをどこでもよいので表示したい用の処理
-        if (state != MyState.Dead&&!isDamage)
+    {
+        ////ただダメージUIをどこでもよいので表示したい用の処理
+        if (state != MyState.Dead)
         {
+            if (isInvincible)
+                return; // 無敵中は無視
+
+            state = MyState.Damage;
+            isJustAvoid = true;
+            velocity = Vector3.zero;
             animator.SetTrigger("Damage");
             camera3D.StartShake();
-            isJustAvoid = true;
-            velocity = new Vector3(0f, velocity.y, 0f);
-            state = MyState.Damage;
-            var damageEffectIns = Instantiate<GameObject>(damageEffect, new Vector3(transform.position.x,transform.position.y-1,transform.position.z), Quaternion.identity);
+            var damageEffectIns = Instantiate<GameObject>(damageEffect, new Vector3(transform.position.x, transform.position.y - 1, transform.position.z), Quaternion.identity);
             Destroy(damageEffectIns, 1f);
             myStatus.SetHp(myStatus.GetHp() - damage);
-            isDamage = true;
-            StartCoroutine(StartInvincibilityBlink());
-        }
-        if (myStatus.GetHp() <= 0)
-        {
-            Dead();
+
+            hpgauge.SetDamageLifeGauge(damage);
+
+            if (myStatus.GetHp() <= 0)
+            {
+                // GameOver 処理など
+                Dead();
+                ResetMaterialsToOpaque();
+                return;
+            }
+
+            StartCoroutine(HandleInvincibility()); // 無敵状態＋点滅開始
+
+
         }
     }
    
@@ -362,7 +407,8 @@ public class PlayerScript : MonoBehaviour
         gameoverUI.SetActive(true);
         SetState(MyState.Dead);
         state = MyState.Dead;
-        if(animator.GetBool("Dead")==true)
+        gameExplanationScript.GameOverText();
+        if (animator.GetBool("Dead")==true)
         {
             isGameOver = true;
         }
@@ -385,12 +431,44 @@ public class PlayerScript : MonoBehaviour
                 Rotation();
             }
         }
+
+        if (Input.GetKeyDown(KeyCode.F) &&IsGrounded()/*&&!isJump*//*&& !animator.GetCurrentAnimatorStateInfo(0).IsName("Jump")*/ || Input.GetKeyDown("joystick button 3") && transform.position.y < 0.1f)
+        {
+            rb.velocity = new Vector3(rb.velocity.x, jumpPower, rb.velocity.z);
+
+            Debug.Log("ジャンプ");
+            isJump = true;
+            animator.SetBool("Jump", true);
+            animator.applyRootMotion = false;
+        }
     }
 
     bool CanMove()
     {
-        return transform.position.x >= 925 && transform.position.x <= 1025 &&
-               transform.position.z >= 12 && transform.position.z <= 105;
+        //return transform.position.x >= 925 && transform.position.x <= 1025 &&
+        //       transform.position.z >= 12 && transform.position.z <= 105;
+        Vector3 pos = transform.position;
+
+        // ステージ全体の境界
+        bool inStageBounds =
+            pos.x >= 925 && pos.x <= 1025 &&
+            pos.z >= 12 && pos.z <= 105;
+
+        // ボスエリア内のバリア判定
+        if (chaseCharaScript.IsBossBattleActive())
+        {
+            Vector3 center = bossTransform.position;
+
+            bool inBarrier =
+                pos.x >= center.x - horizontalBarrierDistance &&
+                pos.x <= center.x + horizontalBarrierDistance &&
+                pos.z >= center.z - verticalBarrierDistance &&
+                pos.z <= center.z + verticalBarrierDistance;
+
+            return inBarrier;
+        }
+
+        return inStageBounds;
     }
 
 
@@ -436,7 +514,7 @@ public class PlayerScript : MonoBehaviour
             }
             else
             {
-                transform.LookAt(transform.position);
+                transform.LookAt(transform.position + moveForward);
             }
         }
         //入力していなかったらアニメーションとスピードを0にする処理
@@ -545,7 +623,7 @@ public class PlayerScript : MonoBehaviour
                 {
                     timeline[0].Play();
                     RotationOff();
-                    SetTimelineSpeed(timelinespeed);
+                    //SetTimelineSpeed(timelinespeed);
                     Debug.Log("後ろ回避");
                     animator.applyRootMotion = false;
                 }
@@ -571,6 +649,11 @@ public class PlayerScript : MonoBehaviour
     public bool IsGameOver()
     {
         return isGameOver;
+    }
+
+    public bool IsGameClear()
+    {
+        return isGameClear;
     }
     public void SetEnemyScript(MoveEnemyScript moveEnemyScripts)
     {
@@ -601,23 +684,23 @@ public class PlayerScript : MonoBehaviour
 
     void Playerhauding()
     {
-        if (Input.GetKeyDown(KeyCode.F) && transform.position.y < 0/*&&!isJump*//*&& !animator.GetCurrentAnimatorStateInfo(0).IsName("Jump")*/ || Input.GetKeyDown("joystick button 3") && transform.position.y < 0)
-        {
+        //if (Input.GetKeyDown(KeyCode.F) && IsGrounded()/*&&!isJump*//*&& !animator.GetCurrentAnimatorStateInfo(0).IsName("Jump")*/ || Input.GetKeyDown("joystick button 3") && transform.position.y < 0.1f)
+        //{
            
-            //rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
-            rb.AddForce(new Vector3(rb.velocity.x, /*rb.velocity.y + */jumpPower, rb.velocity.z),ForceMode.VelocityChange);
-            //rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y + jumpPower, rb.velocity.z);
+        //    //rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+        //    //rb.AddForce(new Vector3(rb.velocity.x, /*rb.velocity.y + */jumpPower, rb.velocity.z),ForceMode.VelocityChange);
+        //    rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y + jumpPower, rb.velocity.z);
             
-            Debug.Log("ジャンプ");
+        //    Debug.Log("ジャンプ");
+        //    isJump = true;
+        //    animator.SetBool("Jump", true);
+        //    animator.applyRootMotion = false;
+        //}
+        //if(transform.position.y>0.1f)
+        //{
            
-        }
-        if(transform.position.y>0.1f)
-        {
-            isJump = true;
-            animator.SetBool("Jump", true);
-            animator.applyRootMotion = false;
-        }
-        else if(transform.position.y<0)
+        //}
+         if(IsGrounded())
         {
 
             isJump = false;
@@ -634,11 +717,14 @@ public class PlayerScript : MonoBehaviour
         if (mov&&!isPause)
         {
             Move();
+          
         }
 
         if (troll == null)
         {
-            gameclearUI.SetActive(true);
+            //gameclearUI.SetActive(true);
+            gameExplanationScript.GameClearText();
+            isGameClear = true;
         }
         UpdateEnemyPositions();
         nearestEnemyScript = FindNearestEnemyScript();
@@ -754,7 +840,10 @@ public class PlayerScript : MonoBehaviour
         //    }
         //}
 
-
+        if(camera3D.IsStartAnimation())
+        {
+            myStatus.SetHp(myStatus.GetHp());
+        }
 
 
         //if (Physics.Raycast(transform.position, transform.forward, out hit, 1.5f))
@@ -791,17 +880,26 @@ public class PlayerScript : MonoBehaviour
        // Debug.Log($"現在位置: X={transform.position.x}, Z={transform.position.z}");
         Debug.Log($"CanMove(): {CanMove()}"); // 移動許可が適切に判定されているか確認
 
-        if(isDamage)
-        {
-            damageCoolTime++;
-            StartCoroutine(StartInvincibilityBlink());
+        //if(isDamage)
+        //{
+        //    damageCoolTime++;
+        //    StartCoroutine(StartInvincibilityBlink());
 
+        //}
+
+        if (isDamage)
+        {
+
+            StartCoroutine(StartInvincibilityBlink(3f)); // 無敵3秒間点滅
         }
 
-        if (damageCoolTime>540)
-        {
-            isDamage = false;
-        }
+      
+
+        //if (damageCoolTime>200)
+        //{
+        //    isDamage = false;
+        //    damageCoolTime = 0;
+        //}
 
         //MoveTowardsClosestEnemy(this.transform);
         //if (isJustAvoidMove)
@@ -812,6 +910,13 @@ public class PlayerScript : MonoBehaviour
 
         //}
     }
+
+    bool IsGrounded()
+    {
+        return Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, 0.15f, LayerMask.GetMask("Field"));
+    }
+
+
 
     public void PlayerSpeedOff()
     {
@@ -951,49 +1056,123 @@ public class PlayerScript : MonoBehaviour
 
     void LateUpdate()
     {
-        if (!CanMove()) // すり抜け防止
-        {
-            transform.position = fixedPosition; // **最終的な位置を強制適用**
-            Debug.Log("ステージ外: 位置をリセット");
-        }
+       if(!CanMove())
+       {
+            transform.position = fixedPosition;
+            Debug.Log("ボスエリア外 → 位置リセット");
+       }
     }
 
-    private IEnumerator StartInvincibilityBlink()
+
+
+    private IEnumerator StartInvincibilityBlink(float invincibleTime)
     {
         Renderer[] renderers = GetComponentsInChildren<Renderer>();
-
-        foreach (Renderer r in renderers)
-        {
-            Color c = r.material.GetColor("_Color");
-            c.a = 0.4f;
-            r.material.SetColor("_Color", c);
-        }
+        Material[] materials = new Material[renderers.Length];
+        for (int i = 0; i < renderers.Length; i++)
+            materials[i] = renderers[i].material;
 
         Color transparentColor = new Color(1f, 1f, 1f, 0.4f);
         Color opaqueColor = new Color(1f, 1f, 1f, 1f);
 
-        for (int i = 0; i < blinkCount; i++)
+        float timer = 0f;
+
+        while (timer < invincibleTime)
         {
-            foreach (Renderer r in renderers)
-                r.material.SetColor("_Color", transparentColor);
+            foreach (Material m in materials)
+                m.SetColor("_Color", transparentColor);
 
             yield return new WaitForSeconds(0.1f);
 
-            foreach (Renderer r in renderers)
-                r.material.SetColor("_Color", opaqueColor);
+            foreach (Material m in materials)
+                m.SetColor("_Color", opaqueColor);
 
             yield return new WaitForSeconds(0.1f);
+
+            timer += 0.2f;
         }
 
+        // 最後はしっかり不透明に戻す
+        foreach (Material m in materials)
+            m.SetColor("_Color", opaqueColor);
+
+        isDamage = false;
+    }
 
 
+    private IEnumerator HandleInvincibility()
+    {
+        isInvincible = true;
 
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+        Material[] materials = new Material[renderers.Length];
+        Color[] originalColors = new Color[renderers.Length];
 
+        // マテリアルと元の色を記録
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            materials[i] = renderers[i].material;
+            originalColors[i] = materials[i].GetColor("_Color");
+        }
 
+        // 点滅用の赤い色（半透明と不透明）
+        Color transparentRed = new Color(1f, 0f, 0f, 0.4f);
+        Color opaqueRed = new Color(1f, 0f, 0f, 1f);
+
+        float timer = 0f;
+        float blinkInterval = 0.1f;
+
+        while (timer < invincibleTime)
+        {
+            if (state == MyState.Dead) yield break;
+
+            // 半透明の赤
+            foreach (var mat in materials)
+                mat.SetColor("_Color", transparentRed);
+
+            yield return new WaitForSeconds(blinkInterval);
+
+            // 不透明の赤
+            foreach (var mat in materials)
+                mat.SetColor("_Color", opaqueRed);
+
+            yield return new WaitForSeconds(blinkInterval);
+
+            timer += blinkInterval * 2;
+        }
+
+        // 無敵終了、元の色に戻す
+        for (int i = 0; i < materials.Length; i++)
+            materials[i].SetColor("_Color", originalColors[i]);
+
+        isInvincible = false;
 
 
     }
 
+    void ResetMaterialsToOpaque()
+    {
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+        foreach (var r in renderers)
+        {
+            Material mat = r.material;
+            mat.SetColor("_Color", new Color(1f, 1f, 1f, 1f));
+        }
+    }
+
+    bool CanMoveInBossBattle()
+    {
+        Vector3 pos = transform.position;
+        Vector3 center = bossTransform.position;
+
+        bool inBarrier =
+            pos.x >= center.x - horizontalBarrierDistance &&
+            pos.x <= center.x + horizontalBarrierDistance &&
+            pos.z >= center.z - verticalBarrierDistance &&
+            pos.z <= center.z + verticalBarrierDistance;
+
+        return inBarrier;
+    }
 
 
 

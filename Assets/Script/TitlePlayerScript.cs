@@ -9,6 +9,11 @@ public class TitlePlayerScript : MonoBehaviour
     private Vector3 velocity;
     [SerializeField]
     private Animator animator;
+    [SerializeField]
+    private TitleCameraScript titleCameraScript;
+    [SerializeField]
+    private int animationCooltime;
+    private AnimatorStateInfo stateInfo;
 
     private bool isInput;
     // Start is called before the first frame update
@@ -20,15 +25,11 @@ public class TitlePlayerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //動画を取る際勝手にプレイヤーが進んでしまうのをキーを押したら進む用にする処理
-        //if(Input.GetKeyDown(KeyCode.G))
-        //{
-        //    isInput = true;
-        //}
+        
         //プレイヤーが指定した座標まで自動で向かう処理
         if (characterController.isGrounded)
         {
-            if (transform.position.z < 192 /*&& isInput*/)
+            if (transform.position.z < 192)
             {
                 velocity.z = 1.0f;
                 animator.SetFloat("Speed", velocity.magnitude);
@@ -38,6 +39,28 @@ public class TitlePlayerScript : MonoBehaviour
                 velocity.z = 0.0f;
                 animator.SetFloat("Speed", 0f);
             }
+        }
+        stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        bool isIdleBreakPlaying = stateInfo.IsName("Action") && stateInfo.normalizedTime < 1.0f;
+        bool hasIdleBreakFinished = stateInfo.IsName("Action") && stateInfo.normalizedTime >= 1.0f;
+
+        // アニメーション中でなければクールタイム加算
+        if (!isIdleBreakPlaying && titleCameraScript.IsAtDistination())
+        {
+            animationCooltime++;
+        }
+
+        // クールタイムが一定値を超えたらアニメーション再生
+        if (animationCooltime > 300)
+        {
+            animator.SetBool("Action", true);
+            animationCooltime = 0;
+        }
+
+        // アニメーションが終了したらフラグリセット
+        if (hasIdleBreakFinished)
+        {
+            animator.SetBool("Action", false);
         }
         characterController.Move(velocity * Time.deltaTime);
     }

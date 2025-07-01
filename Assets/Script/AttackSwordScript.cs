@@ -112,6 +112,7 @@ public class AttackSwordScript : MonoBehaviour
                 swordobj.transform.SetParent(other.transform);
                 var damageobj = Instantiate(damageEffect, new Vector3(other.bounds.center.x, other.bounds.center.y, other.bounds.center.z), Quaternion.identity);
                 damageobj.transform.SetParent(other.transform);
+                //HitStopScript.instance.StartHitStop(1.0f);
                 isAttack = true;
                 Debug.Log("ボスに当たった");
             }

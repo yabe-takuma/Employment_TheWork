@@ -117,7 +117,12 @@ public class TrollScript : MonoBehaviour
 
     private bool isstarttimeline;
     [SerializeField]
-   // private NavMeshAgent navMeshAgent;
+    // private NavMeshAgent navMeshAgent;
+
+    private Vector3 lastPos;
+    private float stuckTimer;
+    [SerializeField]
+    private HitStopScript hitStopScript;
 
     // Start is called before the first frame update
     void Start()
@@ -202,14 +207,17 @@ public class TrollScript : MonoBehaviour
         var ray = new Ray(randomPos + Vector3.up * 10f, Vector3.down);
         RaycastHit hit;
         //目的地が地面になるように再設定
-        if (Physics.Raycast(ray, out hit, 100f, LayerMask.GetMask("Field")))
+        if (Physics.Raycast(ray, out hit, 100f, LayerMask.GetMask("Field")) &&
+            Physics.OverlapSphere(hit.point, 1.0f, LayerMask.GetMask("Tree")).Length == 0)
         {
             destination = hit.point;
         }
         else
         {
-            SetRandomDestination();
+            SetRandomDestination(); // 再試行
         }
+
+
         //for (int i = 0; i < 5; i++) // 試行を5回に制限
         //{
         //    var randomPos = defaultPos + Random.insideUnitSphere * movementRange;
@@ -403,14 +411,16 @@ public class TrollScript : MonoBehaviour
 
         }
 
+        Vector3 rayOrigin = transform.position + Vector3.up * 0.3f;
         Vector3[] directions = new Vector3[]
         {
             rayTransform.forward,
             (rayTransform.forward + rayTransform.right).normalized,
             (rayTransform.forward - rayTransform.right).normalized,
-            (rayTransform.forward + rayTransform.up * 0.5f).normalized,  // 上斜め前
-            (rayTransform.forward - rayTransform.up * 0.5f).normalized   // 下斜め前
+            (rayTransform.forward + Vector3.down * 0.5f).normalized  // 低めの角度
         };
+
+
 
 
 
@@ -420,23 +430,11 @@ public class TrollScript : MonoBehaviour
             {
                 if (Physics.Linecast(rayTransform.position, rayTransform.position + dir * rayDistance, LayerMask.GetMask("Tree")))
                 {
-                    {
-                        // 回避方向に少しランダムな角度で回転
-                        float angle = Random.Range(90f, 180f);
-                        transform.Rotate(0, angle, 0);
+                   
+                    AvoidObstacleImmediately();
 
-                        // 新しい目的地を設定
-                        SetRandomDestination();
-
-                        velocity = transform.forward * walkSpeed; // 進ませる力を即時与える
-
-
-
-                        // 回避猶予リセット
-                        elapsedCollisionWall = 0f;
-
-
-                    }
+                    // すぐにループを抜けて二重に回避しないようにする
+                    break;
                 }
             }
         }
@@ -602,7 +600,7 @@ public class TrollScript : MonoBehaviour
     {
         //WeakUIをインスタンス化。登場位置はコライダの中心からカメラの方向に少し寄せた位置
         trollStatus.SetHp(trollStatus.GetHp() - damage);
-        //HitStopScript.instance.StartHitStop(0.1f);
+        HitStopScript.instance.StartHitStop(1.0f);
         //navMeshAgent.isStopped = true;
         if (trollStatus.GetHp()<=0)
         {
@@ -723,22 +721,62 @@ public class TrollScript : MonoBehaviour
         {
             velocity = new Vector3(0f, velocity.y, 0f);
         }
+
+        if (Vector3.Distance(transform.position, lastPos) < 0.1f)
+        {
+            stuckTimer += Time.deltaTime;
+            if (stuckTimer > 2f)
+            {
+                Debug.Log("スタック検出 → 再目的地");
+                SetRandomDestination();
+                stuckTimer = 0f;
+            }
+        }
+        else
+        {
+            stuckTimer = 0f;
+        }
+
+        lastPos = transform.position;
+
+        // 万が一現在地が木と重なってしまっていたら、目的地を強制リセット
+        if (Physics.CheckSphere(transform.position + Vector3.up * 0.2f, 0.4f, LayerMask.GetMask("Tree")))
+        {
+            Debug.Log("木にスタック → 再パトロール");
+            SetRandomDestination();
+            velocity = transform.forward * walkSpeed; // すぐ動けるように
+            SetState(TrollState.patrol);              // 強制的に動作状態に戻す
+            velocity = transform.forward * walkSpeed; // ← 動作直後の力を与える
+
+        }
+
+
     }
 
     void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Tree"))
+        if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Tree") &&
+            hit.collider is BoxCollider)
         {
-            Debug.Log("ぶつかった！方向転換");
-
-            // 避ける処理
-            float angle = Random.Range(120f, 180f);
+            float angle = Random.Range(90f, 180f);
             transform.Rotate(0, angle, 0);
             SetRandomDestination();
+            velocity = transform.forward * walkSpeed;
+
+
         }
     }
 
 
+
+    void AvoidObstacleImmediately()
+    {
+        float angle = Random.Range(90f, 180f);
+        transform.Rotate(0, angle, 0);
+        SetRandomDestination();
+        velocity = transform.forward * walkSpeed;
+        elapsedCollisionWall = 0f; // 次回までの猶予タイマーリセット
+    }
 
 }
 
