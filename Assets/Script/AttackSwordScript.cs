@@ -45,8 +45,11 @@ public class AttackSwordScript : MonoBehaviour
                 isCollision = true;
                 //HitStopScript.instance.StartHitStop(1.0f);
                 other.GetComponent<MoveEnemyScript>().TakeDamage(myStatus.GetAttackPower(),other.ClosestPointOnBounds(transform.position));
-                var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y-1.0f, other.bounds.center.z), Quaternion.identity);
-                swordobj.transform.SetParent(other.transform);
+                if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead)
+                {
+                    var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 1.0f, other.bounds.center.z), Quaternion.identity);
+                    swordobj.transform.SetParent(other.transform);
+                }
                 Debug.Log("敵に当たった");
             }
         }

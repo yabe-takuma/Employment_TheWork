@@ -61,6 +61,8 @@ public class GameExplanationScript : MonoBehaviour
     private SceneScript sceneScript;
     private bool isChest;
 
+    private List<GameObject> weaponsUI;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -98,12 +100,6 @@ public class GameExplanationScript : MonoBehaviour
             PauseScript.Instance.ChangeState(PauseScript.GameState.Pause);
         }
        
-        if(!isMoveUI&&isExplanation&&PauseScript.Instance.currentState == PauseScript.GameState.Instructions)
-        {
-            BackGround.SetActive(true);
-            ExplanationUI.SetActive(true);
-            pauseUI.SetActive(false);
-        }
         if (Input.GetKeyDown("joystick button 2")  || Input.GetKeyDown(KeyCode.Y))
         {
             ExplanationUI.SetActive(false);
@@ -112,8 +108,16 @@ public class GameExplanationScript : MonoBehaviour
             Keys.SetActive(false);
             textmeshpro.SetActive(true);
         }
+        //操作説明になった時のコントローラーの操作画面の状態
+        if (!isMoveUI && isExplanation && PauseScript.Instance.currentState == PauseScript.GameState.Instructions)
+        {
+            BackGround.SetActive(true);
+            ExplanationUI.SetActive(true);
+            pauseUI.SetActive(false);
+        }
         //--------------//
         //UIが出現する時次のページに行ったり戻ったり出来る処理
+        //操作説明になった時のコントローラーの操作画面の状態に戻る処理
         if (Input.GetKeyDown(KeyCode.L) && PauseScript.Instance.currentState == PauseScript.GameState.Instructions || Input.GetKeyDown("joystick button 5") && PauseScript.Instance.currentState == PauseScript.GameState.Instructions)
         {
             ExplanationUI.SetActive(true);
@@ -121,6 +125,7 @@ public class GameExplanationScript : MonoBehaviour
             Keys.SetActive(true);
             isMoveUI = true;
         }
+        //操作説明になった時のキーボードの操作画面の状態
         else if (Input.GetKeyDown(KeyCode.R) && PauseScript.Instance.currentState == PauseScript.GameState.Instructions || Input.GetKeyDown("joystick button 4") && PauseScript.Instance.currentState == PauseScript.GameState.Instructions)
         {
             ExplanationUI.SetActive(true);
@@ -128,8 +133,15 @@ public class GameExplanationScript : MonoBehaviour
             Keys.SetActive(false);
             isMoveUI = false;
         }
+        //武器の効果確認画面の処理
+        if (!isMoveUI && isExplanation && PauseScript.Instance.currentState == PauseScript.GameState.WeaponInstuctions)
+        {
+            BackGround.SetActive(true);
+            ExplanationUI.SetActive(true);
+            pauseUI.SetActive(false);
+        }
         //ポーズ画面で再開やタイトルに戻る場合の処理
-        if(isExplanation&&PauseScript.Instance.currentState==PauseScript.GameState.Playing|| isExplanation && PauseScript.Instance.currentState == PauseScript.GameState.Title)
+        if (isExplanation&&PauseScript.Instance.currentState==PauseScript.GameState.Playing|| isExplanation && PauseScript.Instance.currentState == PauseScript.GameState.Title)
         {
             isExplanation = false;
             pauseUI.SetActive(false);

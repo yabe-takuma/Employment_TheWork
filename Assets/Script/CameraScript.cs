@@ -120,6 +120,10 @@ public class CameraScript : MonoBehaviour
     [SerializeField]
     private MyStatus myStatus;
 
+    private Vector3 prevDirection = Vector3.forward; // 前フレームの方向（初期値）
+
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -463,16 +467,45 @@ public class CameraScript : MonoBehaviour
 
     private void AdjustCamera()
     {
+        //if (RockonTarget == null || TargetObject == null) return;
+
+        //// プレイヤーと敵の位置を取得（視認性を考慮してやや上）
+        //Vector3 playerPos = TargetObject.transform.position + Vector3.up * 1.5f;
+        //Vector3 enemyPos = RockonTarget.transform.position + Vector3.up * 1.5f;
+
+        //// 中間点を取得
+        //Vector3 midPoint = (playerPos + enemyPos) * 0.5f;
+
+        //// === ロックオン対象のサイズを取得 ===
+        //Bounds bounds = new Bounds(RockonTarget.transform.position, Vector3.zero);
+        //foreach (Renderer renderer in RockonTarget.GetComponentsInChildren<Renderer>())
+        //{
+        //    bounds.Encapsulate(renderer.bounds);
+        //}
+        //float targetSize = bounds.extents.magnitude;
+
+        //// カメラ方向と距離の調整：サイズに応じて距離を動的に決定
+        //Vector3 direction = (midPoint - enemyPos).normalized;
+        //float baseDistance = Vector3.Distance(playerPos, enemyPos);
+        //float dynamicDistance = Mathf.Max(baseDistance + 3.0f, targetSize * 2.0f); // オブジェクトが大きいときはもっと下がる
+
+        //// カメラ位置を計算
+        //Vector3 cameraPos = midPoint + direction * dynamicDistance + Vector3.up * 2.5f;
+
+        //// カメラをスムーズに移動＆注視
+        //camera.transform.position = Vector3.SmoothDamp(camera.transform.position, cameraPos, ref velocity, 0.15f);
+        //camera.transform.LookAt(midPoint);
+
         if (RockonTarget == null || TargetObject == null) return;
 
-        // プレイヤーと敵の位置を取得（視認性を考慮してやや上）
+        // プレイヤーと敵の位置を取得
         Vector3 playerPos = TargetObject.transform.position + Vector3.up * 1.5f;
         Vector3 enemyPos = RockonTarget.transform.position + Vector3.up * 1.5f;
 
-        // 中間点を取得
+        // 中間点
         Vector3 midPoint = (playerPos + enemyPos) * 0.5f;
 
-        // === ロックオン対象のサイズを取得 ===
+        // ロックオン対象のサイズを取得
         Bounds bounds = new Bounds(RockonTarget.transform.position, Vector3.zero);
         foreach (Renderer renderer in RockonTarget.GetComponentsInChildren<Renderer>())
         {
@@ -480,17 +513,20 @@ public class CameraScript : MonoBehaviour
         }
         float targetSize = bounds.extents.magnitude;
 
-        // カメラ方向と距離の調整：サイズに応じて距離を動的に決定
+        // カメラ方向と距離の調整
         Vector3 direction = (midPoint - enemyPos).normalized;
         float baseDistance = Vector3.Distance(playerPos, enemyPos);
-        float dynamicDistance = Mathf.Max(baseDistance + 3.0f, targetSize * 2.0f); // オブジェクトが大きいときはもっと下がる
+        float dynamicDistance = Mathf.Max(baseDistance + 3.0f, targetSize * 2.0f);
 
-        // カメラ位置を計算
+        // カメラ位置を計算（高さ補正込み）
         Vector3 cameraPos = midPoint + direction * dynamicDistance + Vector3.up * 2.5f;
+        cameraPos.y = Mathf.Max(cameraPos.y, 1.0f); // 地面以下にならないよう補正
 
-        // カメラをスムーズに移動＆注視
+        // カメラ移動・注視
         camera.transform.position = Vector3.SmoothDamp(camera.transform.position, cameraPos, ref velocity, 0.15f);
         camera.transform.LookAt(midPoint);
+
+
 
     }
 
