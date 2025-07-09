@@ -69,13 +69,17 @@ public class PauseScript : MonoBehaviour
             ChangeState(GameState.Playing);
             Debug.Log("再開");
         }
-        else if(currentPosition.y == 100 && Input.GetKeyDown(KeyCode.Space)|| currentPosition.y == 0 && Input.GetKeyDown("joystick button 0"))
+        else if(currentPosition.y == 0 && Input.GetKeyDown(KeyCode.Space)|| currentPosition.y == 100 && Input.GetKeyDown("joystick button 0"))
         {
             ChangeState(GameState.Instructions);
             Debug.Log("操作説明");
         }
-        
-        else if(currentPosition.y == -100 && Input.GetKeyDown(KeyCode.Space)|| currentPosition.y == -300 && Input.GetKeyDown("joystick button 0"))
+        else if (currentPosition.y == -100 && Input.GetKeyDown(KeyCode.Space) || currentPosition.y == -100 && Input.GetKeyDown("joystick button 0"))
+        {
+            ChangeState(GameState.WeaponInstructions);
+            Debug.Log("武器の説明");
+        }
+        else if (currentPosition.y == -300 && Input.GetKeyDown(KeyCode.Space)|| currentPosition.y == -300 && Input.GetKeyDown("joystick button 0"))
         {
             ChangeState(GameState.Title);
             Debug.Log("タイトル");
@@ -111,38 +115,40 @@ public class PauseScript : MonoBehaviour
         {
             isDown = true;
         }
-        if (currentPosition.y == 100 && Input.GetKeyDown(KeyCode.DownArrow) || currentPosition.y == 0 && lsv <= 0.1f && lsv != 0 && iconcooltime >= coolTimeLimit)
+        if (currentPosition.y == 0 && Input.GetKeyDown(KeyCode.DownArrow) || currentPosition.y == 0 && lsv <= 0.1f && lsv != 0 && iconcooltime >= coolTimeLimit)
         {
-            imageTransform.anchoredPosition -= new Vector2(0, 200);
+            imageTransform.anchoredPosition -= new Vector2(0, 300);
             iconcooltime = 0; Debug.Log("Title");
         }
-        else if (currentPosition.y == 100 && Input.GetKeyDown(KeyCode.UpArrow) || currentPosition.y == 0 && lsv >= 0.1f && lsv != 0 && iconcooltime >= coolTimeLimit)
+        else if (currentPosition.y == 0 && Input.GetKeyDown(KeyCode.UpArrow) || currentPosition.y == 0 && lsv >= 0.1f && lsv != 0 && iconcooltime >= coolTimeLimit)
         {
-            imageTransform.anchoredPosition += new Vector2(0, 200);
-            iconcooltime = 0;
-        }
-        else if (currentPosition.y == 300 && Input.GetKeyDown(KeyCode.DownArrow) || currentPosition.y == 300 && lsv <= 0.1f && lsv != 0 && iconcooltime >= coolTimeLimit)
-        {
-            imageTransform.anchoredPosition -= new Vector2(0, 200);
+            imageTransform.anchoredPosition += new Vector2(0, 300);
             iconcooltime = 0;
         }
      
-        else if (currentPosition.y == -100 && Input.GetKeyDown(KeyCode.DownArrow) || currentPosition.y == 300 && lsv <= 0.1f && lsv != 0 && iconcooltime >= coolTimeLimit)
+        else if (currentPosition.y == 300 && Input.GetKeyDown(KeyCode.DownArrow) || currentPosition.y == 300 && lsv <= 0.1f && lsv != 0 && iconcooltime >= coolTimeLimit)
         {
-            imageTransform.anchoredPosition += new Vector2(0, 400);
+            imageTransform.anchoredPosition -= new Vector2(0, 300);
             iconcooltime = 0;
         }
-        else if (currentPosition.y == -100 && Input.GetKeyDown(KeyCode.UpArrow) || currentPosition.y == -300 && lsv >= 0.1f && lsv != 0 && iconcooltime >= coolTimeLimit)
-        {
-            imageTransform.anchoredPosition += new Vector2(0, 200);
-            iconcooltime = 0;
-        }
-      
+
         else if (currentPosition.y == 300 && Input.GetKeyDown(KeyCode.UpArrow) || currentPosition.y == 300 && lsv >= 0.1f && lsv != 0 && iconcooltime >= coolTimeLimit)
         {
-            imageTransform.anchoredPosition -= new Vector2(0, 400);
+            imageTransform.anchoredPosition -= new Vector2(0, 600);
             iconcooltime = 0;
         }
+        else if (currentPosition.y == -300 && Input.GetKeyDown(KeyCode.UpArrow) || currentPosition.y == -300 && lsv >= 0.1f && lsv != 0 && iconcooltime >= coolTimeLimit)
+        {
+            imageTransform.anchoredPosition += new Vector2(0, 300);
+            iconcooltime = 0;
+        }
+
+        else if (currentPosition.y == -300 && Input.GetKeyDown(KeyCode.DownArrow) || currentPosition.y == -300 && lsv <= 0.1f && lsv != 0 && iconcooltime >= coolTimeLimit)
+        {
+            imageTransform.anchoredPosition += new Vector2(0, 600);
+            iconcooltime = 0;
+        }
+
     }
 
 }

@@ -107,42 +107,42 @@ public class ChangeEquipScript : MonoBehaviour
             
 
             //武器の位置や角度を設定
-            if (equipment ==0)
+            if (equipment ==0) //剣
             {
                 weapon.transform.SetParent(equipTransform);
                 weapon.transform.localPosition = new Vector3(-0.1f, 0.03f, 0.1f);
-                weapon.transform.localEulerAngles = new Vector3(291.87f, 90.4f/*6.4f*/, 80f);
+                weapon.transform.localEulerAngles = new Vector3(291.87f, 90.4f, 80f);
                 weapon.transform.localScale = new Vector3(1f, 1f, 1f);
             }
-            else if(equipment==1)
+            else if(equipment==1) //斧
             {
                 weapon.transform.SetParent(equipTransform);
                 weapon.transform.localPosition = new Vector3(-0.1f, 0.05f, 0.05f);
                 weapon.transform.localEulerAngles = new Vector3(90.0f, 0.0f, 0.0f);
                 weapon.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
             }
-            else if (equipment == 2)
+            else if (equipment == 2) //炎の剣
             {
                 weapon.transform.SetParent(equipTransform);
-                weapon.transform.localPosition = new Vector3(-0.24f, 0.03f, 0f);
-                weapon.transform.localEulerAngles = new Vector3(291.87f, 6.4f, 80f);
+                weapon.transform.localPosition = new Vector3(-0.1f, 0.03f, 0.1f);
+                weapon.transform.localEulerAngles = new Vector3(291.87f, 90.4f, 80f);
                 weapon.transform.localScale = new Vector3(1f, 1f, 1f);
             }
-            else if (equipment == 3)
+            else if (equipment == 3) //水の剣
             {
                 weapon.transform.SetParent(equipTransform);
-                weapon.transform.localPosition = new Vector3(-0.24f, 0.03f, 0f);
-                weapon.transform.localEulerAngles = new Vector3(291.87f, 6.4f, 80f);
+                weapon.transform.localPosition = new Vector3(-0.1f, 0.03f, 0.1f);
+                weapon.transform.localEulerAngles = new Vector3(291.87f, 90.4f, 80f);
                 weapon.transform.localScale = new Vector3(1f, 1f, 1f);
             }
-            else if(equipment ==4)
+            else if(equipment ==4) //回転する斧
             {
                 weapon.transform.SetParent(equipTransform);
                 weapon.transform.localPosition = new Vector3(-0.105f, 0.046f, 0.215f);
                 weapon.transform.localEulerAngles = new Vector3(90.0f, 0.0f, 0.0f);
                 weapon.transform.localScale = new Vector3(1f, 1f, 1f);
             }
-            else if (equipment == 5)
+            else if (equipment == 5) //でかい斧
             {
                 weapon.transform.SetParent(equipTransform);
                
@@ -175,29 +175,5 @@ public class ChangeEquipScript : MonoBehaviour
         chestcounter = counter;
     }
 
-    public void SwordRotation()
-    {
-      
-        //新しく装備する武器をインスタンス化
-        //var weapon = Instantiate<GameObject>(weapons[equipment]);
-        //processCharaAnimEvent.SetCollider(weapon.GetComponent<Collider>());
-        //weapon.transform.SetParent(equipTransform);
-        //weapon.transform.localPosition = new Vector3(-0.24f, 0.03f, 0f);
-        //weapon.transform.localEulerAngles = new Vector3(291.87f, 6.4f, 80f);
-        //weapon.transform.localScale = new Vector3(1f, 1f, 1f);
-        //myStatus.SetEquip(weapon);
-    }
-
-    public void OriginalSwordRotation()
-    {
-        //新しく装備する武器をインスタンス化
-        //var weapon = Instantiate<GameObject>(weapons[equipment]);
-        //processCharaAnimEvent.SetCollider(weapon.GetComponent<Collider>());
-
-        //weapon.transform.SetParent(equipTransform);
-        //weapon.transform.localPosition = new Vector3(-0.1f, 0.03f, 0.05f);
-        //weapon.transform.localEulerAngles = new Vector3(291.87f, 90.4f, 80f);
-        //weapon.transform.localScale = new Vector3(1f, 1f, 1f);
-        //myStatus.SetEquip(weapon);
-    }
+   
 }

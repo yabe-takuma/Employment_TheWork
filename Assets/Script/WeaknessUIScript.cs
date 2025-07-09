@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class WeaknessUIScript : MonoBehaviour
 {
     [SerializeField]
-    private Text weakText;
+    private TextMeshProUGUI weakText;
    
 
     //フェードアウトするスピード
@@ -19,7 +19,7 @@ public class WeaknessUIScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        weakText = GetComponentInChildren<Text>();
+        weakText = GetComponentInChildren<TextMeshProUGUI>();
     }
 
     void LateUpdate()

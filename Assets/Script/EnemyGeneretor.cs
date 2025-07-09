@@ -130,8 +130,6 @@ public class EnemyGeneretor : MonoBehaviour
                 moveEnemyScript.SetAxeSword(axe);
                 moveEnemyScript.SetMyItem(myItemScript);
                 moveEnemyScript.SetFireEffect(fireEffect);
-                //processEnemyAnimEventScript = enemys.GetComponent<ProcessEnemyAnimEventScript>();
-                //processEnemyAnimEventScript.SetWeapon(sword);
                 playerScript.SetEnemyScript(moveEnemyScript);
                 enemycaunter += 1;
             }

@@ -36,7 +36,7 @@ public class AttackCharaScript : MonoBehaviour
         trollScript = GetComponentInParent<TrollScript>();
         trollAnimator = trollScript.GetComponent<Animator>();
         receiveAttackEventScript = GetComponentInParent<ReceiveAttackEventScript>();
-        caunter = 0;
+        caunter = 0; //攻撃を最初から行ってほしいので0にします。
     }
 
     private void OnTriggerStay(Collider other)

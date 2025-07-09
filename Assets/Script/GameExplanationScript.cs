@@ -32,6 +32,7 @@ public class GameExplanationScript : MonoBehaviour
     private GameObject textmeshpro;  //文字
     [SerializeField]
     private MyItemScript myItem;
+
     [SerializeField]
     private List<GameObject> chestsUI;
     private bool isAxeExplocion;
@@ -60,7 +61,7 @@ public class GameExplanationScript : MonoBehaviour
     [SerializeField]
     private SceneScript sceneScript;
     private bool isChest;
-
+    [SerializeField]
     private List<GameObject> weaponsUI;
 
     // Start is called before the first frame update
@@ -134,10 +135,25 @@ public class GameExplanationScript : MonoBehaviour
             isMoveUI = false;
         }
         //武器の効果確認画面の処理
-        if (!isMoveUI && isExplanation && PauseScript.Instance.currentState == PauseScript.GameState.WeaponInstuctions)
+        if (isExplanation && pauseScript.currentState==PauseScript.GameState.WeaponInstuctions)
         {
-            BackGround.SetActive(true);
-            ExplanationUI.SetActive(true);
+            BackGround.SetActive(false);
+            ExplanationUI.SetActive(false);
+            ExplanationUI.SetActive(false);
+            weaponsUI[0].SetActive(true);
+            LevelUpUI.SetActive(true);
+            pauseUI.SetActive(false);
+            Debug.Log("武器の説明");
+        }
+        if(pauseScript.currentState == PauseScript.GameState.WeaponInstuctions)
+        {
+            BackGround.SetActive(false);
+            ExplanationUI.SetActive(false);
+            pauseUI.SetActive(false);
+        }
+        if(Input.GetKey(KeyCode.B))
+        {
+            LevelUpUI.SetActive(true);
             pauseUI.SetActive(false);
         }
         //ポーズ画面で再開やタイトルに戻る場合の処理
@@ -268,13 +284,11 @@ public class GameExplanationScript : MonoBehaviour
     {
         if(isKeyInput)
         {
-           // gameOverTextsUI[0].SetActive(false);
             gameOverTextsUI[1].SetActive(true);
         }
         else 
         {
             gameOverTextsUI[0].SetActive(true);
-            //gameOverTextsUI[1].SetActive(false);
         }
     }
 
@@ -282,13 +296,11 @@ public class GameExplanationScript : MonoBehaviour
     {
         if (isKeyInput)
         {
-            // gameOverTextsUI[0].SetActive(false);
             gameClearTextsUI[1].SetActive(true);
         }
         else
         {
             gameClearTextsUI[0].SetActive(true);
-            //gameOverTextsUI[1].SetActive(false);
         }
     }
 }

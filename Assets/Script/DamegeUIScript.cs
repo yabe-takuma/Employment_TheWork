@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,8 +8,7 @@ public class DamegeUIScript : MonoBehaviour
 {
     //ダメージを表示するために必要な変数
     [SerializeField]
-    private Text damageText;
-
+    private TextMeshProUGUI damageText;
 
     //フェードアウトするスピード
     private float fadeOutSpeed = 1f;
@@ -19,7 +19,7 @@ public class DamegeUIScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        damageText = GetComponentInChildren<Text>();
+        damageText = GetComponentInChildren<TextMeshProUGUI>();
     }
 
     void LateUpdate()

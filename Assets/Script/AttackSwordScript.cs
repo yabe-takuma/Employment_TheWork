@@ -15,7 +15,7 @@ public class AttackSwordScript : MonoBehaviour
     [SerializeField]
     private GameObject sworddamageUI;
     [SerializeField]
-    private GameObject damageEffect;
+    private List<GameObject> damageEffects;
     private bool isAttack;
     //3段目の攻撃時敵をダウンさせるためにAnimatorを参照
     [SerializeField]
@@ -40,68 +40,155 @@ public class AttackSwordScript : MonoBehaviour
             var enemyScript = other.GetComponent<MoveEnemyScript>();
             // ここでアニメーションの時間をチェックし、特定の範囲のみヒットを許可
             float animTime = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
-            if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead &&  animTime > 0.2f && animTime < 0.4f/*&& enemyScript.GetState() == MoveEnemyScript.EnemyState.Chase*/)
+            //敵が死亡状態ではないとき敵に攻撃を与える処理
+            if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead /*&&  animTime > 0.2f && animTime < 0.4f*/)
             {
                 isCollision = true;
-                //HitStopScript.instance.StartHitStop(1.0f);
                 other.GetComponent<MoveEnemyScript>().TakeDamage(myStatus.GetAttackPower(),other.ClosestPointOnBounds(transform.position));
-                if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead)
+                if (!enemyScript.IsDead())
                 {
                     var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 1.0f, other.bounds.center.z), Quaternion.identity);
                     swordobj.transform.SetParent(other.transform);
+                    if(animator.GetCurrentAnimatorStateInfo(0).IsName("Attack1"))
+                    {
+                        var damageEffect = Instantiate<GameObject>(damageEffects[0]);
+                        damageEffect.transform.position = other.ClosestPointOnBounds(transform.position);
+                        Destroy(damageEffect, 1f);
+                    }
+                    else if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack2"))
+                    {
+                        var damageEffect = Instantiate<GameObject>(damageEffects[1]);
+                        damageEffect.transform.position = other.ClosestPointOnBounds(transform.position);
+                        Destroy(damageEffect, 1f);
+                    }
+                    else if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack03"))
+                    {
+                        var damageEffect = Instantiate<GameObject>(damageEffects[2]);
+                        damageEffect.transform.position = other.ClosestPointOnBounds(transform.position);
+                        Destroy(damageEffect, 1f);
+                    }
+                  
                 }
+                
                 Debug.Log("敵に当たった");
             }
         }
-
+        //炎の剣での敵の攻撃処理
         else if (other.tag == "Enemy"&&this.gameObject.tag=="FireSword")
         {
 
             var enemyScript = other.GetComponent<MoveEnemyScript>();
             // ここでアニメーションの時間をチェックし、特定の範囲のみヒットを許可
             float animTime = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
-            if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead&& animTime > 0.2f && animTime < 0.4f&&playerscript.GetState()!=PlayerScript.MyState.SkillAttack)
+            //敵が死亡状態ではなくスキル攻撃ではないとき敵に攻撃を与える処理
+            if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead/*&& animTime > 0.2f && animTime < 0.4f*/&&playerscript.GetState()!=PlayerScript.MyState.SkillAttack)
             {
                 other.GetComponent<MoveEnemyScript>().TakeDamage(myStatus.GetAttackPower(), other.ClosestPointOnBounds(transform.position));
-                var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 1.0f, other.bounds.center.z), Quaternion.identity);
-                swordobj.transform.SetParent(other.transform);
+                if (!enemyScript.IsDead())
+                {
+                    //ダメージのUIを出現させる処理です。当たった敵に親子関係を入れることで当たった敵のそばにUIが見えるようにしています。
+                    var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 1.0f, other.bounds.center.z), Quaternion.identity);
+                    swordobj.transform.SetParent(other.transform);
+                    if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack1"))
+                    {
+                        var damageEffect = Instantiate<GameObject>(damageEffects[0]);
+                        damageEffect.transform.position = other.ClosestPointOnBounds(transform.position);
+                        Destroy(damageEffect, 1f);
+                    }
+                    else if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack2"))
+                    {
+                        var damageEffect = Instantiate<GameObject>(damageEffects[1]);
+                        damageEffect.transform.position = other.ClosestPointOnBounds(transform.position);
+                        Destroy(damageEffect, 1f);
+                    }
+                    else if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack03"))
+                    {
+                        var damageEffect = Instantiate<GameObject>(damageEffects[2]);
+                        damageEffect.transform.position = other.ClosestPointOnBounds(transform.position);
+                        Destroy(damageEffect, 1f);
+                    }
+                }
                 Debug.Log("炎の剣が当たった");
             }
             else if(enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead && playerscript.GetState() == PlayerScript.MyState.SkillAttack)
             {
                 other.GetComponent<MoveEnemyScript>().TakeDamage(myStatus.GetAttackPower(), other.ClosestPointOnBounds(transform.position));
                 other.GetComponent<MoveEnemyScript>().AbnormalCondition();
-                var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 1.0f, other.bounds.center.z), Quaternion.identity);
-                swordobj.transform.SetParent(other.transform);
+                if (enemyScript.IsDead())
+                {
+                    //ダメージのUIを出現させる処理です。当たった敵に親子関係を入れることで当たった敵のそばにUIが見えるようにしています。
+                    var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 1.0f, other.bounds.center.z), Quaternion.identity);
+                    swordobj.transform.SetParent(other.transform);
+                    var damageEffect = Instantiate<GameObject>(damageEffects[1]);
+                    damageEffect.transform.position = other.ClosestPointOnBounds(transform.position);
+                    Destroy(damageEffect, 1f);
+                }
             }
         }
-
+        //水の剣での敵の攻撃処理
         else if (other.tag == "Enemy" && this.gameObject.tag == "WaterSword")
         {
 
             var enemyScript = other.GetComponent<MoveEnemyScript>();
             // ここでアニメーションの時間をチェックし、特定の範囲のみヒットを許可
             float animTime = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
-            if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead && animTime > 0.2f && animTime < 0.4f && playerscript.GetState() != PlayerScript.MyState.SkillAttack)
+            //敵が死亡状態ではなくスキル攻撃ではないとき敵に攻撃を与える処理
+            if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead /*&& animTime > 0.2f && animTime < 0.4f*/ && playerscript.GetState() != PlayerScript.MyState.SkillAttack)
             {
                 other.GetComponent<MoveEnemyScript>().TakeDamage(myStatus.GetAttackPower(), other.ClosestPointOnBounds(transform.position));
-                var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 1.0f, other.bounds.center.z), Quaternion.identity);
-                swordobj.transform.SetParent(other.transform);
+                if (!enemyScript.IsDead())
+                {
+                    //ダメージのUIを出現させる処理です。当たった敵に親子関係を入れることで当たった敵のそばにUIが見えるようにしています。
+                    var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 1.0f, other.bounds.center.z), Quaternion.identity);
+                    swordobj.transform.SetParent(other.transform);
+                    if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack1"))
+                    {
+                        var damageEffect = Instantiate<GameObject>(damageEffects[0]);
+                        damageEffect.transform.position = other.ClosestPointOnBounds(transform.position);
+                        Destroy(damageEffect, 1f);
+                    }
+                    else if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack2"))
+                    {
+                        var damageEffect = Instantiate<GameObject>(damageEffects[1]);
+                        damageEffect.transform.position = other.ClosestPointOnBounds(transform.position);
+                        Destroy(damageEffect, 1f);
+                    }
+                    else if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack03"))
+                    {
+                        var damageEffect = Instantiate<GameObject>(damageEffects[2]);
+                        damageEffect.transform.position = other.ClosestPointOnBounds(transform.position);
+                        Destroy(damageEffect, 1f);
+                    }
+                }
                 Debug.Log("水の剣が当たった");
             }
             if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead && playerscript.GetState() == PlayerScript.MyState.SkillAttack&&enemyScript.GetIsAbnormal())
             {
                 other.GetComponent<MoveEnemyScript>().TakeDamage(myStatus.GetAttackPower()*6, other.ClosestPointOnBounds(transform.position));
                 other.GetComponent<MoveEnemyScript>().DestroyFire();
-                var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 1.0f, other.bounds.center.z), Quaternion.identity);
-                swordobj.transform.SetParent(other.transform);
+                if (!enemyScript.IsDead())
+                {
+                    //ダメージのUIを出現させる処理です。当たった敵に親子関係を入れることで当たった敵のそばにUIが見えるようにしています。
+                    var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 1.0f, other.bounds.center.z), Quaternion.identity);
+                    swordobj.transform.SetParent(other.transform);
+                    var damageEffect = Instantiate<GameObject>(damageEffects[3]);
+                    damageEffect.transform.position = other.ClosestPointOnBounds(transform.position);
+                    Destroy(damageEffect, 1f);
+                }
                 Debug.Log("大ダメージ");
             }
             else if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead && playerscript.GetState() == PlayerScript.MyState.SkillAttack && !enemyScript.GetIsAbnormal())
             {
                 other.GetComponentInParent<MoveEnemyScript>().TakeDamage(myStatus.GetAttackPower(), other.ClosestPointOnBounds(transform.position));
-                var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 1.0f, other.bounds.center.z), Quaternion.identity);
-                swordobj.transform.SetParent(other.transform);
+                if (!enemyScript.IsDead())
+                {
+                    //ダメージのUIを出現させる処理です。当たった敵に親子関係を入れることで当たった敵のそばにUIが見えるようにしています。
+                    var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 1.0f, other.bounds.center.z), Quaternion.identity);
+                    swordobj.transform.SetParent(other.transform);
+                    var damageEffect = Instantiate<GameObject>(damageEffects[3]);
+                    damageEffect.transform.position = other.ClosestPointOnBounds(transform.position);
+                    Destroy(damageEffect, 1f);
+                }
             }
         }
         //普通の剣がボスに当たった時の処理
@@ -111,11 +198,28 @@ public class AttackSwordScript : MonoBehaviour
             if (trollScript.GetState() != TrollScript.TrollState.Dead && isAttack == false)
             {
                 other.GetComponentInParent<TrollScript>().TakeDamage(myStatus.GetAttackPower(), other.ClosestPointOnBounds(transform.position));
+                //ダメージのUIを出現させる処理です。当たった敵に親子関係を入れることで当たった敵のそばにUIが見えるようにしています。
                 var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 4.0f, other.bounds.center.z), Quaternion.identity);
                 swordobj.transform.SetParent(other.transform);
-                var damageobj = Instantiate(damageEffect, new Vector3(other.bounds.center.x, other.bounds.center.y, other.bounds.center.z), Quaternion.identity);
-                damageobj.transform.SetParent(other.transform);
-                //HitStopScript.instance.StartHitStop(1.0f);
+                //ダメージエフェクトを出現させる処理です。当たった敵に親子関係を入れることで当たった敵のそばにエフェクトが見えるようにしています。
+                if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack1"))
+                {
+                    var damageEffect = Instantiate<GameObject>(damageEffects[0]);
+                    damageEffect.transform.position = other.ClosestPointOnBounds(transform.position);
+                    Destroy(damageEffect, 1f);
+                }
+                else if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack2"))
+                {
+                    var damageEffect = Instantiate<GameObject>(damageEffects[1]);
+                    damageEffect.transform.position = other.ClosestPointOnBounds(transform.position);
+                    Destroy(damageEffect, 1f);
+                }
+                else if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack03"))
+                {
+                    var damageEffect = Instantiate<GameObject>(damageEffects[2]);
+                    damageEffect.transform.position = other.ClosestPointOnBounds(transform.position);
+                    Destroy(damageEffect, 1f);
+                }
                 isAttack = true;
                 Debug.Log("ボスに当たった");
             }
@@ -128,14 +232,34 @@ public class AttackSwordScript : MonoBehaviour
             if (trollScript.GetState() != TrollScript.TrollState.Dead && playerscript.GetState() != PlayerScript.MyState.SkillAttack)
             {
                 other.GetComponentInParent<TrollScript>().TakeDamage(myStatus.GetAttackPower(), other.ClosestPointOnBounds(transform.position));
+                //ダメージのUIを出現させる処理です。当たった敵に親子関係を入れることで当たった敵のそばにUIが見えるようにしています。
                 var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 1.0f, other.bounds.center.z), Quaternion.identity);
                 swordobj.transform.SetParent(other.transform);
+                if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack1"))
+                {
+                    var damageEffect = Instantiate<GameObject>(damageEffects[0]);
+                    damageEffect.transform.position = other.ClosestPointOnBounds(transform.position);
+                    Destroy(damageEffect, 1f);
+                }
+                else if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack2"))
+                {
+                    var damageEffect = Instantiate<GameObject>(damageEffects[1]);
+                    damageEffect.transform.position = other.ClosestPointOnBounds(transform.position);
+                    Destroy(damageEffect, 1f);
+                }
+                else if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack03"))
+                {
+                    var damageEffect = Instantiate<GameObject>(damageEffects[2]);
+                    damageEffect.transform.position = other.ClosestPointOnBounds(transform.position);
+                    Destroy(damageEffect, 1f);
+                }
                 Debug.Log("炎の剣がボスに当たった");
             }
             else if (trollScript.GetState() != TrollScript.TrollState.Dead && playerscript.GetState() == PlayerScript.MyState.SkillAttack)
             {
                 other.GetComponentInParent<TrollScript>().TakeDamage(myStatus.GetAttackPower(), other.ClosestPointOnBounds(transform.position));
                 other.GetComponentInParent<TrollScript>().AbnormalCondition();
+                //ダメージのUIを出現させる処理です。当たった敵に親子関係を入れることで当たった敵のそばにUIが見えるようにしています。
                 var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 1.0f, other.bounds.center.z), Quaternion.identity);
                 swordobj.transform.SetParent(other.transform);
             }
@@ -147,25 +271,46 @@ public class AttackSwordScript : MonoBehaviour
             if (trollScript.GetState() != TrollScript.TrollState.Dead && playerscript.GetState() != PlayerScript.MyState.SkillAttack)
             {
                 other.GetComponentInParent<TrollScript>().TakeDamage(myStatus.GetAttackPower(), other.ClosestPointOnBounds(transform.position));
+                //ダメージのUIを出現させる処理です。当たった敵に親子関係を入れることで当たった敵のそばにUIが見えるようにしています。
                 var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 1.0f, other.bounds.center.z), Quaternion.identity);
                 swordobj.transform.SetParent(other.transform);
+                if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack1"))
+                {
+                    var damageEffect = Instantiate<GameObject>(damageEffects[0]);
+                    damageEffect.transform.position = other.ClosestPointOnBounds(transform.position);
+                    Destroy(damageEffect, 1f);
+                }
+                else if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack2"))
+                {
+                    var damageEffect = Instantiate<GameObject>(damageEffects[1]);
+                    damageEffect.transform.position = other.ClosestPointOnBounds(transform.position);
+                    Destroy(damageEffect, 1f);
+                }
+                else if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack03"))
+                {
+                    var damageEffect = Instantiate<GameObject>(damageEffects[2]);
+                    damageEffect.transform.position = other.ClosestPointOnBounds(transform.position);
+                    Destroy(damageEffect, 1f);
+                }
                 Debug.Log("水の剣がボスに当たった");
             }
             else if (trollScript.GetState() != TrollScript.TrollState.Dead && playerscript.GetState() == PlayerScript.MyState.SkillAttack && trollScript.GetIsAbnormal())
             {
                 other.GetComponentInParent<TrollScript>().TakeDamage(myStatus.GetAttackPower() * 6, other.ClosestPointOnBounds(transform.position));
                 other.GetComponentInParent<TrollScript>().DestroyFire();
+                //ダメージのUIを出現させる処理です。当たった敵に親子関係を入れることで当たった敵のそばにUIが見えるようにしています。
                 var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 1.0f, other.bounds.center.z), Quaternion.identity);
                 swordobj.transform.SetParent(other.transform);
             }
             else if (trollScript.GetState() != TrollScript.TrollState.Dead && playerscript.GetState() == PlayerScript.MyState.SkillAttack && !trollScript.GetIsAbnormal())
             {
                 other.GetComponentInParent<TrollScript>().TakeDamage(myStatus.GetAttackPower(), other.ClosestPointOnBounds(transform.position));
+                //ダメージのUIを出現させる処理です。当たった敵に親子関係を入れることで当たった敵のそばにUIが見えるようにしています。
                 var swordobj = Instantiate(sworddamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 1.0f, other.bounds.center.z), Quaternion.identity);
                 swordobj.transform.SetParent(other.transform);
             }
         }
-       
+        //プレイヤーの連続攻撃の3段目を当てると敵が倒れるようになる処理です。
         if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack03") && other.tag == "Enemy")
         {
             var enemyScript = other.GetComponent<MoveEnemyScript>();

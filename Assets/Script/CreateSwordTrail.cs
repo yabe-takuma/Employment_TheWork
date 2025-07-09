@@ -57,12 +57,6 @@ public class CreateSwordTrail : MonoBehaviour
 
     void LateUpdate()
     {
-        //Debug.Log($"前フレームのstartPosition: {previousStartPosition}, 現フレーム: {startPosition.position}");
-        //Debug.Log($"前フレームのendPosition: {previousEndPosition}, 現フレーム: {endPosition.position}");
-
-        //previousStartPosition = startPosition.position;
-        //previousEndPosition = endPosition.position;
-
 
         //必要頂点数を超えたら削除
         if (startPoints.Count >= saveMeshNum + 3)   
@@ -97,7 +91,6 @@ public class CreateSwordTrail : MonoBehaviour
         //リストのクリア
         verticesLists.Clear();
         uvsLists.Clear();
-        //tempTriangles.Clear();
 
         //ポイントの間の点の保存変数
         Vector3[] startHalf = new Vector3[faceDivisionNum];
@@ -238,38 +231,7 @@ public class CreateSwordTrail : MonoBehaviour
     {
 
 
-        //if (changeEquipScript.GetEquipment() == 0||changeEquipScript.GetEquipment() == 2|| changeEquipScript.GetEquipment() == 3)
-        //{
-        //    emptyStartPosition = GameObject.FindGameObjectWithTag("NormalSword");
-        //    emptyEndPosition = GameObject.FindGameObjectWithTag("ChildSword");
-
-        //    startPosition = emptyStartPosition.transform;
-        //    endPosition = emptyEndPosition.transform;
-        //}
-        //else if(changeEquipScript.GetEquipment()==1||changeEquipScript.GetEquipment()>=4)
-        //{
-        //    emptyStartPosition = GameObject.FindGameObjectWithTag("NormalAxe");
-        //    emptyEndPosition = GameObject.FindGameObjectWithTag("ChildAxe");
-
-        //    startPosition = emptyStartPosition.transform;
-        //    endPosition = emptyEndPosition.transform;
-        //}
-        //if(emptyStartPosition!=null)
-        //{
-        //    startPosition = emptyStartPosition.transform;
-        //}
-        //else
-        //{
-        //    Debug.LogError("NormalSwordが見つかりません");
-        //}
-        //if (emptyEndPosition != null)
-        //{
-        //    endPosition = emptyEndPosition.transform;
-        //}
-        //else
-        //{
-        //    Debug.LogError("ChildSwordが見つかりません");
-        //}
+        
     }
 
     public Transform GetStartPosition()

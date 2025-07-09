@@ -154,7 +154,6 @@ public class PlayerScript : MonoBehaviour
         public float moveSpeed = 5.0f;
         public float dashSpeed = 9.0f;
         public float decelerationRate=5.0f;
-        //public float sprintSpeed = 50.0f;
     }
     private MoveSettings moveSettings;
     public enum MyState
@@ -191,7 +190,6 @@ public class PlayerScript : MonoBehaviour
         gameclearUI.SetActive(false);
         isGameOver = false;
         isGameClear = false;
-        //enemies=GameObject.FindGameObjectsWithTag("Enemy").ToList();
         moveSettings = new MoveSettings();
         pauseCooldown = 12;
         fixedPosition = transform.position;
@@ -432,7 +430,7 @@ public class PlayerScript : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.F) &&IsGrounded()/*&&!isJump*//*&& !animator.GetCurrentAnimatorStateInfo(0).IsName("Jump")*/ || Input.GetKeyDown("joystick button 3") && transform.position.y < 0.1f)
+        if (Input.GetKeyDown(KeyCode.F) &&IsGrounded() || Input.GetKeyDown("joystick button 3") && transform.position.y < 0.1f)
         {
             rb.velocity = new Vector3(rb.velocity.x, jumpPower, rb.velocity.z);
 
@@ -445,8 +443,7 @@ public class PlayerScript : MonoBehaviour
 
     bool CanMove()
     {
-        //return transform.position.x >= 925 && transform.position.x <= 1025 &&
-        //       transform.position.z >= 12 && transform.position.z <= 105;
+      
         Vector3 pos = transform.position;
 
         // ステージ全体の境界
@@ -623,7 +620,6 @@ public class PlayerScript : MonoBehaviour
                 {
                     timeline[0].Play();
                     RotationOff();
-                    //SetTimelineSpeed(timelinespeed);
                     Debug.Log("後ろ回避");
                     animator.applyRootMotion = false;
                 }
@@ -684,23 +680,8 @@ public class PlayerScript : MonoBehaviour
 
     void Playerhauding()
     {
-        //if (Input.GetKeyDown(KeyCode.F) && IsGrounded()/*&&!isJump*//*&& !animator.GetCurrentAnimatorStateInfo(0).IsName("Jump")*/ || Input.GetKeyDown("joystick button 3") && transform.position.y < 0.1f)
-        //{
-           
-        //    //rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
-        //    //rb.AddForce(new Vector3(rb.velocity.x, /*rb.velocity.y + */jumpPower, rb.velocity.z),ForceMode.VelocityChange);
-        //    rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y + jumpPower, rb.velocity.z);
-            
-        //    Debug.Log("ジャンプ");
-        //    isJump = true;
-        //    animator.SetBool("Jump", true);
-        //    animator.applyRootMotion = false;
-        //}
-        //if(transform.position.y>0.1f)
-        //{
-           
-        //}
-         if(IsGrounded())
+       
+        if(IsGrounded())
         {
 
             isJump = false;
@@ -710,7 +691,6 @@ public class PlayerScript : MonoBehaviour
         if (transform.position.y <= 0 && !isJump && !inAvoid) 
         {
             rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-            //animator.applyRootMotion = true;
         }
        
 
@@ -722,28 +702,15 @@ public class PlayerScript : MonoBehaviour
 
         if (troll == null)
         {
-            //gameclearUI.SetActive(true);
             gameExplanationScript.GameClearText();
             isGameClear = true;
         }
         UpdateEnemyPositions();
         nearestEnemyScript = FindNearestEnemyScript();
        
-        //if (nearestEnemyScript != null)
-        //{
-        //    avoidCaunter = nearestEnemyScript.GetJustAvoidCaunter();
-        //}
+      
         characterController.Move(rb.velocity * Time.deltaTime);
-        if (!isJustAvoidAttack)
-        {
-            //characterController.Move(rb.velocity * Time.deltaTime);
-            //transform.position = new Vector3(1000, 0, 100);
-        }
-
-        //if (nearestEnemyScript != null && nearestEnemyScript.GetJustAvoidCaunter() >= 30 && nearestEnemyScript.GetJustAvoidCaunter() <= 40 && !isJustAvoid && avoid)
-        //{
-        //    StartCoroutine("JustAvoidCoroutine");
-        //}
+      
 
         //走っていない時
         if (!run)
@@ -786,7 +753,7 @@ public class PlayerScript : MonoBehaviour
         else
         {
             animator.SetBool("Run", true);
-            if (/*!Input.GetButton("Horizontal") && !Input.GetButton("Vertical") || rb.velocity.magnitude<=0*/move.x==0&&move.z==0)
+            if (move.x==0&&move.z==0)
             {
                 run = false;
                 push = false;
@@ -813,79 +780,19 @@ public class PlayerScript : MonoBehaviour
             pauseEnded = false;
         }
 
-        //RaycastHit hit;
-        //if (Physics.Raycast(transform.position, transform.forward, out hit, 1.5f))
-        //{
-        //    if (hit.collider.CompareTag("Collision"))
-        //    {
-        //        rb.MovePosition(fixedPosition); // 物理的に移動を制限
-        //    }
-        //}
+       
         fixedPosition = transform.position; // フレーム更新
 
-        //if (!CanMove()) // すり抜け防止の条件
-        //{
-          
-        //    rb.MovePosition(fixedPosition); // 移動制限を適用
-        //    Debug.Log("ステージ外");
-        //}
-
-       
-        //if (Physics.Raycast(transform.position, transform.forward, out hit, 1.5f))
-        //{
-        //    if (!CanMove()) // すり抜け防止
-        //    {
-        //        transform.position = fixedPosition; // **衝突が検出されたら位置を修正**
-        //        Debug.Log("壁に衝突 → 位置を戻す");
-        //    }
-        //}
+      
 
         if(camera3D.IsStartAnimation())
         {
             myStatus.SetHp(myStatus.GetHp());
         }
 
-
-        //if (Physics.Raycast(transform.position, transform.forward, out hit, 1.5f))
-        //{
-        //    PlayableGraph graph = timeline[0].playableGraph;
-        //    if (graph.IsValid())
-        //    {
-        //        int outputCount = graph.GetOutputCount();
-        //        for (int i = 0; i < outputCount; i++)
-        //        {
-        //            PlayableOutput output = graph.GetOutput(i);
-        //            if (output.IsPlayableOutputOfType<AnimationPlayableOutput>())
-        //            {
-        //                AnimationPlayableOutput animationOutput = (AnimationPlayableOutput)output;
-        //                Animator anim= animationOutput.GetTarget();
-        //                Debug.Log("突破");
-        //                if (!CanMove()) // すり抜け防止の条件
-        //                {
-        //                    anim.speed = 1; // アニメーションは再生
-        //                    rb.MovePosition(fixedPosition); // 移動制限を適用
-        //                    Debug.Log("ステージ外");
-        //                }
-        //                else
-        //                {
-        //                    animator.speed = 1; // 正常な移動は許可
-        //                    fixedPosition = transform.position;
-        //                    Debug.Log("内側");
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
-
-       // Debug.Log($"現在位置: X={transform.position.x}, Z={transform.position.z}");
         Debug.Log($"CanMove(): {CanMove()}"); // 移動許可が適切に判定されているか確認
 
-        //if(isDamage)
-        //{
-        //    damageCoolTime++;
-        //    StartCoroutine(StartInvincibilityBlink());
-
-        //}
+       
 
         if (isDamage)
         {
@@ -895,20 +802,7 @@ public class PlayerScript : MonoBehaviour
 
       
 
-        //if (damageCoolTime>200)
-        //{
-        //    isDamage = false;
-        //    damageCoolTime = 0;
-        //}
-
-        //MoveTowardsClosestEnemy(this.transform);
-        //if (isJustAvoidMove)
-        //{
-        //    MoveTowardsClosestEnemy();
-        //    //徐々に移動する
-        //    //transform.position = Vector3.LerpUnclamped(this.transform.position, new Vector3(debugposition.x,transform.position.y,debugposition.z), Time.deltaTime * 1f);
-
-        //}
+       
     }
 
     bool IsGrounded()
@@ -934,18 +828,7 @@ public class PlayerScript : MonoBehaviour
         return rb;
     }
 
-    private IEnumerator JustAvoidCoroutine()
-    {
-        Debug.Log("ジャスト回避中");
-        Time.timeScale = 0.2f;
-        isJustAvoidAttack = true;
-        //MoveTowardsClosestEnemy(this.transform);
-        yield return new WaitForSecondsRealtime(5.0f);
-        isJustAvoid = false;
-        isJustAvoidAttack = false;
-        isJustAvoidMove = false;
-        Time.timeScale = 1;
-    }
+   
 
     void UpdateEnemyPositions()
     {
@@ -963,29 +846,7 @@ public class PlayerScript : MonoBehaviour
 
    
 
-    void MoveTowardsClosestEnemy()
-    {
-        if (enemyPositions.Count == 0) return;
-
-        //最も近い敵の座標を取得
-        Vector3 closestEnemyPos = enemyPositions[0];
-        float minDistance = Vector3.Distance(transform.position, closestEnemyPos);
-        foreach (Vector3 enemyPos in enemyPositions)
-        {
-            float distance = Vector3.Distance(transform.position, enemyPos);
-            if(distance<minDistance)
-            {
-                closestEnemyPos = enemyPos;
-                minDistance = distance;
-            }
-        }
-        Debug.Log("徐々に移動する");
-        debugposition = closestEnemyPos;
-        //徐々に移動する
-        this.transform.position = Vector3.Lerp(this.transform.position, closestEnemyPos,5f);
-    }
-
-    
+   
 
     MoveEnemyScript FindNearestEnemyScript()
     {
@@ -1160,21 +1021,6 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    bool CanMoveInBossBattle()
-    {
-        Vector3 pos = transform.position;
-        Vector3 center = bossTransform.position;
-
-        bool inBarrier =
-            pos.x >= center.x - horizontalBarrierDistance &&
-            pos.x <= center.x + horizontalBarrierDistance &&
-            pos.z >= center.z - verticalBarrierDistance &&
-            pos.z <= center.z + verticalBarrierDistance;
-
-        return inBarrier;
-    }
-
-
-
+  
 
 }

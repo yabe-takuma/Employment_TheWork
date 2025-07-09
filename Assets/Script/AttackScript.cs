@@ -25,6 +25,7 @@ public class AttackScript : MonoBehaviour
     //雑魚敵の攻撃がプレイヤーに当たった時の処理
     private void OnTriggerEnter(Collider other)
     {
+        //この処理はプレイヤーが死亡状態や回避状態ではないときにダメージを与える処理です。
         if (gameObject.CompareTag("Z_Arm") && other.tag == "Player"&&playerScript.GetAvoid()==false&&playerScript.GetState()!=PlayerScript.MyState.Dead)
         {
             Debug.Log("当たり");

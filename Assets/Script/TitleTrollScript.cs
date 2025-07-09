@@ -24,15 +24,6 @@ public class TitleTrollScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //if(titleCameraScript.IsAtDistination()&& stateInfo.normalizedTime < 1.0f && stateInfo.IsName("idle_break"))
-        //{
-        //    animationCooltime++;
-        //}
-        //if(animationCooltime>500)
-        //{
-        //    animator.SetBool("idle_break", true);
-        //    animationCooltime = 0;
-        //}
         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         bool isIdleBreakPlaying = stateInfo.IsName("idle_break") && stateInfo.normalizedTime < 1.0f;
         bool hasIdleBreakFinished = stateInfo.IsName("idle_break") && stateInfo.normalizedTime >= 1.0f;

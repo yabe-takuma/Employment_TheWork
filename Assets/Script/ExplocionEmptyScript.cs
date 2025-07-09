@@ -40,6 +40,7 @@ public class ExplocionEmptyScript : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        //爆風が当たったらプレイヤーが倒れる処理
         if (other.tag == "Player" && playerScript.GetState() != PlayerScript.MyState.Damage && playerScript.GetState() != PlayerScript.MyState.Dead &&
           playerScript.GetAvoid() == false && playerScript.GetState() != PlayerScript.MyState.SkillAttack && trollScript.GetState() != TrollScript.TrollState.Dead)
         {

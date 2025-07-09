@@ -21,9 +21,7 @@ public class ProcessEnemyAnimEventScript : MonoBehaviour
     void Start()
     {
         enemy = GetComponent<MoveEnemyScript>();
-        //equipment = GameObject.Find("WeponPoint").gameObject;
-        //wepon = Instantiate(weapon, equipment.position, equipment.rotation);
-        //Instantiate(equipment);
+       
     }
 
      public void AttackStart()
@@ -61,25 +59,7 @@ public class ProcessEnemyAnimEventScript : MonoBehaviour
         {
             sphereCollider.enabled = false;
         }
-        //wepon = Instantiate(weapon, equipment.position, equipment.rotation);
-        //wepon.transform.SetParent(equipment);
-        //wepon.transform.localPosition=new Vector3(0, 0, 0);
-        //wepon.transform.localRotation = equipment.rotation;
-        ////wepon.transform.localEulerAngles = new Vector3(0,0,0);
-        //wepon.GetComponent<Animator>().runtimeAnimatorController = enemy.GetAnimator().runtimeAnimatorController;
-        //if(!isWeapon)
-        //{
-        //    Instantiate(weapon, transform.position, Quaternion.identity);
-        //    isWeapon = true;
-        //}
-        //if (weapon.tag == "Sword")
-        //{
-        //    equipments = 1;
-        //}
-        //else
-        //{
-        //    equipments = 0;
-        //}
+       
     }
 
     public void SetWeapon(GameObject weapons)

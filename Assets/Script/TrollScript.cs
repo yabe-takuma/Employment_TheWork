@@ -93,7 +93,7 @@ public class TrollScript : MonoBehaviour
     [SerializeField]
     private int chargetimer;
     [SerializeField]
-    private bool Isshockwave, Isinstallation,Isexplocion,/*Iswave,*/ Iscontinuous;
+    private bool Isshockwave, Isinstallation,Isexplocion,Iscontinuous;
 
     [SerializeField]
     private bool isabnormal;  //状態異常になったかのトリガー
@@ -116,13 +116,13 @@ public class TrollScript : MonoBehaviour
     private const int maxloop = 3;
 
     private bool isstarttimeline;
-    [SerializeField]
-    // private NavMeshAgent navMeshAgent;
 
     private Vector3 lastPos;
     private float stuckTimer;
     [SerializeField]
     private HitStopScript hitStopScript;
+    [SerializeField]
+    private Animator playeranimator;
 
     // Start is called before the first frame update
     void Start()
@@ -138,8 +138,7 @@ public class TrollScript : MonoBehaviour
         animator.SetTrigger("ShockwaveAttack");
         Time.timeScale = 0;
         animator.updateMode = AnimatorUpdateMode.UnscaledTime;
-        //navMeshAgent = GetComponent<NavMeshAgent>();
-        //navMeshAgent.isStopped = true;
+      
     }
 
     // Update is called once per frame
@@ -189,13 +188,7 @@ public class TrollScript : MonoBehaviour
         }
         TrollUpdate();
 
-        //if (!navMeshAgent.pathPending && navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance && trollState == TrollState.patrol)
-        //{
-        //    SetState(TrollState.idle);
-        //}
-
-
-
+  
     }
 
     //目的地を設定する
@@ -217,17 +210,6 @@ public class TrollScript : MonoBehaviour
             SetRandomDestination(); // 再試行
         }
 
-
-        //for (int i = 0; i < 5; i++) // 試行を5回に制限
-        //{
-        //    var randomPos = defaultPos + Random.insideUnitSphere * movementRange;
-        //    if (NavMesh.SamplePosition(randomPos, out NavMeshHit hit, 3f, NavMesh.AllAreas))
-        //    {
-        //        navMeshAgent.SetDestination(hit.position);
-        //        return;
-        //    }
-        //}
-        //Debug.LogWarning("目的地設定失敗");
     }
 
     //状態変更メソッド
@@ -236,8 +218,6 @@ public class TrollScript : MonoBehaviour
         trollState = tmpState;
         if(trollState == TrollState.idle)
         {
-            //velocity = new Vector3(0f, velocity.y, 0f);
-            //navMeshAgent.isStopped = true;
             animator.SetFloat("WalkSpeed", 0f);
             animator.SetBool("Chase", false);
             animator.ResetTrigger("WaveAttack");
@@ -253,7 +233,6 @@ public class TrollScript : MonoBehaviour
         {
             Debug.Log("パトロール");
             SetRandomDestination();
-           // navMeshAgent.isStopped = false;
         }
         else if(trollState == TrollState.attack)
         {
@@ -289,7 +268,6 @@ public class TrollScript : MonoBehaviour
             animator.SetBool("Chase", true);
             attackTargetTransform = playerTransform;
             Debug.Log("チェイス");
-           // navMeshAgent.isStopped = false;
         }
         else if(trollState == TrollState.Jump)
         {
@@ -401,7 +379,7 @@ public class TrollScript : MonoBehaviour
             transform.rotation = Quaternion.Euler(transform.eulerAngles.x, targetRot.eulerAngles.y, transform.eulerAngles.z);
             velocity = transform.forward * walkSpeed;
             dis = Vector3.Distance(transform.position, destination);
-            //pos = destination;
+           
         }
 
         //目的地に着いたらidle状態にする
@@ -444,13 +422,7 @@ public class TrollScript : MonoBehaviour
         {
             elapsedCollisionWall = avoidanceTimeCollisionWall;
         }
-        //if (navMeshAgent.isStopped)
-        //{
-        //    SetRandomDestination();
-        //    navMeshAgent.isStopped = false;
-        //}
-        //animator.SetFloat("WalkSpeed", navMeshAgent.velocity.magnitude);
-
+     
     }
     //Chase状態の時の処理
     private void Chase()
@@ -468,12 +440,7 @@ public class TrollScript : MonoBehaviour
             velocity = transform.forward * chaseSpeed;
             Debug.Log("追いかける");
         }
-        //if (attackTargetTransform != null)
-        //{
-        //    navMeshAgent.SetDestination(attackTargetTransform.position);
-        //    animator.SetBool("Chase", true);
-        //}
-
+       
     }
     //Attack状態の時の処理
     private void Attack()
@@ -487,10 +454,6 @@ public class TrollScript : MonoBehaviour
             && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
         {
             SetState(TrollState.idle);
-            //animator.ResetTrigger("Attack");
-            //animator.SetBool("Chase", false);
-
-            //navMeshAgent.isStopped = false;
             Debug.Log("トロル攻撃");
         }
     }
@@ -506,10 +469,6 @@ public class TrollScript : MonoBehaviour
             && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
         {
             SetState(TrollState.idle);
-            //animator.ResetTrigger("ShockwaveAttack");
-            //animator.SetBool("Chase", false);
-
-            //navMeshAgent.isStopped = false;
             Debug.Log("トロル強化攻撃");
         }
     }
@@ -529,27 +488,11 @@ public class TrollScript : MonoBehaviour
             && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
         {
             SetState(TrollState.idle);
-            //animator.ResetTrigger("WaveAttack");
-            //animator.SetBool("Chase", false);
-            //navMeshAgent.isStopped = false;
         }
         
     }
 
-    private void Installation()
-    {
-        // 攻撃状態になった時のキャラクターの向きを計算し、徐々にそちらの向きに回転させる
-        var targetRot = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(attackTargetPos - transform.position), Time.deltaTime * 2f);
-        transform.rotation = Quaternion.Euler(transform.eulerAngles.x, targetRot.eulerAngles.y, transform.eulerAngles.z);
-
-        //Attackアニメーションが終了したらIdle状態にする
-        if (animator.GetCurrentAnimatorStateInfo(0).IsName("ShockwaveAttack")
-            && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
-        {
-            SetState(TrollState.idle);
-            Debug.Log("設置物を置いた");
-        }
-    }
+  
 
     private void Explocion()
     {
@@ -558,24 +501,12 @@ public class TrollScript : MonoBehaviour
             && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
         {
             SetState(TrollState.idle);
-            //animator.ResetTrigger("ExplocionAttack");
-            //animator.SetBool("Chase", false);
             Isexplocion = false;
-            //navMeshAgent.isStopped = false;
             Debug.Log("爆発発生");
         }
     }
 
-    private void Wave()
-    {
-        //Attackアニメーションが終了したらIdle状態にする
-        if (animator.GetCurrentAnimatorStateInfo(0).IsName("ShockwaveAttack")
-            && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
-        {
-            SetState(TrollState.idle);
-            Debug.Log("設置物を置いた");
-        }
-    }
+  
 
     private void ContinuousAttack()
     {
@@ -589,9 +520,6 @@ public class TrollScript : MonoBehaviour
             && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 3)
         {
             SetState(TrollState.idle);
-            //animator.ResetTrigger("ContinuousAttack");
-            //animator.SetBool("Chase", false);
-            //navMeshAgent.isStopped = false;
             Debug.Log("連続波攻撃");
         }
     }
@@ -600,8 +528,10 @@ public class TrollScript : MonoBehaviour
     {
         //WeakUIをインスタンス化。登場位置はコライダの中心からカメラの方向に少し寄せた位置
         trollStatus.SetHp(trollStatus.GetHp() - damage);
-        HitStopScript.instance.StartHitStop(1.0f);
-        //navMeshAgent.isStopped = true;
+        if (playeranimator.GetCurrentAnimatorStateInfo(0).IsName("Attack03"))
+        {
+            HitStopScript.instance.StartHitStop(0.3f);
+        }
         if (trollStatus.GetHp()<=0)
         {
             Dead();

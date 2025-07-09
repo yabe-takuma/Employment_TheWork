@@ -17,7 +17,7 @@ public class AttackAxe : MonoBehaviour
     [SerializeField]
     private GameObject axenormaldamageUI;
     [SerializeField]
-    private GameObject damageEffect;
+    private List<GameObject> damageEffects;
     private bool isAttack;
 
     [SerializeField]
@@ -38,11 +38,13 @@ public class AttackAxe : MonoBehaviour
     {
         myStatus = transform.root.GetComponent<MyStatus>();
         playerscript = transform.root.GetComponent<PlayerScript>();
+        //Itemのタグが付いているものは最初からColliderをオンにして触れるようにする
         if (this.gameObject.tag == "Item")
         {
             sphereCollider.enabled = true;
         }
-        isItem = false;
+        isItem = false;  //まだアイテムに触れていないのでfalseにする
+        animator = transform.root.GetComponent<Animator>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -51,11 +53,29 @@ public class AttackAxe : MonoBehaviour
         if (other.tag == "Enemy"&&this.gameObject.tag!="Item"&&playerscript!=null)
         {
             var enemyScript = other.GetComponent<MoveEnemyScript>();
-            if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead /*&& enemyScript.GetState() == MoveEnemyScript.EnemyState.Chase*/)
+            if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead)
             {
                 other.GetComponent<MoveEnemyScript>().TakeDamage(myStatus.GetAxeAttackPower(), other.ClosestPointOnBounds(transform.position));
                 var axedamageobj = Instantiate(axenormaldamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y, other.bounds.center.z), Quaternion.identity);
                 axedamageobj.transform.SetParent(other.transform);
+                if (animator.GetCurrentAnimatorStateInfo(0).IsName("AxeAttack"))
+                {
+                    var damageEffect = Instantiate<GameObject>(damageEffects[0]);
+                    damageEffect.transform.position = other.ClosestPointOnBounds(transform.position);
+                    Destroy(damageEffect, 1f);
+                }
+                else if (animator.GetCurrentAnimatorStateInfo(0).IsName("AxeAttack2")|| animator.GetCurrentAnimatorStateInfo(0).IsName("AxeSkillAttack2"))
+                {
+                    var damageEffect = Instantiate<GameObject>(damageEffects[1]);
+                    damageEffect.transform.position = other.ClosestPointOnBounds(transform.position);
+                    Destroy(damageEffect, 1f);
+                }
+                else if (animator.GetCurrentAnimatorStateInfo(0).IsName("AxeAttack3"))
+                {
+                    var damageEffect = Instantiate<GameObject>(damageEffects[2]);
+                    damageEffect.transform.position = other.ClosestPointOnBounds(transform.position);
+                    Destroy(damageEffect, 1f);
+                }
                 Debug.Log("敵に当たった");
                 isCollision = true;
             }
@@ -72,8 +92,11 @@ public class AttackAxe : MonoBehaviour
                 weakobj.transform.SetParent(other.transform);
                 var axedamageobj = Instantiate(axedamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 4.0f, other.bounds.center.z), Quaternion.identity);
                 axedamageobj.transform.SetParent(other.transform);
-                var damageobj = Instantiate(damageEffect, new Vector3(other.bounds.center.x, other.bounds.center.y, other.bounds.center.z), Quaternion.identity);
-                damageobj.transform.SetParent(other.transform);
+                //var damageobj = Instantiate(damageEffects[0], new Vector3(other.bounds.center.x, other.bounds.center.y, other.bounds.center.z), Quaternion.identity);
+                //damageobj.transform.SetParent(other.transform);
+                var damageEffect = Instantiate<GameObject>(damageEffects[1]);
+                damageEffect.transform.position = other.ClosestPointOnBounds(transform.position);
+                Destroy(damageEffect, 1f);
                 isAttack = true;
                 Debug.Log("ボスに当たった");
             }
@@ -85,11 +108,6 @@ public class AttackAxe : MonoBehaviour
             isItem = true;
             Debug.Log("アイテムが削除");
         }
-        //if (animator.GetCurrentAnimatorStateInfo(0).IsName("AxeAttack3") && other.tag == "Enemy")
-        //{
-        //    var enemyScript = other.GetComponent<MoveEnemyScript>();
-        //    other.GetComponentInParent<MoveEnemyScript>().KnockBackDamage(myStatus.GetAttackPower(), other.ClosestPointOnBounds(transform.position));
-        //}
     }
   
 
@@ -105,6 +123,8 @@ public class AttackAxe : MonoBehaviour
         myItemScript = myitemscript;
     }
 
+    
+
     void PlayerAround()
     {
         if (playerscript != null && playerscript.GetState() != PlayerScript.MyState.Attack)
@@ -119,10 +139,6 @@ public class AttackAxe : MonoBehaviour
         {
             sphereCollider.enabled = true;
         }
-        //if (isItem)
-        //{
-        //    animator = transform.root.GetComponent<Animator>();
-        //}
     }
    
 }

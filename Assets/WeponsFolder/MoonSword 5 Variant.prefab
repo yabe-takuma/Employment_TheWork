@@ -184,7 +184,10 @@ MonoBehaviour:
   playerscript: {fileID: 0}
   processCharaAnimEvent: {fileID: 0}
   sworddamageUI: {fileID: 2634239737505882867, guid: cfd24881922a2934a9ab244ac28c251b, type: 3}
-  damageEffect: {fileID: 362261158077530393, guid: 20fda529c996a334da7fd65b48ea40df, type: 3}
+  damageEffects:
+  - {fileID: 4021103657954561961, guid: 5c755f9bc5253ea418e919994537dcc7, type: 3}
+  - {fileID: 2504214343621411470, guid: 3ed0d324122d7b24eaec75c55c74aafc, type: 3}
+  - {fileID: 5880797563127281583, guid: 265d3a5ba69981a4698ceabcedf368b0, type: 3}
   animator: {fileID: 0}
   isCollision: 0
 --- !u!114 &5326979947200598388

@@ -93,7 +93,7 @@ public class ChestScript : MonoBehaviour
         {
             isEndOpen = true;
             chestanimation.Play();
-            //chestanimator.SetTrigger("Open");
+            chestanimator.SetTrigger("Open");
             Debug.Log("宝箱を開けた");
         }
     }
@@ -141,7 +141,6 @@ public class ChestScript : MonoBehaviour
         if (isOpen)
         {
             opentimer++;
-            //Time.timeScale = 0;
         }
     }
 

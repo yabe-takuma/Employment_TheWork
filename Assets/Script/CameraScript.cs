@@ -120,14 +120,13 @@ public class CameraScript : MonoBehaviour
     [SerializeField]
     private MyStatus myStatus;
 
-    private Vector3 prevDirection = Vector3.forward; // 前フレームの方向（初期値）
+    
 
 
 
     // Start is called before the first frame update
     void Start()
     {
-        //nowPos = TargetObject.transform.position;
         playerScript = GameObject.Find("Character_Female_Hotel Owner").GetComponent<PlayerScript>();
         originalPosition = transform.position;
         StartCamera();
@@ -136,8 +135,7 @@ public class CameraScript : MonoBehaviour
         isCameraAngle = false;
         skipLerpOnce = false;
         skipCameraUpdateOnce = false;
-        //nowPos = TargetObject.transform.position + new Vector3(0, 2, -5); // ← 背後にオフセット
-
+        
 
     }
     //カメラの揺れをelapsedTimeに代入する関数
@@ -247,8 +245,7 @@ public class CameraScript : MonoBehaviour
             {
                 if (RockonTarget != null)
                 {
-                    //target = RockonTarget.transform.position;
-                    //distance = Vector3.Distance(TargetObject.transform.position, RockonTarget.transform.position);
+                   
                     float lockonSpeed = 5.0f;
 
 
@@ -326,35 +323,17 @@ public class CameraScript : MonoBehaviour
         }
 
 
-
-
-
-        ////ロックオンじゃない時のカメラの回転
-        //var rot = Quaternion.LookRotation((nowPos - transform.position).normalized);
-        //if (!rock&&isStartAnimation) 
-
         if (rock && RockonTarget.tag == "Enemy")
         {
-            //initialRotation = rockonEnemyposition.transform.rotation;
-            //transform.rotation = initialRotation;
-            //transform.position = rockonEnemyposition.transform.position;
-
             transform.rotation = new Quaternion(transform.rotation.x, rockonEnemyposition.transform.rotation.y, rockonEnemyposition.transform.rotation.z, rockonEnemyposition.transform.rotation.w);
             AdjustEnemyCamera();
-
-
-
         }
         if (rock && RockonTarget.tag!="Enemy"&&!isCameraAngle)
         {
             transform.rotation = new Quaternion(transform.rotation.x,rockonEnemyposition.transform.rotation.y, rockonEnemyposition.transform.rotation.z, rockonEnemyposition.transform.rotation.w);
             AdjustCamera();
         }
-        else if(rock && RockonTarget.tag != "Enemy"&&isCameraAngle)
-        {
-            transform.rotation = rockonEnemyposition.transform.rotation;
-            transform.position = rockonEnemyposition.transform.position;
-        }
+      
         //ロックオンの時アイコンを表示する関数
         TargetIcon();
         //ボスが倒された時特定の座標に行く処理
@@ -370,17 +349,19 @@ public class CameraScript : MonoBehaviour
             transform.position = transform.position + (Vector3)Random.insideUnitCircle * shakeMagnitude;
             elapsedTime -= Time.deltaTime;
         }
+        //プレイヤーが死んでいる状態だったらカメラを揺らさない処理
         if(playerScript.GetState() == PlayerScript.MyState.Dead)
         {
             shakeMagnitude = 0.0f;
         }
-
+        //右にスティックや右矢印キーを押すとボス全体を見れるモードに変更
         if(rock && RockonTarget.tag != "Enemy"&&Input.GetKeyDown(KeyCode.RightArrow)||
             rock && RockonTarget.tag != "Enemy" && speed.x<=-0.1f)
         {
             isCameraAngle = true;
         }
-        else if(rock && RockonTarget.tag != "Enemy"&&Input.GetKeyDown(KeyCode.LeftArrow)||
+        //左にスティックや左矢印キーを押すとプレイヤーを見れるモードに変更
+        else if (rock && RockonTarget.tag != "Enemy"&&Input.GetKeyDown(KeyCode.LeftArrow)||
                  rock && RockonTarget.tag != "Enemy" && speed.x>=0.1f)
         {
             isCameraAngle = false;
@@ -388,7 +369,7 @@ public class CameraScript : MonoBehaviour
 
         if (justLockedOn)
         {
-            if (rockonCameraPosition != Vector3.zero)  // **(0, 0, 0) の場合は保存しない**
+            if (rockonCameraPosition != Vector3.zero)  //(0, 0, 0) の場合は保存しない
             {
                 rockonCameraRotation = transform.rotation;
                 rockonCameraPosition = transform.position;
@@ -399,25 +380,17 @@ public class CameraScript : MonoBehaviour
             justLockedOn = false;
         }
 
-
-
-
         if (justUnlocked) justUnlocked = false;
 
-
-
-
-
-
     }
-
+    //ゲーム開始時ボスにカメラを向ける処理
     public void StartCamera()
     {
         transform.position = startCamera.transform.position;
         transform.rotation = startCamera.transform.rotation;
         Debug.Log("カメラ移動中");
     }
-
+    //ボスにカメラを向けた後プレイヤーにカメラを向ける処理
     public void StartCameraEnd()
     {
         if (!hasInitializedCamera)
@@ -436,13 +409,13 @@ public class CameraScript : MonoBehaviour
         yield return new WaitForSecondsRealtime(1.0f);
         isStartAnimation = true;
 
-        // ↓↓↓ まず角度を正しい値に初期化する！
+        // 角度を正しい値に初期化する
         RotAngle = 0f;
         HeightAngle = 15f;
         nowRotAngle = RotAngle;
         nowHeightAngle = HeightAngle;
 
-        // そのあとで nowPos を計算
+        // nowPos を計算
         var deg = Mathf.Deg2Rad;
         var cx = Mathf.Sin(nowRotAngle * deg) * Mathf.Cos(nowHeightAngle * deg) * Distance;
         var cz = -Mathf.Cos(nowRotAngle * deg) * Mathf.Cos(nowHeightAngle * deg) * Distance;
@@ -464,37 +437,10 @@ public class CameraScript : MonoBehaviour
     }
 
 
-
+    //ボス姿の全体を見れる処理
     private void AdjustCamera()
     {
-        //if (RockonTarget == null || TargetObject == null) return;
-
-        //// プレイヤーと敵の位置を取得（視認性を考慮してやや上）
-        //Vector3 playerPos = TargetObject.transform.position + Vector3.up * 1.5f;
-        //Vector3 enemyPos = RockonTarget.transform.position + Vector3.up * 1.5f;
-
-        //// 中間点を取得
-        //Vector3 midPoint = (playerPos + enemyPos) * 0.5f;
-
-        //// === ロックオン対象のサイズを取得 ===
-        //Bounds bounds = new Bounds(RockonTarget.transform.position, Vector3.zero);
-        //foreach (Renderer renderer in RockonTarget.GetComponentsInChildren<Renderer>())
-        //{
-        //    bounds.Encapsulate(renderer.bounds);
-        //}
-        //float targetSize = bounds.extents.magnitude;
-
-        //// カメラ方向と距離の調整：サイズに応じて距離を動的に決定
-        //Vector3 direction = (midPoint - enemyPos).normalized;
-        //float baseDistance = Vector3.Distance(playerPos, enemyPos);
-        //float dynamicDistance = Mathf.Max(baseDistance + 3.0f, targetSize * 2.0f); // オブジェクトが大きいときはもっと下がる
-
-        //// カメラ位置を計算
-        //Vector3 cameraPos = midPoint + direction * dynamicDistance + Vector3.up * 2.5f;
-
-        //// カメラをスムーズに移動＆注視
-        //camera.transform.position = Vector3.SmoothDamp(camera.transform.position, cameraPos, ref velocity, 0.15f);
-        //camera.transform.LookAt(midPoint);
+      
 
         if (RockonTarget == null || TargetObject == null) return;
 
@@ -529,7 +475,7 @@ public class CameraScript : MonoBehaviour
 
 
     }
-
+    //敵の姿の全体を見れる処理
     private void AdjustEnemyCamera()
     {
         if (RockonTarget == null || TargetObject == null) return;
@@ -554,260 +500,5 @@ public class CameraScript : MonoBehaviour
 
     }
 
-    IEnumerator ForceApplyRotation()
-    {
-        yield return new WaitForEndOfFrame();
-
-        transform.position = rockonCameraPosition; // **ロックオン中に更新された位置を適用**
-        transform.rotation = Quaternion.LookRotation((rockonCameraPosition - TargetObject.transform.position).normalized);
-
-        Debug.Log("強制適用後の回転: " + transform.rotation);
-        Debug.Log("強制適用後の位置: " + transform.position);
-
-
-
-
-
-
-
-    }
-
-    IEnumerator SaveRockonPositionNextFrame()
-    {
-        yield return new WaitForEndOfFrame();
-
-        float deg = Mathf.Deg2Rad;
-        float cx = Mathf.Sin(nowRotAngle * deg) * Mathf.Cos(nowHeightAngle * deg) * Distance;
-        float cz = -Mathf.Cos(nowRotAngle * deg) * Mathf.Cos(nowHeightAngle * deg) * Distance;
-        float cy = Mathf.Sin(nowHeightAngle * deg) * Distance;
-
-        Vector3 targetPos = nowPos + new Vector3(cx, cy, cz) + offset; // ← ここでオフセット適用
-
-        rockonCameraRotation = transform.rotation;
-        rockonCameraPosition = targetPos; // 位置を適切に修正
-
-        Debug.Log("遅延保存: rockonCameraPosition = " + rockonCameraPosition);
-
-
-
-
-    }
-
-
-
-    IEnumerator SmoothReturnToPlayer()
-    {
-        float duration = 0.5f; // カメラが戻る時間（調整可能）
-        float elapsed = 0f;
-
-        Vector3 startPos = transform.position;
-        // `cx, cy, cz` をここで計算
-        var deg = Mathf.Deg2Rad;
-        var cx = Mathf.Sin(nowRotAngle * deg) * Mathf.Cos(nowHeightAngle * deg) * Distance;
-        var cz = -Mathf.Cos(nowRotAngle * deg) * Mathf.Cos(nowHeightAngle * deg) * Distance;
-        var cy = Mathf.Sin(nowHeightAngle * deg) * Distance;
-
-
-        Vector3 targetPos = nowPos + new Vector3(cx, cy, cz);
-
-        while (elapsed < duration)
-        {
-            transform.position = Vector3.Lerp(startPos, targetPos, elapsed / duration);
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-
-        transform.position = targetPos; // 最終的にプレイヤーの追従カメラへ戻す
-    }
-
-    IEnumerator SmoothTransitionToPlayer()
-    {
-        float transitionDuration = 1.0f;
-
-        Vector3 initialPosition = transform.position; // **解除直後のカメラ位置**
-        Vector3 offsetBehindPlayer = new Vector3(0, 2, -5);
-        Vector3 desiredPosition = nowPos + offsetBehindPlayer;
-        Quaternion desiredRotation = Quaternion.LookRotation(TargetObject.transform.position - desiredPosition);
-
-        float elapsedTime = 0f;
-        while (elapsedTime < transitionDuration)
-        {
-            transform.position = Vector3.Lerp(initialPosition, desiredPosition, elapsedTime / transitionDuration);
-            transform.rotation = Quaternion.Slerp(transform.rotation, desiredRotation, elapsedTime / transitionDuration);
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        Debug.Log("ロックオン解除: カメラ移行完了、通常追従モードへ");
-    }
-
-
-
-
-
-    IEnumerator SmoothTransitionToPreviousView()
-    {
-        float transitionDuration1 = 1.0f; // **背後へ移動する時間（秒）**
-        float transitionDuration2 = 1.0f; // **元の視点へ戻る時間（秒）**
-
-        var deg = Mathf.Deg2Rad;
-        var cx = Mathf.Sin(nowRotAngle * deg) * Mathf.Cos(nowHeightAngle * deg) * Distance;
-        var cz = -Mathf.Cos(nowRotAngle * deg) * Mathf.Cos(nowHeightAngle * deg) * Distance;
-        var cy = Mathf.Sin(nowHeightAngle * deg) * Distance;
-
-        Vector3 offsetBehindPlayer = new Vector3(cx, cy, cz);
-        Vector3 desiredPosition = nowPos + offsetBehindPlayer;
-        Quaternion desiredRotation = Quaternion.LookRotation(TargetObject.transform.position - desiredPosition);
-
-        // **① 徐々にプレイヤー背後へ移動**
-        float elapsedTime = 0f;
-        while (elapsedTime < transitionDuration1)
-        {
-            transform.position = Vector3.Lerp(preRockonPosition, desiredPosition, elapsedTime / transitionDuration1);
-            transform.rotation = Quaternion.Slerp(preRockonRotation, desiredRotation, elapsedTime / transitionDuration1);
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        // **② 一定時間後、元のロックオン前視点へ戻る**
-        elapsedTime = 0f;
-        while (elapsedTime < transitionDuration2)
-        {
-            transform.position = Vector3.Lerp(desiredPosition, preRockonPosition, elapsedTime / transitionDuration2);
-            transform.rotation = Quaternion.Slerp(desiredRotation, preRockonRotation, elapsedTime / transitionDuration2);
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        // **③ その後、通常のカメラ追従モードへ**
-        isTransitioning = false;
-        Debug.Log("カメラ移行完了、通常追従モードへ");
-    }
-
-    IEnumerator SmoothTransitionToFollowMode()
-    {
-        float transitionDuration = 1.0f; // **背後へ移動する時間（秒）**
-
-        var deg = Mathf.Deg2Rad;
-        var cx = Mathf.Sin(nowRotAngle * deg) * Mathf.Cos(nowHeightAngle * deg) * Distance;
-        var cz = -Mathf.Cos(nowRotAngle * deg) * Mathf.Cos(nowHeightAngle * deg) * Distance;
-        var cy = Mathf.Sin(nowHeightAngle * deg) * Distance;
-
-        Vector3 offsetBehindPlayer = new Vector3(cx, cy, cz);
-        Vector3 desiredPosition = nowPos + offsetBehindPlayer;
-        Quaternion desiredRotation = Quaternion.LookRotation(TargetObject.transform.position - desiredPosition);
-
-        // **① 徐々にプレイヤー背後へ移動**
-        float elapsedTime = 0f;
-        while (elapsedTime < transitionDuration)
-        {
-            transform.position = Vector3.Lerp(preRockonPosition, desiredPosition, elapsedTime / transitionDuration);
-            transform.rotation = Quaternion.Slerp(preRockonRotation, desiredRotation, elapsedTime / transitionDuration);
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        // **② 一定時間後、通常のプレイヤー追従モードへ**
-        isFollowingPlayer = true;
-        Debug.Log("カメラ移行完了、通常追従モードへ");
-    }
-
-    IEnumerator SmoothLockon()
-    {
-        float transitionDuration = 0.5f;
-
-        Vector3 initialPosition = transform.position; // **ロックオン開始時のカメラ位置**
-        Vector3 offsetBehindPlayer = new Vector3(0, 2, -5); // **プレイヤーの背後に固定**
-        Vector3 targetPosition = TargetObject.transform.position + offsetBehindPlayer;
-        Quaternion initialRotation = transform.rotation;
-        Quaternion targetRotation = Quaternion.LookRotation(RockonTarget.transform.position - targetPosition);
-
-        float elapsedTime = 0f;
-        while (elapsedTime < transitionDuration)
-        {
-            // **カメラの位置は維持しつつ、向きのみ変更**
-            transform.position = targetPosition;
-            transform.rotation = Quaternion.Slerp(initialRotation, targetRotation, elapsedTime / transitionDuration);
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        Debug.Log("ロックオン: カメラ移行完了、ターゲット追従モード開始");
-    }
-
-
-
-
-
-    IEnumerator HideCameraDuringTransition()
-    {
-        float fadeDuration = 0.5f; // **カメラを一時的に消す時間**
-
-        // **カメラをフェードアウト（または一時的に遠くへ移動）**
-        camera.enabled = false; // **カメラを非表示**
-        yield return new WaitForSeconds(fadeDuration);
-
-        // **背後へ移動**
-        Vector3 offsetBehindPlayer = new Vector3(0, 2, -5);
-        transform.position = TargetObject.transform.position + offsetBehindPlayer;
-        transform.rotation = Quaternion.LookRotation(TargetObject.transform.position - transform.position);
-
-        yield return new WaitForSeconds(fadeDuration);
-
-        // **カメラをフェードイン（または視界内へ復帰）**
-        camera.enabled = true; // **カメラを表示**
-        isTransitioning = false;
-
-        Debug.Log("カメラ移行完了、通常追従モードへ");
-    }
-
-    IEnumerator SmoothLockonRoutine()
-    {
-        // カメラ移動前に今の位置と回転を保存
-        Vector3 currentPosition = transform.position;
-        Quaternion currentRotation = transform.rotation;
-
-        // プレイヤー背後を基準に敵を見る角度へ移動
-        Vector3 offset = new Vector3(0, 2, -5);
-        Vector3 desiredPos = TargetObject.transform.position + offset;
-        Quaternion lookAtEnemy = Quaternion.LookRotation(RockonTarget.transform.position - desiredPos);
-
-        Quaternion startRotation = transform.rotation;
-        Quaternion targetRotation = Quaternion.LookRotation(RockonTarget.transform.position - transform.position);
-
-        float t = 0;
-        while (t < 0.1f)
-        {
-            transform.rotation = Quaternion.Slerp(startRotation, targetRotation, t / 0.3f);
-            t += Time.deltaTime;
-            yield return null;
-        }
-
-
-
-        transform.position = desiredPos;
-        transform.rotation = lookAtEnemy;
-
-        // 最後にロックオンを有効にする
-        rock = true;
-        isLockonTransitioning = false;
-
-
-
-        Debug.Log("ロックオン処理完了");
-    }
-
-    IEnumerator WaitThenStartLockon()
-    {
-        yield return null; // 1フレーム待つ（視点ジャンプを見せない）
-        yield return new WaitForEndOfFrame(); // 念押しで固定してから回転開始
-
-        StartCoroutine(SmoothLockonRoutine());
-    }
-
-
-
-
-
-
+   
 }

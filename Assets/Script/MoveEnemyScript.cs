@@ -198,11 +198,7 @@ public class MoveEnemyScript : MonoBehaviour
             animator.ResetTrigger("Attack");
             animator.ResetTrigger("Attack2");
             animator.ResetTrigger("Attack3");
-            //if (!playerscript.IsJustAvoidAttack())
-            //{
-            //    HitStopScript.instance.StartHitStop(0.1f);
-            //}
-            HitStopScript.instance.StartHitStop(1.0f);
+            
             animator.SetTrigger("Damage");
             navMeshAgent.isStopped = true;
         }
@@ -213,6 +209,7 @@ public class MoveEnemyScript : MonoBehaviour
             animator.ResetTrigger("Attack");
             animator.ResetTrigger("Attack2");
             animator.ResetTrigger("Attack3");
+            HitStopScript.instance.StartHitStop(0.5f);
             animator.SetTrigger("KnockBack");
             navMeshAgent.isStopped = true;
         }
@@ -264,9 +261,9 @@ public class MoveEnemyScript : MonoBehaviour
             //さらに体力を減らす処理
             SetState(EnemyState.Damage);
             handCollider.enabled = false;
-            var damageEffectIns = Instantiate<GameObject>(damageEffect);
-            damageEffectIns.transform.position = attackedPlace;
-            Destroy(damageEffectIns, 1f);
+            //var damageEffectIns = Instantiate<GameObject>(damageEffect);
+            //damageEffectIns.transform.position = attackedPlace;
+            //Destroy(damageEffectIns, 1f);
             enemyStatus.SetHp(enemyStatus.GetHp() - damage);
          
             navMeshAgent.isStopped = true;
@@ -289,9 +286,9 @@ public class MoveEnemyScript : MonoBehaviour
             //さらに体力を減らす処理
             SetState(EnemyState.KnockBack);
             handCollider.enabled = false;
-            var damageEffectIns = Instantiate<GameObject>(damageEffect);
-            damageEffectIns.transform.position = attackedPlace;
-            Destroy(damageEffectIns, 1f);
+            //var damageEffectIns = Instantiate<GameObject>(damageEffect);
+            //damageEffectIns.transform.position = attackedPlace;
+            //Destroy(damageEffectIns, 1f);
             enemyStatus.SetHp(enemyStatus.GetHp() - damage);
            
             //ノックバック
@@ -537,6 +534,11 @@ public class MoveEnemyScript : MonoBehaviour
     public void EndAttack()
     {
         SetState(EnemyState.Walk);
+    }
+
+    public bool IsDead()
+    {
+        return isDead;
     }
 
 

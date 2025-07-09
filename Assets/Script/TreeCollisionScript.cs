@@ -30,17 +30,7 @@ public class TreeCollisionScript : MonoBehaviour
             terrain.terrainData.treeInstances = trees.ToArray();
             Destroy(terrain);
         }
-        //if (other.tag == "Boss")
-        //{
-        //    var trollScript = other.GetComponentInParent<TrollScript>();
-        //    if (Collisiontimer < 100)
-        //    {
-        //        trollScript.SetState(TrollScript.TrollState.idle);
-        //        Collisiontimer++;
-        //    }
-
-        //}
-
+      
 
     }
     public void OnTriggerExit(Collider other)

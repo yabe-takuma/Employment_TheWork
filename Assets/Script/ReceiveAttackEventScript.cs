@@ -161,20 +161,12 @@ public class ReceiveAttackEventScript : MonoBehaviour
         }
 
     }
-    //メイスの振りかざした地面にパーティクルを出す
-    public void BrandishPoint()
-    {
-        //Instantiate(brandish, new Vector3(groundEffectPoint.position.x, groundEffectPoint.position.y, groundEffectPoint.position.z), shockwavePrefab.transform.rotation);
-    }
-
+   
     public void WaveAttack()
     {
-        //Instantiate(wave, wavePoint.position, wave.transform.rotation);
         var waveInstance = Instantiate(wave, wavePoint.position, wave.transform.rotation);
         waveInstance.transform.parent = null; // 親子関係を解除
                                               
-
-
         Instantiate(trampling, tramplingPoint.transform.position, trampling.transform.rotation);
         Debug.Log("波");
     }

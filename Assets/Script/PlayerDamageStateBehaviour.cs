@@ -28,7 +28,6 @@ public class PlayerDamageStateBehaviour : StateMachineBehaviour
         //アニメーションが終わったらすぐに待機状態に戻る処理
         processCharaAnimEvent.EndDamage();
         playerScript.OffDamage();
-        //playerScript.PlayerSpeedOn();
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

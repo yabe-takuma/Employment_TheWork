@@ -18,8 +18,6 @@ public class ItemScript : MonoBehaviour
     void Start()
     {
         searchItem = GameObject.FindWithTag("SearchItemArea").GetComponent<SearchItemScript>();
-        //アイテムが登場したら消す処理スタート
-        //StartCoroutine(DeleteItem());
     }
 
     public Item GetItem()
@@ -27,13 +25,7 @@ public class ItemScript : MonoBehaviour
         return item;
     }
 
-    //指定時間が経過したらアイテムを削除
-    IEnumerator DeleteItem()
-    {
-        yield return new WaitForSeconds(deleteTime);
-        searchItem.DeleteItem(this.gameObject);
-        Destroy(this.gameObject);
-    }
+   
 
     // Update is called once per frame
     void Update()
