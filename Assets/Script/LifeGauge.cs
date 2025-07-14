@@ -23,10 +23,11 @@ public class LifeGauge : MonoBehaviour
         //現在の体力数分のライフゲージを作成
         for (int i=0;i<hp;i++)
         {
-            if (receiveAttackEventScript.GetIsStartAnimation())
-            {
-                Instantiate<GameObject>(hpObj, transform);
-            }
+            //if (receiveAttackEventScript.GetIsStartAnimation())
+            //{
+            //    Instantiate<GameObject>(hpObj, transform);
+            //}
+            Instantiate<GameObject>(hpObj, transform);
         }
        
         Hp = hp;
@@ -37,7 +38,7 @@ public class LifeGauge : MonoBehaviour
         for (int i = 0; i < damage; i++)
         {
             //最後のライフゲージを削除
-            Destroy(transform.GetChild(i).gameObject);
+            Destroy(transform.GetChild(transform.childCount - 1).gameObject);
         }
     }
 

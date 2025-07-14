@@ -92,8 +92,9 @@ public class TrollScript : MonoBehaviour
     //突進時間
     [SerializeField]
     private int chargetimer;
+    //何の攻撃をしているかを他のスクリプトに分かるようにする処理
     [SerializeField]
-    private bool Isshockwave, Isinstallation,Isexplocion,Iscontinuous;
+    private bool Isshockwave, Isinstallation,Isexplocion,Iscontinuous, isWave;
 
     [SerializeField]
     private bool isabnormal;  //状態異常になったかのトリガー
@@ -123,6 +124,7 @@ public class TrollScript : MonoBehaviour
     private HitStopScript hitStopScript;
     [SerializeField]
     private Animator playeranimator;
+   
 
     // Start is called before the first frame update
     void Start()
@@ -136,8 +138,8 @@ public class TrollScript : MonoBehaviour
         timeline[1].Stop();
         loopcount = 0;
         animator.SetTrigger("ShockwaveAttack");
-        Time.timeScale = 0;
-        animator.updateMode = AnimatorUpdateMode.UnscaledTime;
+       // Time.timeScale = 0;
+       // animator.updateMode = AnimatorUpdateMode.UnscaledTime;
       
     }
 
@@ -227,6 +229,7 @@ public class TrollScript : MonoBehaviour
             Isinstallation = false;
             Isexplocion = false;
             Iscontinuous = false;
+            isWave = false;
             Debug.Log("アイドル");
         }
         else if(trollState == TrollState.patrol)
@@ -255,6 +258,7 @@ public class TrollScript : MonoBehaviour
             Isinstallation = false;
             Isexplocion = false;
             Iscontinuous = false;
+            isWave = false;
             Debug.Log("衝撃波攻撃");
         }
         else if(trollState == TrollState.charge)
@@ -285,7 +289,7 @@ public class TrollScript : MonoBehaviour
             Isinstallation = true;
             Isexplocion = false;
             Iscontinuous = false;
-           
+            isWave = false;
             Debug.Log("設置物配置攻撃");
         }
         else if (trollState == TrollState.explocion)
@@ -300,7 +304,7 @@ public class TrollScript : MonoBehaviour
             Isinstallation = false;
             Isexplocion = true;
             Iscontinuous = false;
-            
+            isWave = false;
             Debug.Log("爆発攻撃");
         }
         else if(trollState==TrollState.wave)
@@ -312,7 +316,7 @@ public class TrollScript : MonoBehaviour
             Isinstallation = false;
             Isexplocion = false;
             Iscontinuous = false;
-           
+            isWave = true;
             Debug.Log("波攻撃");
         }
 
@@ -327,7 +331,7 @@ public class TrollScript : MonoBehaviour
             Isinstallation = false;
             Isexplocion = false;
             Iscontinuous = true;
-            
+            isWave = false;
             Debug.Log("波攻撃");
         }
 
@@ -563,6 +567,11 @@ public class TrollScript : MonoBehaviour
         return Iscontinuous;
     }
 
+    public bool GetIsWave()
+    {
+        return isWave;
+    }
+
     public Quaternion GetRotation()
     {
         return transform.rotation;
@@ -610,7 +619,7 @@ public class TrollScript : MonoBehaviour
 
     void TrollUpdate()
     {
-        if (trollStatus.GetHp() <= 0)
+        if (trollStatus.GetHp() <= 0&&this!=null)
         {
             Time.timeScale = 0.2f;
         }

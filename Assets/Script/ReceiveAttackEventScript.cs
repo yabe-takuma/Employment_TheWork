@@ -171,21 +171,21 @@ public class ReceiveAttackEventScript : MonoBehaviour
         Debug.Log("波");
     }
 
-    public void StartAnimation()
-    {
-        Time.timeScale = 1.0f;
-        animator.updateMode = AnimatorUpdateMode.Normal;
-        cameraScript.StartCameraEnd();
-        gameStartText.SetActive(false);
-        isStartAnimation = true;
-        Debug.Log("怒っている");
-    }
+    //public void StartAnimation()
+    //{
+    //    Time.timeScale = 1.0f;
+    //    animator.updateMode = AnimatorUpdateMode.Normal;
+    //    cameraScript.StartCameraEnd();
+    //    gameStartText.SetActive(false);
+    //    isStartAnimation = true;
+    //    Debug.Log("怒っている");
+    //}
 
-    public void StartAnimationEnd()
-    {
-        cameraScript.StartCameraEnd();
-        Debug.Log("怒っている終了");
-    }
+    //public void StartAnimationEnd()
+    //{
+    //    cameraScript.StartCameraEnd();
+    //    Debug.Log("怒っている終了");
+    //}
 
     // Update is called once per frame
     void Update()

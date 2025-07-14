@@ -23,6 +23,7 @@ public class MyStatus : MonoBehaviour
         this.hp = hp;
         //体力ゲージに反映
         lifeGauge.SetLifeGauge(hp);
+        Debug.Log("HPアイコン作成");
     }
     //他のスクリプトに参照するための関数
     public int GetHp()

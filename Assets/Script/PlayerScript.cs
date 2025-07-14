@@ -138,7 +138,7 @@ public class PlayerScript : MonoBehaviour
     private Renderer playerRenderer;
     [SerializeField]
     private int blinkCount = 5;
-
+    [SerializeField]
     private bool isPause;
     private bool pauseEnded;
     private int pauseCooldown;
@@ -147,8 +147,10 @@ public class PlayerScript : MonoBehaviour
     private bool isGameClear;  //ゲームクリアかどうかのフラグ
 
     private Vector3 fixedPosition;
+    [SerializeField]
+    private Renderer[] renderers;
 
-    [System.Serializable]
+   [System.Serializable]
     public class MoveSettings
     {
         public float moveSpeed = 5.0f;
@@ -176,6 +178,13 @@ public class PlayerScript : MonoBehaviour
     [SerializeField]
     private ChaseCharaScript chaseCharaScript;
 
+    void Awake()
+    {
+        moveSettings = new MoveSettings(); 
+    }
+
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -190,7 +199,7 @@ public class PlayerScript : MonoBehaviour
         gameclearUI.SetActive(false);
         isGameOver = false;
         isGameClear = false;
-        moveSettings = new MoveSettings();
+        //moveSettings = new MoveSettings();
         pauseCooldown = 12;
         fixedPosition = transform.position;
 
@@ -214,6 +223,12 @@ public class PlayerScript : MonoBehaviour
         playerRenderer = GetComponentInChildren<Renderer>();
 
         myStatus.SetHp(myStatus.GetHp());
+
+        isInvincible = false;
+
+       
+        
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -230,6 +245,8 @@ public class PlayerScript : MonoBehaviour
         {
             if (isInvincible)
                 return; // 無敵中は無視
+
+            isDamage = true;
 
             state = MyState.Damage;
             isJustAvoid = true;
@@ -263,6 +280,7 @@ public class PlayerScript : MonoBehaviour
         {
             if (isInvincible)
                 return; // 無敵中は無視
+
 
             state = MyState.Damage;
             isJustAvoid = true;
@@ -301,7 +319,7 @@ public class PlayerScript : MonoBehaviour
             state = MyState.Attack;
             move = Vector3.zero;
             rb.velocity = new Vector3(0, rb.velocity.y, 0);
-            
+           
             if (isJustAvoidAttack)
             {
                 isJustAvoidMove = true;
@@ -575,11 +593,10 @@ public class PlayerScript : MonoBehaviour
     public void OnAttack(InputAction.CallbackContext context)
     {
         //地面にいて武器を持っていたら攻撃する処理
-        if (context.started && !animator.IsInTransition(0) && !animator.GetCurrentAnimatorStateInfo(0).IsName("Jump") && changeequipscript.GetEquipment() >= 0&&pauseCooldown > 11)
+        if (context.started && !animator.IsInTransition(0) && !animator.GetCurrentAnimatorStateInfo(0).IsName("Jump") && changeequipscript.GetEquipment() >= 0/*&&pauseCooldown > 11*/)
         {
             SetState(MyState.Attack);
         }
-        
     }
 
     public void OnSkillAttack(InputAction.CallbackContext context)
@@ -680,8 +697,8 @@ public class PlayerScript : MonoBehaviour
 
     void Playerhauding()
     {
-       
-        if(IsGrounded())
+
+        if (IsGrounded())
         {
 
             isJump = false;
@@ -702,7 +719,7 @@ public class PlayerScript : MonoBehaviour
 
         if (troll == null)
         {
-            gameExplanationScript.GameClearText();
+            //gameExplanationScript.GameClearText();
             isGameClear = true;
         }
         UpdateEnemyPositions();
@@ -783,22 +800,19 @@ public class PlayerScript : MonoBehaviour
        
         fixedPosition = transform.position; // フレーム更新
 
-      
 
-        if(camera3D.IsStartAnimation())
-        {
-            myStatus.SetHp(myStatus.GetHp());
-        }
+
+        //myStatus.SetHp(myStatus.GetHp());
 
         Debug.Log($"CanMove(): {CanMove()}"); // 移動許可が適切に判定されているか確認
 
        
 
-        if (isDamage)
-        {
+        //if (isDamage)
+        //{
 
-            StartCoroutine(StartInvincibilityBlink(3f)); // 無敵3秒間点滅
-        }
+        //    StartCoroutine(StartInvincibilityBlink(3f)); // 無敵3秒間点滅
+        //}
 
       
 
@@ -887,7 +901,7 @@ public class PlayerScript : MonoBehaviour
     public void StopPlayerMotion()
     {
         isPause = true;
-        pauseCooldown = 0;
+       // pauseCooldown = 0;
     }
 
     public void StartPlayerMotion()
@@ -965,7 +979,7 @@ public class PlayerScript : MonoBehaviour
     {
         isInvincible = true;
 
-        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+        renderers = GetComponentsInChildren<Renderer>();
         Material[] materials = new Material[renderers.Length];
         Color[] originalColors = new Color[renderers.Length];
 

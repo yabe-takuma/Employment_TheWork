@@ -63,6 +63,9 @@ public class GameExplanationScript : MonoBehaviour
     private bool isChest;
     [SerializeField]
     private List<GameObject> weaponsUI;
+    //次のステージに行くためのオブジェクトを出現させる
+    [SerializeField]
+    private GameObject nextStageObject;
 
     // Start is called before the first frame update
     void Start()
@@ -70,7 +73,7 @@ public class GameExplanationScript : MonoBehaviour
         isExplanation = false;
         islevelup = false;
         isAxeExplocion = false;
-
+      
     }
 
     // Update is called once per frame
@@ -232,7 +235,14 @@ public class GameExplanationScript : MonoBehaviour
             explanationsUI[3].SetActive(false);
         }
 
+       
+
+     
+      
     }
+
+  
+
     //敵が一体倒されて斧を拾うと表示されるUIをキーやボタンを押したら消す処理
     private IEnumerator ItemCoroutine()
     {
