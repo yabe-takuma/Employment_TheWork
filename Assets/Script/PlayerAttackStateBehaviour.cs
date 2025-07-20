@@ -41,7 +41,7 @@ public class PlayerAttackStateBehaviour : StateMachineBehaviour
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         //攻撃する時アニメーション中だったら次の攻撃に行く処理
-        if(Input.GetKey(KeyCode.Space)/*&&attackCooltime>=10*/)
+        if(Input.GetKey(KeyCode.Space)&&attackCooltime>=10)
         {
             animator.SetBool("Attack", true);
             processCharaAnimEvent.EndWeponCollision();

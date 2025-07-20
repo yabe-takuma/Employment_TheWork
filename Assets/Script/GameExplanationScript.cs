@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameExplanationScript : MonoBehaviour
@@ -35,7 +36,8 @@ public class GameExplanationScript : MonoBehaviour
 
     [SerializeField]
     private List<GameObject> chestsUI;
-    private bool isAxeExplocion;
+    [SerializeField]
+    private NormalAxeData normalAxeData;
     //キーボードかコントローラーを入力しているか分ける処理
     [SerializeField]
     private List<GameObject> explanationsUI;
@@ -72,8 +74,11 @@ public class GameExplanationScript : MonoBehaviour
     {
         isExplanation = false;
         islevelup = false;
-        isAxeExplocion = false;
-      
+        if (SceneManager.GetActiveScene().name == "SampleScene")
+        {
+            normalAxeData.Initialize();
+        }
+        isKeyInput = true;
     }
 
     // Update is called once per frame
@@ -83,7 +88,7 @@ public class GameExplanationScript : MonoBehaviour
     }
     public bool GetIsAxeExplocion()
     {
-        return isAxeExplocion;
+        return normalAxeData.isAxeExplocion;
     }
 
     public void OnController()
@@ -217,13 +222,14 @@ public class GameExplanationScript : MonoBehaviour
             isInput = false;
             foreach (KeyCode code in Enum.GetValues(typeof(KeyCode)))
             {
-                if (Input.GetKeyDown(code) && isKeyInput)
+                if (Input.GetKeyDown(code)/* && isKeyInput*/)
                 {
                     explanationsUI[0].SetActive(true);
                     explanationsUI[1].SetActive(true);
                     explanationsUI[2].SetActive(false);
                     explanationsUI[3].SetActive(false);
                     isInput = false;
+                   
                 }
             }
         }
@@ -235,7 +241,10 @@ public class GameExplanationScript : MonoBehaviour
             explanationsUI[3].SetActive(false);
         }
 
-       
+       if(playerScript.SetDeadCaunter()>=5)
+       {
+            nextStageObject.SetActive(true);
+       }
 
      
       
@@ -249,7 +258,7 @@ public class GameExplanationScript : MonoBehaviour
         Time.timeScale = 0;
 
         LevelUpUI.SetActive(true);
-        isAxeExplocion = true;
+        normalAxeData.isAxeExplocion = true;
         Debug.Log("レベルが2になった");
 
        

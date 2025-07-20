@@ -56,9 +56,13 @@ public class EnemyGeneretor : MonoBehaviour
     private GameObject fireEffect;  //炎のエフェクトを敵に渡すため
 
     [SerializeField]
-    private GameObject collisionUI;
+    private GameObject collisionUI; //宝箱を開けた時のUIのデータをプレハブ化した宝箱に送るための変数
 
-   
+    [SerializeField]
+    private GameObject normalAxeUI;
+
+    [SerializeField]
+    private GameObject deadEffect;
 
     // Start is called before the first frame update
     void Start()
@@ -66,6 +70,7 @@ public class EnemyGeneretor : MonoBehaviour
         enemycaunter = 0;
         InstatiatePos();
         InstatiateRotate();
+        
     }
     // Update is called once per frame
     void Update()
@@ -113,6 +118,7 @@ public class EnemyGeneretor : MonoBehaviour
                 chestScript.ChestCollisionUI(collisionUI);
                 chestScript.GetChangeEquipScript(changeEquipScript);
                 chestscaunter += 1;
+                chestScript.SetNormalAxeUI(normalAxeUI);
             }
 
         }
@@ -130,6 +136,7 @@ public class EnemyGeneretor : MonoBehaviour
                 moveEnemyScript.SetAxeSword(axe);
                 moveEnemyScript.SetMyItem(myItemScript);
                 moveEnemyScript.SetFireEffect(fireEffect);
+                moveEnemyScript.SetDeadEffect(deadEffect);
                 playerScript.SetEnemyScript(moveEnemyScript);
                 enemycaunter += 1;
             }

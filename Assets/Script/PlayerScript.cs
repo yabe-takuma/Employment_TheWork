@@ -583,11 +583,17 @@ public class PlayerScript : MonoBehaviour
 
     public void OnMove(InputAction.CallbackContext context)
     {
-        //攻撃以外で移動するようにする処理
-        if (state != MyState.Attack || state != MyState.SkillAttack)
+        // 攻撃とスキル攻撃中は移動しない
+        if (state != MyState.Attack && state != MyState.SkillAttack)
         {
             move = new Vector3(context.ReadValue<Vector2>().x, 0f, context.ReadValue<Vector2>().y);
         }
+        else
+        {
+            move = Vector3.zero; // 入力無視して止める
+        }
+
+
     }
 
     public void OnAttack(InputAction.CallbackContext context)

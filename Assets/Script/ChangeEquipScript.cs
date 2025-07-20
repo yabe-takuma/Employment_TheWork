@@ -2,6 +2,7 @@ using RPGCharacterAnims.Lookups;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ChangeEquipScript : MonoBehaviour
 {
@@ -25,7 +26,7 @@ public class ChangeEquipScript : MonoBehaviour
     private ChestScript chestScript;  //宝箱を開けた数に応じて使える武器を設定するため
 
     [SerializeField]
-    private int chestcounter;
+    private ChestData chestData;
     [SerializeField]
     private GameExplanationScript gameExplanationScript;
     //武器の情報のみ(生成はしない)
@@ -37,6 +38,8 @@ public class ChangeEquipScript : MonoBehaviour
         return equipment;
     }
 
+  
+
     // Start is called before the first frame update
     void Start()
     {
@@ -46,6 +49,10 @@ public class ChangeEquipScript : MonoBehaviour
         //初期装備設定
         equipment = 0;
         StartWepon();
+        if (SceneManager.GetActiveScene().name == "SampleScene")
+        {
+            chestData.Initialize();
+        }
     }
 
     // Update is called once per frame
@@ -69,22 +76,22 @@ public class ChangeEquipScript : MonoBehaviour
             equipment++;
         }
         //炎の剣を持っていなかったら数字を加算して炎の剣を持たないようにする処理
-        if (equipment == 2 && chestcounter == 0) 
+        if (equipment == 2 && chestData.chestCounter == 0) 
         {
             equipment++;
         }
         //水の剣を持っていなかったら数字を加算して水の剣を持たないようにする処理
-        if (equipment == 3 && chestcounter <= 1) 
+        if (equipment == 3 && chestData.chestCounter <= 1) 
         {
             equipment++;
         }
         //2つ目の斧を持っていなかったら数字を加算して2つ目の斧を持たないようにする処理
-        if (equipment == 4 && chestcounter <= 2)
+        if (equipment == 4 && chestData.chestCounter <= 2)
         {
             equipment++;
         }
         //3つ目の斧を持っていなかったら数字を加算して3つ目の斧を持たないようにする処理
-        if (equipment == 5 && chestcounter <= 3)
+        if (equipment == 5 && chestData.chestCounter <= 3)
         {
             equipment++;
         }
@@ -172,7 +179,7 @@ public class ChangeEquipScript : MonoBehaviour
     //宝箱を開けた回数を記録するための関数
     public void SetChestCounter(int counter)
     {
-        chestcounter = counter;
+        chestData.chestCounter = counter;
     }
 
    

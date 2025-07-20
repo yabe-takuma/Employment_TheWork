@@ -94,6 +94,7 @@ public class MoveEnemyScript : MonoBehaviour
     [SerializeField]
     private GameObject fireeffect;  //炎のエフェクトが格納された変数
     private GameObject fireEffectIns;
+    private GameObject deadEffect;
 
     private bool isDead;
     //敵に武器を分けるために必要な変数
@@ -103,6 +104,8 @@ public class MoveEnemyScript : MonoBehaviour
     //ジャスト回避出来る時間
     [SerializeField]
     private int justAvoidCaunter;
+    [SerializeField]
+    private TextMeshProNumber textMeshProNumber;
 
     // Start is called before the first frame update
     void Start()
@@ -122,6 +125,7 @@ public class MoveEnemyScript : MonoBehaviour
         SetState(EnemyState.Wait);
         isDead = false;
         justAvoidCaunter = 0;
+        textMeshProNumber= GameObject.Find("EnemyDeadUI").GetComponent<TextMeshProNumber>();
     }
 
     // Update is called once per frame
@@ -219,6 +223,7 @@ public class MoveEnemyScript : MonoBehaviour
             animator.SetTrigger("Dead");
             Destroy(this.gameObject, 3f);
             Destroy(fireEffectIns, 3f);
+            StartCoroutine(DeadEffectCoroutine());
             velocity = Vector3.zero;
             navMeshAgent.speed = 0f;
             navMeshAgent.isStopped = true;
@@ -307,6 +312,7 @@ public class MoveEnemyScript : MonoBehaviour
         //倒す行動とプレイヤーに何体倒したか分かるようにする
         SetState(EnemyState.Dead);
         playerscript.DeadCaunter(1);
+        textMeshProNumber.SubtractDeadCaunter(1);
         if (playerscript.SetDeadCaunter() == 1)
         {
             GameObject Axe=Instantiate<GameObject>(axe, transform.position+Vector3.up, Quaternion.identity);
@@ -326,6 +332,10 @@ public class MoveEnemyScript : MonoBehaviour
     public void SetDamageEffect(GameObject gameobject)
     {
         damageEffect = gameobject;
+    }
+    public void SetDeadEffect(GameObject gameObject)
+    {
+        deadEffect = gameObject;
     }
     //他のスクリプトからもらってきたデータを格納するための関数
     public void SetTrollScript(TrollScript trollscript)
@@ -528,6 +538,14 @@ public class MoveEnemyScript : MonoBehaviour
         }
 
 
+    }
+
+    private IEnumerator DeadEffectCoroutine()
+    {
+        yield return new WaitForSecondsRealtime(3.0f);
+        GameObject DeadEffect = Instantiate(deadEffect, transform.position, transform.rotation);
+
+        Destroy(DeadEffect, 1f);
     }
 
     // 攻撃アニメーションイベントやタイミングで呼び出す

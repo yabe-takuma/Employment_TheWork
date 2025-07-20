@@ -20,6 +20,10 @@ public class ProcessCharaAnimEventScript : MonoBehaviour
     [SerializeField]
     private bool isWeponCollision;
 
+    [SerializeField]
+    private GameObject swordTrajectory;
+    private GameObject emptySwordTrajectory;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -37,7 +41,7 @@ public class ProcessCharaAnimEventScript : MonoBehaviour
             animator.applyRootMotion = false;
             Debug.Log("攻撃開始");
         }
-       
+        emptySwordTrajectory=Instantiate(swordTrajectory, equip.transform.position, equip.transform.rotation);
     }
 
     public void AttackEnd()
@@ -47,7 +51,7 @@ public class ProcessCharaAnimEventScript : MonoBehaviour
         {
             weaponCollider.enabled = false;
         }
-        
+        Destroy(emptySwordTrajectory);
     }
     //アニメーションが終わったら待機状態に戻る関数
     public void StateEnd()

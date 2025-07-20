@@ -120,6 +120,15 @@ public class CameraScript : MonoBehaviour
     [SerializeField]
     private MyStatus myStatus;
 
+    private bool isWarpExplanation;
+
+    private float followSpeed = 5.0f;
+    //ワープが出現したか検知するための変数
+    [SerializeField]
+    private GameObject nextWarpStage;
+    //ワープが出現したらカメラを別の位置に移動するための変数
+    [SerializeField]
+    private GameObject warpCameraPosition;
     //ボスのオブジェクトがnullかどうかを確認するための変数
     [SerializeField]
     private GameObject troll;
@@ -299,10 +308,10 @@ public class CameraScript : MonoBehaviour
         var cy = Mathf.Sin(nowHeightAngle * deg) * Distance;
 
         //ロックオンじゃない時のカメラの座標
-        if (!rock && isStartAnimation&&!justUnlocked)
+        if (!rock /*&& !isStartAnimation&&!justUnlocked*/)
         {
            
-            float followSpeed = 5.0f;
+           
 
             if (skipLerpOnce)
             {
@@ -311,7 +320,7 @@ public class CameraScript : MonoBehaviour
                 transform.rotation = Quaternion.LookRotation(nowPos - transform.position);
                 skipLerpOnce = false; // これで次フレームから通常処理に戻る
             }
-            else
+            else 
             {
                 transform.position = Vector3.Lerp(transform.position, nowPos + new Vector3(cx, cy, cz), Time.deltaTime * followSpeed);
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(nowPos - transform.position), Time.deltaTime * followSpeed);
@@ -335,6 +344,11 @@ public class CameraScript : MonoBehaviour
             AdjustCamera();
             //transform.position = Vector3.Lerp(transform.position, nowPos + new Vector3(cx, cy, cz), Time.deltaTime * followSpeed);
             //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(nowPos - transform.position), Time.deltaTime * followSpeed);
+        }
+
+        if(nextWarpStage.activeSelf&&!isWarpExplanation)
+        {
+            StartCoroutine(WarpExplanationCoroutine());
         }
       
         //ロックオンの時アイコンを表示する関数
@@ -441,6 +455,21 @@ public class CameraScript : MonoBehaviour
 
 
 
+    }
+
+    IEnumerator WarpExplanationCoroutine()
+    {
+        transform.position = warpCameraPosition.transform.position;
+        transform.rotation = warpCameraPosition.transform.rotation;
+        yield return new WaitForSecondsRealtime(3.0f);
+        isWarpExplanation = true;
+
+        var deg = Mathf.Deg2Rad;
+        var cx = Mathf.Sin(nowRotAngle * deg) * Mathf.Cos(nowHeightAngle * deg) * Distance;
+        var cz = -Mathf.Cos(nowRotAngle * deg) * Mathf.Cos(nowHeightAngle * deg) * Distance;
+        var cy = Mathf.Sin(nowHeightAngle * deg) * Distance;
+        transform.position = Vector3.Lerp(transform.position, nowPos + new Vector3(cx, cy, cz), Time.deltaTime * followSpeed);
+        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(nowPos - transform.position), Time.deltaTime * followSpeed);
     }
 
 

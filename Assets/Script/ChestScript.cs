@@ -25,6 +25,8 @@ public class ChestScript : MonoBehaviour
     [SerializeField]
     private GameObject collisionUI;
     [SerializeField]
+    private GameObject normalAxeUI;
+    [SerializeField]
     private int opentimer;
 
     private bool isKey;
@@ -68,6 +70,11 @@ public class ChestScript : MonoBehaviour
     public void ChestCollisionUI(GameObject chestscollisionUI)
     {
         collisionUI = chestscollisionUI;
+    }
+
+    public void SetNormalAxeUI(GameObject normalaxeUI)
+    {
+        normalAxeUI = normalaxeUI;
     }
 
     public int GetChestCounter()
