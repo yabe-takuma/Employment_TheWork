@@ -779,7 +779,7 @@ public class PlayerScript : MonoBehaviour
 
         if (troll == null)
         {
-            //gameExplanationScript.GameClearText();
+            gameExplanationScript.GameClearText();
             isGameClear = true;
         }
         UpdateEnemyPositions();

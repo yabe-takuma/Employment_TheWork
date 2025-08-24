@@ -137,8 +137,6 @@ public class CameraScript : MonoBehaviour
     void Start()
     {
         playerScript = GameObject.Find("Character_Female_Hotel Owner").GetComponent<PlayerScript>();
-        //originalPosition = transform.position;
-        //StartCamera();
         isStartAnimation = false;
         offset = new Vector3(0, 2, -5);
         isCameraAngle = false;
@@ -167,7 +165,7 @@ public class CameraScript : MonoBehaviour
     }
     public void OnRockon(InputAction.CallbackContext context)
     {
-        if (!isStartAnimation) return;
+        //if (!isStartAnimation) return;
 
         if (context.started && RockonTarget != null && trollscript.GetState() != TrollScript.TrollState.Dead)
         {
@@ -308,7 +306,7 @@ public class CameraScript : MonoBehaviour
         var cy = Mathf.Sin(nowHeightAngle * deg) * Distance;
 
         //ロックオンじゃない時のカメラの座標
-        if (!rock /*&& !isStartAnimation&&!justUnlocked*/)
+        if (!rock )
         {
            
            
@@ -339,11 +337,9 @@ public class CameraScript : MonoBehaviour
         }
         if (rock && RockonTarget.tag!="Enemy"&&!isCameraAngle)
         {
-            //float followSpeed = 5.0f;
+           
             transform.rotation = new Quaternion(transform.rotation.x, rockonEnemyposition.transform.rotation.y, rockonEnemyposition.transform.rotation.z, rockonEnemyposition.transform.rotation.w);
             AdjustCamera();
-            //transform.position = Vector3.Lerp(transform.position, nowPos + new Vector3(cx, cy, cz), Time.deltaTime * followSpeed);
-            //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(nowPos - transform.position), Time.deltaTime * followSpeed);
         }
 
         if(nextWarpStage.activeSelf&&!isWarpExplanation)
@@ -404,25 +400,7 @@ public class CameraScript : MonoBehaviour
             hasInitializedCamera = true;
         }
     }
-    //ゲーム開始時ボスにカメラを向ける処理
-    //public void StartCamera()
-    //{
-    //    transform.position = startCamera.transform.position;
-    //    transform.rotation = startCamera.transform.rotation;
-    //    Debug.Log("カメラ移動中");
-    //}
-    ////ボスにカメラを向けた後プレイヤーにカメラを向ける処理
-    //public void StartCameraEnd()
-    //{
-    //    if (!hasInitializedCamera)
-    //    {
-    //        StartCoroutine(StartCameraCoroutine());
-    //        hasInitializedCamera = true;
-    //    }
-    //    Debug.Log("カメラを切り替える");
-
-
-    //}
+   
 
     IEnumerator StartCameraCoroutine()
     {
@@ -512,44 +490,7 @@ public class CameraScript : MonoBehaviour
 
     }
 
-    //private void AdjustCamera()
-    //{
-    //    if (RockonTarget == null || TargetObject == null) return;
-
-    //    Vector3 playerPos = TargetObject.transform.position + Vector3.up * 1.5f;
-    //    Vector3 enemyPos = RockonTarget.transform.position + Vector3.up * 1.5f;
-    //    Vector3 midPoint = (playerPos + enemyPos) * 0.5f;
-
-    //    // ボスのサイズ取得
-    //    Bounds bounds = new Bounds(RockonTarget.transform.position, Vector3.zero);
-    //    foreach (Renderer renderer in RockonTarget.GetComponentsInChildren<Renderer>())
-    //    {
-    //        bounds.Encapsulate(renderer.bounds);
-    //    }
-    //    float targetSize = bounds.extents.magnitude;
-
-    //    float baseDistance = Vector3.Distance(playerPos, enemyPos);
-    //    float dynamicDistance = Mathf.Max(baseDistance + 3.0f, targetSize * 2.0f);
-    //    Vector3 direction;
-    //    Vector3 cameraTarget;
-
-    //    if (IsTrollAttack()) // ボスが攻撃中
-    //    {
-    //        direction = (midPoint - enemyPos).normalized;
-    //        cameraTarget = midPoint;
-    //    }
-    //    else // ボスが攻撃していない → プレイヤー中心
-    //    {
-    //        direction = TargetObject.transform.forward * -1f; // プレイヤー背後方向
-    //        cameraTarget = playerPos;
-    //    }
-
-    //    Vector3 cameraPos = cameraTarget + direction * dynamicDistance + Vector3.up * 2.5f;
-    //    cameraPos.y = Mathf.Max(cameraPos.y, 1.0f);
-
-    //    camera.transform.position = Vector3.SmoothDamp(camera.transform.position, cameraPos, ref velocity, 0.15f);
-    //    camera.transform.LookAt(cameraTarget);
-    //}
+    
 
 
     //敵の姿の全体を見れる処理

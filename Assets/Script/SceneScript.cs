@@ -26,7 +26,7 @@ public class SceneScript : MonoBehaviour
         {
             SceneManager.LoadScene("TitleScene");
         }
-        else if (trollScript.GetState() == TrollScript.TrollState.Dead && Input.GetKeyDown("joystick button 3") && troll == null || 
+        if (trollScript.GetState() == TrollScript.TrollState.Dead && Input.GetKeyDown("joystick button 3") && troll == null || 
             Input.GetKeyDown(KeyCode.K)&& trollScript.GetState() == TrollScript.TrollState.Dead&&troll == null)
         {
             SceneManager.LoadScene("TitleScene");
