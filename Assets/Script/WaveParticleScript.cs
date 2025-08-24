@@ -7,8 +7,9 @@ public class WaveParticleScript : MonoBehaviour
     [SerializeField]
     private PlayerScript playerScript;
     //パーティクルシステム
+    [SerializeField]
     private ParticleSystem ps;
-
+    [SerializeField]
     private bool flag;
     //経過時間
     private float elapsedTime;
@@ -32,21 +33,17 @@ public class WaveParticleScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        ps = GetComponentInChildren<ParticleSystem>();
+        ps = GetComponent<ParticleSystem>();
         ps.GetComponent<Renderer>().enabled = false;
         playerScript = GameObject.Find("Character_Female_Hotel Owner").GetComponent<PlayerScript>();
         trollScript = GameObject.Find("GiantTroll").GetComponent<TrollScript>();
         receveattackevent = GameObject.Find("GiantTroll").GetComponent<ReceiveAttackEventScript>();
         ps.trigger.SetCollider(0, playerScript.transform);
-
+      
         // ボスのY軸の回転だけを取り出して、回転を明示的に設定
         float yAngle = trollScript.GetRotation().eulerAngles.y;
-        fixedRotation = Quaternion.Euler(0f, yAngle, 0f);
+        fixedRotation = Quaternion.Euler(90f, yAngle, 0f);
         transform.rotation = fixedRotation;
-
-
-
-
 
         //MaxParticlesを超えるパーティクルを生成するまでシミュレーションスピードを上げる
         var main = ps.main;
@@ -66,7 +63,7 @@ public class WaveParticleScript : MonoBehaviour
     {
         if (ps != null && flag)
         {
-
+            
             //particles
             List<ParticleSystem.Particle> enter = new List<ParticleSystem.Particle>();
             List<ParticleSystem.Particle> inside = new List<ParticleSystem.Particle>();

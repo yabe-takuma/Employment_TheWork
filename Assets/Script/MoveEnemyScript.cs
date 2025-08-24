@@ -94,6 +94,7 @@ public class MoveEnemyScript : MonoBehaviour
     [SerializeField]
     private GameObject fireeffect;  //炎のエフェクトが格納された変数
     private GameObject fireEffectIns;
+    [SerializeField]
     private GameObject deadEffect;
 
     private bool isDead;
@@ -221,9 +222,7 @@ public class MoveEnemyScript : MonoBehaviour
         {
             //倒されるときアニメーションをして消滅をする
             animator.SetTrigger("Dead");
-            Destroy(this.gameObject, 3f);
             Destroy(fireEffectIns, 3f);
-            StartCoroutine(DeadEffectCoroutine());
             velocity = Vector3.zero;
             navMeshAgent.speed = 0f;
             navMeshAgent.isStopped = true;
@@ -313,6 +312,7 @@ public class MoveEnemyScript : MonoBehaviour
         SetState(EnemyState.Dead);
         playerscript.DeadCaunter(1);
         textMeshProNumber.SubtractDeadCaunter(1);
+        StartCoroutine(DeadEffectCoroutine());
         if (playerscript.SetDeadCaunter() == 1)
         {
             GameObject Axe=Instantiate<GameObject>(axe, transform.position+Vector3.up, Quaternion.identity);
@@ -546,6 +546,7 @@ public class MoveEnemyScript : MonoBehaviour
         GameObject DeadEffect = Instantiate(deadEffect, transform.position, transform.rotation);
 
         Destroy(DeadEffect, 1f);
+        Destroy(this.gameObject);
     }
 
     // 攻撃アニメーションイベントやタイミングで呼び出す

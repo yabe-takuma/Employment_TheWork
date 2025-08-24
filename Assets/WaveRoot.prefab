@@ -40,12 +40,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2794913715230423067}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f844f5876e1106c49bab63495b8fe3dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   playerScript: {fileID: 0}
+  ps: {fileID: 0}
+  flag: 0
   numEnter: 0
   numInside: 0
   trollScript: {fileID: 0}
@@ -62,6 +64,7 @@ GameObject:
   - component: {fileID: 4352850255104654581}
   - component: {fileID: 5479923419315599489}
   - component: {fileID: 1963819805624133820}
+  - component: {fileID: 5820730764514243338}
   m_Layer: 0
   m_Name: WaveParticle
   m_TagString: Untagged
@@ -3850,9 +3853,10 @@ ParticleSystem:
     outside: 0
     enter: 2
     exit: 0
-    colliderQueryMode: 0
+    colliderQueryMode: 2
     radiusScale: 2
-    primitives: []
+    primitives:
+    - {fileID: 0}
   SubModule:
     serializedVersion: 2
     enabled: 0
@@ -4863,3 +4867,23 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &5820730764514243338
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7004876742595914282}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f844f5876e1106c49bab63495b8fe3dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerScript: {fileID: 0}
+  ps: {fileID: 0}
+  flag: 0
+  numEnter: 0
+  numInside: 0
+  trollScript: {fileID: 0}
+  receveattackevent: {fileID: 0}
+  timer: 0

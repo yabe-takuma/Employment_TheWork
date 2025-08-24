@@ -1960,6 +1960,8 @@ MonoBehaviour:
   animator: {fileID: 162323363}
   footStepParticle: {fileID: 1960937860}
   isWeponCollision: 0
+  swordTrajectory: {fileID: 6710139492206580332, guid: 95b8d3d65b5d7f1409c4ed1723887826, type: 3}
+  trailScript: {fileID: 0}
 --- !u!114 &162323367
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2018,9 +2020,12 @@ MonoBehaviour:
   playerRenderer: {fileID: 0}
   blinkCount: 5
   isPause: 0
+  pauseCooldown: 0
+  pauseUI: {fileID: 1980684073}
   gameExplanationScript: {fileID: 782628378}
   renderers: []
   state: 0
+  isInvincible: 0
   invincibleTime: 2
   bossTransform: {fileID: 994710116}
   horizontalBarrierDistance: 25
@@ -2067,6 +2072,7 @@ MonoBehaviour:
   chestData: {fileID: 11400000, guid: c4090b185b877f24195a3abf54da9bee, type: 2}
   gameExplanationScript: {fileID: 782628378}
   weaponinfo: {fileID: 0}
+  attackSwordScript: {fileID: 0}
 --- !u!114 &162323370
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4482,6 +4488,7 @@ MonoBehaviour:
   chestData: {fileID: 0}
   gameExplanationScript: {fileID: 0}
   weaponinfo: {fileID: 0}
+  attackSwordScript: {fileID: 0}
 --- !u!1 &394155698
 GameObject:
   m_ObjectHideFlags: 0
@@ -6493,8 +6500,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "Space\u30AD\u30FC:\u6B21\u306E\u30B9\u30C6\u30FC\u30B8\u306B\u9032\u3080"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 3c3579ed987915241acbf2d6f951d6c3, type: 2}
+  m_sharedMaterial: {fileID: 2006669298148341980, guid: 3c3579ed987915241acbf2d6f951d6c3, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -6513,7 +6520,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -6534,7 +6541,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -9014,6 +9021,9 @@ MonoBehaviour:
   - {fileID: 93703312}
   - {fileID: 1786987518}
   nextStageObject: {fileID: 1189122976}
+  material: {fileID: 0}
+  colorcounter: 0
+  timeStopRespon: 0
 --- !u!114 &782628379
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9786,6 +9796,7 @@ MonoBehaviour:
   fireEffect: {fileID: 1949376083282614, guid: 4dd6c2b5539220947a0c5938f0a39d20, type: 3}
   collisionUI: {fileID: 1188331468}
   normalAxeUI: {fileID: 1244559758}
+  deadEffect: {fileID: 8791802859087666345, guid: ae07f2a45f14a82428409cfe410e6002, type: 3}
 --- !u!4 &818934482
 Transform:
   m_ObjectHideFlags: 0
@@ -10763,9 +10774,11 @@ MonoBehaviour:
   deadposition: {fileID: 1709877996}
   rockonPlayer: {fileID: 2059552317}
   startCamera: {fileID: 1942229260}
+  isStartAnimation: 0
   target: {fileID: 1709877997}
   camera: {fileID: 963194227}
   rockonCameraRotation: {x: 0, y: 0, z: 0, w: 0}
+  hasInitializedCamera: 0
   initialRotation: {x: 0, y: 0, z: 0, w: 0}
   myStatus: {fileID: 162323368}
   nextWarpStage: {fileID: 1189122976}
@@ -12534,7 +12547,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1104861186
 RectTransform:
   m_ObjectHideFlags: 0
@@ -13140,7 +13153,7 @@ MonoBehaviour:
   iconcooltime: 0
   axisCoolTime: 0.3
   isMoving: 0
-  coolTimeLimit: 1
+  coolTimeLimit: 40
 --- !u!1 &1185591932
 GameObject:
   m_ObjectHideFlags: 0
@@ -13399,8 +13412,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHit: 0
+  explanationScript: {fileID: 782628378}
+  buttonsUI:
+  - {fileID: 1104861185}
+  - {fileID: 544435900}
   troll: {fileID: 0}
   nextStageBottonUI: {fileID: 134107130}
+  material: {fileID: 2100000, guid: 2459c724384e34d4385e67422b6bb4be, type: 2}
+  colorcounter: 0
 --- !u!1 &1210923268
 GameObject:
   m_ObjectHideFlags: 0
@@ -20814,6 +20833,7 @@ MonoBehaviour:
   isCollision: 0
   animator: {fileID: 0}
   isItem: 0
+  weaponParticles: []
 --- !u!135 &1809218696
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -21603,11 +21623,11 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1910543320}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 200, y: 10, z: 300}
-  m_Center: {x: 20, y: 13, z: 40}
+  m_Size: {x: 200, y: 350.4215, z: 300}
+  m_Center: {x: 20, y: -157.21078, z: 40}
 --- !u!1 &1915679215
 GameObject:
   m_ObjectHideFlags: 0
@@ -28812,11 +28832,11 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2116945335}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 200, y: 10, z: 300}
-  m_Center: {x: 20, y: 13, z: 40}
+  m_Size: {x: 200, y: 282.0278, z: 300}
+  m_Center: {x: 20, y: -123.0139, z: 40}
 --- !u!4 &2126378728 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4439975391847634, guid: 4a2995c2dfa5ee447bb99406df3fd57e, type: 3}

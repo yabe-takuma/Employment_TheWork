@@ -9,6 +9,10 @@ public class NextStage : MonoBehaviour
     [SerializeField]
     private bool isHit = false;
     private PlayerScript playerScript;
+    [SerializeField]
+    private GameExplanationScript explanationScript;
+    [SerializeField]
+    private List<GameObject> buttonsUI;
     private ParticleSystem ps; //略しています
 
     //次のステージに行くためにトロルのデータが入っていなかったら次に進むための変数
@@ -18,12 +22,20 @@ public class NextStage : MonoBehaviour
     [SerializeField]
     private GameObject nextStageBottonUI;
 
+    [SerializeField]
+    private Material material;　　　//シェーダーを参照するための変数
+    [SerializeField]
+    private float colorcounter;     //ディゾルブするために必要な変数
+
+    private bool isFade;
+
     // Start is called before the first frame update
     void Start()
     {
         ps = GetComponent<ParticleSystem>();
         isHit = false;
         playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
+        isFade = false;
     }
 
     // Update is called once per frame
@@ -63,10 +75,11 @@ public class NextStage : MonoBehaviour
     {
 
         currentScene = SceneManager.GetActiveScene().name;
+        //押したときは徐々に画面を見えなくして次のシーンに行くための処理
         if (isHit && currentScene == "SampleScene"&&playerScript.SetDeadCaunter()>=5 && Input.GetKeyDown(KeyCode.Space) || 
             isHit && currentScene == "SampleScene" && playerScript.SetDeadCaunter() >= 5&&Input.GetKeyDown("joystick button 1"))
         {
-            SceneManager.LoadScene("MiddleBossScene");
+            isFade = true;
         }
         
         if (troll == null)
@@ -82,6 +95,36 @@ public class NextStage : MonoBehaviour
         {
             nextStageBottonUI.SetActive(false);
         }
-      
+        if(explanationScript.IsInput()&&!explanationScript.IsKeyInput())
+        {
+            buttonsUI[0].SetActive(true);
+            buttonsUI[1].SetActive(false);
+        }
+        else if(!explanationScript.IsInput() && explanationScript.IsKeyInput())
+        {
+            buttonsUI[1].SetActive(true);
+            buttonsUI[0].SetActive(false);
+        }
+        //フェードインする処理
+        FadeOutUpdate();
+    }
+
+    void FadeOutUpdate()
+    {
+
+
+        //押したときは徐々に画面を見えなくして次のシーンに行くための処理
+        if (isFade)
+        {
+            colorcounter -= 0.004f;
+            if (material.GetFloat("_Threshold") >= 0.0f)
+            {
+                material.SetFloat("_Threshold", colorcounter);
+            }
+            else
+            {
+                SceneManager.LoadScene("MiddleBossScene");
+            }
+        }
     }
 }

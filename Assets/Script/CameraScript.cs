@@ -137,7 +137,7 @@ public class CameraScript : MonoBehaviour
     void Start()
     {
         playerScript = GameObject.Find("Character_Female_Hotel Owner").GetComponent<PlayerScript>();
-        originalPosition = transform.position;
+        //originalPosition = transform.position;
         //StartCamera();
         isStartAnimation = false;
         offset = new Vector3(0, 2, -5);
@@ -320,7 +320,7 @@ public class CameraScript : MonoBehaviour
                 transform.rotation = Quaternion.LookRotation(nowPos - transform.position);
                 skipLerpOnce = false; // これで次フレームから通常処理に戻る
             }
-            else 
+            else
             {
                 transform.position = Vector3.Lerp(transform.position, nowPos + new Vector3(cx, cy, cz), Time.deltaTime * followSpeed);
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(nowPos - transform.position), Time.deltaTime * followSpeed);

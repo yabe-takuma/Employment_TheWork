@@ -32,6 +32,8 @@ public class AttackAxe : MonoBehaviour
     //プレイヤーが斧を取得したらanimatorにデータを送るために必要な変数
     [SerializeField]
     private bool isItem;
+    [SerializeField]
+    private ParticleSystem[] weaponParticles;
 
     // Start is called before the first frame update
     private void Start()
@@ -45,6 +47,8 @@ public class AttackAxe : MonoBehaviour
         }
         isItem = false;  //まだアイテムに触れていないのでfalseにする
         animator = transform.root.GetComponent<Animator>();
+        Transform axe = transform.Find("axe Variant");
+        weaponParticles = GetComponentsInChildren<ParticleSystem>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -140,5 +144,12 @@ public class AttackAxe : MonoBehaviour
             sphereCollider.enabled = true;
         }
     }
-   
+
+    public void PlaySwordTrail()
+    {
+        Debug.Log("Play() 呼ばれました");
+        weaponParticles[0].Play();
+        weaponParticles[0].Play();
+    }
+
 }

@@ -26,13 +26,13 @@ public class ExplocionEmptyScript : MonoBehaviour
     void Update()
     {
         //特定のサイズになるまで大きくする処理
-        if (transform.localScale.z <= 40)
+        if (transform.localScale.z <= 20)
         {
             transform.localScale += omentimer;
 
         }
         //特定のサイズ以上になったら削除するための処理
-        if (transform.localScale.z >= 40)
+        if (transform.localScale.z >= 20)
         {
             Destroy(this.gameObject);
         }

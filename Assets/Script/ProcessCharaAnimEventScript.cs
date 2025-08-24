@@ -24,12 +24,14 @@ public class ProcessCharaAnimEventScript : MonoBehaviour
     private GameObject swordTrajectory;
     private GameObject emptySwordTrajectory;
 
+    public AttackSwordScript trailScript;  // 軌跡制御スクリプトの参照（任意のオブジェクト）
+
     // Start is called before the first frame update
     void Start()
     {
         playerscript = GetComponent<PlayerScript>();
         weaponCollider = equip.GetComponentInChildren<Collider>();
-       
+        trailScript = transform.root.GetComponentInChildren<AttackSwordScript>();
     }
 
     public void AttackStart()
@@ -41,7 +43,11 @@ public class ProcessCharaAnimEventScript : MonoBehaviour
             animator.applyRootMotion = false;
             Debug.Log("攻撃開始");
         }
-        emptySwordTrajectory=Instantiate(swordTrajectory, equip.transform.position, equip.transform.rotation);
+       
+        if(trailScript!=null)
+        {
+            trailScript.PlaySwordTrail();
+        }
     }
 
     public void AttackEnd()
@@ -52,6 +58,7 @@ public class ProcessCharaAnimEventScript : MonoBehaviour
             weaponCollider.enabled = false;
         }
         Destroy(emptySwordTrajectory);
+      
     }
     //アニメーションが終わったら待機状態に戻る関数
     public void StateEnd()

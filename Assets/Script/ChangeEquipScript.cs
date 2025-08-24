@@ -32,6 +32,8 @@ public class ChangeEquipScript : MonoBehaviour
     //武器の情報のみ(生成はしない)
     [SerializeField]
     private GameObject weaponinfo;
+    [SerializeField]
+    private AttackSwordScript attackSwordScript;
     //他のスクリプトに参照するための関数
     public int GetEquipment()
     {
@@ -111,7 +113,8 @@ public class ChangeEquipScript : MonoBehaviour
             //新しく装備する武器をインスタンス化
             var weapon = Instantiate<GameObject>(weapons[equipment]);
             processCharaAnimEvent.SetCollider(weapon.GetComponent<Collider>());
-            
+            attackSwordScript = weapon.GetComponentInChildren<AttackSwordScript>();
+
 
             //武器の位置や角度を設定
             if (equipment ==0) //剣
@@ -173,13 +176,18 @@ public class ChangeEquipScript : MonoBehaviour
         weapon.transform.localPosition = new Vector3(-0.1f, 0.03f, 0.05f);
         weapon.transform.localEulerAngles = new Vector3(291.87f, 90.4f, 80f);
         weapon.transform.localScale = new Vector3(1f, 1f, 1f);
-      
+        attackSwordScript = weapon.GetComponentInChildren<AttackSwordScript>();
         myStatus.SetEquip(weapon);
     }
     //宝箱を開けた回数を記録するための関数
     public void SetChestCounter(int counter)
     {
         chestData.chestCounter = counter;
+    }
+
+    public void StartAttackParticle()
+    {
+        attackSwordScript.PlaySwordTrail();
     }
 
    

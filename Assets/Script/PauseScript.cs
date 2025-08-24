@@ -69,7 +69,7 @@ public class PauseScript : MonoBehaviour
             ChangeState(GameState.Playing);
             Debug.Log("再開");
         }
-        else if(currentPosition.y == 0 && Input.GetKeyDown(KeyCode.Space)|| currentPosition.y == 100 && Input.GetKeyDown("joystick button 0"))
+        else if(currentPosition.y == 0 && Input.GetKeyDown(KeyCode.Space)|| currentPosition.y == 0 && Input.GetKeyDown("joystick button 0"))
         {
             ChangeState(GameState.Instructions);
             Debug.Log("操作説明");

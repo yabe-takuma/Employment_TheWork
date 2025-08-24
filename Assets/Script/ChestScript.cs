@@ -28,6 +28,11 @@ public class ChestScript : MonoBehaviour
     private GameObject normalAxeUI;
     [SerializeField]
     private int opentimer;
+    [SerializeField]
+    private BoxCollider[] boxColliders;
+
+    private bool[] isChestOpened;
+
 
     private bool isKey;
     // Start is called before the first frame update
@@ -38,6 +43,10 @@ public class ChestScript : MonoBehaviour
         isEndOpen = false;
         isClick = false;
         collisionUI.SetActive(false);
+        boxColliders = GetComponents<BoxCollider>();
+        isChestOpened = new bool[chestsOpenUI.Count];
+
+
     }
 
     // Update is called once per frame
@@ -52,6 +61,7 @@ public class ChestScript : MonoBehaviour
         {
             CollisionChest();
         }
+        
       
     }
 
@@ -125,6 +135,7 @@ public class ChestScript : MonoBehaviour
                 collisionUI.SetActive(false);
                 chestcounter++;
                 changeEquipScript.SetChestCounter(chestcounter);
+                isChestOpened[chestindex] = true;
                 isClick = true;
                 if (chestindex < chestsOpenUI.Count - 1)
                 {
@@ -149,6 +160,34 @@ public class ChestScript : MonoBehaviour
         {
             opentimer++;
         }
+
+        if (isClick)
+        {
+            for (int i = 0; i < boxColliders.Length; i++)
+            {
+                if (isChestOpened[i])
+                {
+                    StartCoroutine(StartColliderCoroutine(boxColliders[i]));
+                }
+            }
+        }
+
     }
+
+  
+
+    IEnumerator StartColliderCoroutine(BoxCollider targetCollider)
+    {
+        yield return new WaitForEndOfFrame();
+
+        targetCollider.enabled = false;
+        targetCollider.center = new Vector3(0f, 0.8f, -0.2f);
+        targetCollider.size = new Vector3(2.2f, 1.8f, 2.2f);
+        targetCollider.enabled = true;
+
+        Physics.SyncTransforms();
+    }
+
+
 
 }

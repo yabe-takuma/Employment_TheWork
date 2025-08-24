@@ -175,4 +175,6 @@ MonoBehaviour:
   changeEquipScript: {fileID: 0}
   isCollision: 0
   collisionUI: {fileID: 0}
+  normalAxeUI: {fileID: 0}
   opentimer: 0
+  boxColliders: []

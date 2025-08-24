@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.Design.Serialization;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,7 +23,16 @@ public class AttackSwordScript : MonoBehaviour
     private Animator animator;
     [SerializeField]
     private bool isCollision;
-  
+    [SerializeField]
+    private ParticleSystem swordTrailParticle;
+    [SerializeField]
+    private ParticleSystem fireSpark;
+    [SerializeField]
+    private ParticleSystem[] weaponParticles;
+    [SerializeField]
+    private ParticleSystem subSwordTrailParticle;
+
+
     // Start is called before the first frame update
     private void Start()
     {
@@ -30,6 +40,11 @@ public class AttackSwordScript : MonoBehaviour
         playerscript = transform.root.GetComponent<PlayerScript>();
         animator = transform.root.GetComponent<Animator>();
         processCharaAnimEvent = transform.root.GetComponent<ProcessCharaAnimEventScript>();
+        Transform moonSword= transform.Find("MoonSword Variant");
+        weaponParticles = GetComponentsInChildren<ParticleSystem>();
+
+        CacheParticles();
+        //swordTrailParticle.Stop();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -348,4 +363,53 @@ public class AttackSwordScript : MonoBehaviour
     {
         isCollision = false;
     }
+
+    void CacheParticles()
+    {
+        ParticleSystem[] allParticles = GetComponentsInChildren<ParticleSystem>();
+        foreach (var ps in allParticles)
+        {
+            if (ps.name == "SwordTrailParticle")
+            {
+                swordTrailParticle = ps;
+            }
+            else if (ps.name == "SubSwordTrailParticle2")
+            {
+                subSwordTrailParticle = ps;
+            }
+        }
+    }
+
+
+
+    public void PlaySwordTrail()
+    {
+        Debug.Log("Play() 呼ばれました");
+
+        if (swordTrailParticle != null)
+        {
+            Debug.Log($"SwordTrailParticle Play! Delay: {swordTrailParticle.startDelay}, Duration: {swordTrailParticle.duration}");
+            //swordTrailParticle.Clear();
+            //swordTrailParticle.Play();
+        }
+
+
+
+        if (subSwordTrailParticle != null)
+        {
+            Debug.Log("SubSwordTrailParticle Target: " + subSwordTrailParticle.transform.parent.name);
+
+           
+            subSwordTrailParticle.Play(); 
+
+
+
+        }
+
+
+
+
+    }
+
+
 }

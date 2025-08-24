@@ -141,7 +141,10 @@ public class PlayerScript : MonoBehaviour
     [SerializeField]
     private bool isPause;
     private bool pauseEnded;
+    [SerializeField]
     private int pauseCooldown;
+    [SerializeField]
+    private GameObject pauseUI;
     [SerializeField]
     private GameExplanationScript gameExplanationScript;  //テキストをプレイヤー側でもいじれるようにする変数
     private bool isGameClear;  //ゲームクリアかどうかのフラグ
@@ -149,6 +152,9 @@ public class PlayerScript : MonoBehaviour
     private Vector3 fixedPosition;
     [SerializeField]
     private Renderer[] renderers;
+
+    //ポーズ画面を解除した時の一瞬だけ回避できないようにする
+    private bool isPauseAvoid;
 
    [System.Serializable]
     public class MoveSettings
@@ -168,6 +174,7 @@ public class PlayerScript : MonoBehaviour
     };
     [SerializeField]
     private MyState state;
+    [SerializeField]
     private bool isInvincible;
     [SerializeField] private float invincibleTime = 2f; // クールタイム時間
     [SerializeField]
@@ -177,6 +184,10 @@ public class PlayerScript : MonoBehaviour
 
     [SerializeField]
     private ChaseCharaScript chaseCharaScript;
+    //ジャンプをしていると判定するフラグ
+    private bool jumpInput = false;
+    private float jumpTimer = 0f;
+    private float jumpCooldown = 0.2f; // 200msだけ地面判定を無視
 
     void Awake()
     {
@@ -226,8 +237,8 @@ public class PlayerScript : MonoBehaviour
 
         isInvincible = false;
 
-       
-        
+        isPauseAvoid = true;
+
         animator = GetComponent<Animator>();
     }
 
@@ -263,12 +274,17 @@ public class PlayerScript : MonoBehaviour
                 ResetMaterialsToOpaque();
                 return;
             }
+            if (myStatus.GetHp() >= 2)
+            {
+                StartCoroutine(HandleInvincibility()); // 無敵状態＋点滅開始
+                var damageEffectIns = Instantiate<GameObject>(damageEffect, attackedPlace, Quaternion.identity);
+                Destroy(damageEffectIns, 1f);
+            }
 
-            StartCoroutine(HandleInvincibility()); // 無敵状態＋点滅開始
+
 
             camera3D.StartShake();
-            var damageEffectIns = Instantiate<GameObject>(damageEffect, attackedPlace, Quaternion.identity);
-            Destroy(damageEffectIns, 1f);
+           
         }
        
     }
@@ -287,8 +303,7 @@ public class PlayerScript : MonoBehaviour
             velocity = Vector3.zero;
             animator.SetTrigger("Damage");
             camera3D.StartShake();
-            var damageEffectIns = Instantiate<GameObject>(damageEffect, new Vector3(transform.position.x, transform.position.y - 1, transform.position.z), Quaternion.identity);
-            Destroy(damageEffectIns, 1f);
+          
             myStatus.SetHp(myStatus.GetHp() - damage);
 
             hpgauge.SetDamageLifeGauge(damage);
@@ -301,7 +316,12 @@ public class PlayerScript : MonoBehaviour
                 return;
             }
 
-            StartCoroutine(HandleInvincibility()); // 無敵状態＋点滅開始
+            if (myStatus.GetHp() >= 2)
+            {
+                StartCoroutine(HandleInvincibility()); // 無敵状態＋点滅開始
+                var damageEffectIns = Instantiate<GameObject>(damageEffect, new Vector3(transform.position.x, transform.position.y - 1, transform.position.z), Quaternion.identity);
+                Destroy(damageEffectIns, 1f);
+            }
 
         }
       
@@ -363,7 +383,10 @@ public class PlayerScript : MonoBehaviour
         else if(tempState == MyState.Dead)
         {
             state = MyState.Dead;
-            animator.SetTrigger("Dead");
+            if (!isGameOver)
+            {
+                animator.SetTrigger("Dead");
+            }
             velocity = Vector3.zero;
         }
         
@@ -382,8 +405,7 @@ public class PlayerScript : MonoBehaviour
             velocity = Vector3.zero;
             animator.SetTrigger("Damage");
             camera3D.StartShake();
-            var damageEffectIns = Instantiate<GameObject>(damageEffect, new Vector3(transform.position.x, transform.position.y - 1, transform.position.z), Quaternion.identity);
-            Destroy(damageEffectIns, 1f);
+           
             myStatus.SetHp(myStatus.GetHp() - damage);
 
             hpgauge.SetDamageLifeGauge(damage);
@@ -396,10 +418,16 @@ public class PlayerScript : MonoBehaviour
                 return;
             }
 
-            StartCoroutine(HandleInvincibility()); // 無敵状態＋点滅開始
+            if (myStatus.GetHp() >= 2)
+            {
+                StartCoroutine(HandleInvincibility()); // 無敵状態＋点滅開始
+                var damageEffectIns = Instantiate<GameObject>(damageEffect, new Vector3(transform.position.x, transform.position.y - 1, transform.position.z), Quaternion.identity);
+                Destroy(damageEffectIns, 1f);
+            }
 
 
         }
+      
     }
    
 
@@ -424,6 +452,8 @@ public class PlayerScript : MonoBehaviour
         SetState(MyState.Dead);
         state = MyState.Dead;
         gameExplanationScript.GameOverText();
+        isGameOver = true;
+       
         if (animator.GetBool("Dead")==true)
         {
             isGameOver = true;
@@ -448,15 +478,31 @@ public class PlayerScript : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.F) &&IsGrounded() || Input.GetKeyDown("joystick button 3") && transform.position.y < 0.1f)
+        if (jumpInput && IsGrounded() && jumpTimer <= 0f)
         {
             rb.velocity = new Vector3(rb.velocity.x, jumpPower, rb.velocity.z);
-
-            Debug.Log("ジャンプ");
             isJump = true;
-            animator.SetBool("Jump", true);
             animator.applyRootMotion = false;
+            jumpInput = false;
+            jumpTimer = jumpCooldown; // クールダウン開始
+            animator.SetTrigger("Jump2");
         }
+
+        // クールダウンタイマー更新
+        if (jumpTimer > 0f)
+        {
+            jumpTimer -= Time.fixedDeltaTime;
+        }
+
+        // 一定時間後のみ地面判定を信頼
+        if (isJump && jumpTimer <= 0f && IsGrounded())
+        {
+            isJump = false;
+        }
+
+       
+
+
     }
 
     bool CanMove()
@@ -538,17 +584,18 @@ public class PlayerScript : MonoBehaviour
             animator.SetFloat("Speed", 0f);
         }
         //地面か空中かで重力を入れるかどうかの処理
-        if (transform.position.y < 0&&!animator.GetCurrentAnimatorStateInfo(0).IsName("Jump"))
+        if (transform.position.y < 0 && !animator.GetCurrentAnimatorStateInfo(0).IsName("Jump"))
         {
             rb.useGravity = false;
-            
+            rb.constraints = RigidbodyConstraints.FreezePositionY;
         }
         else
         {
             rb.useGravity = true;
+            rb.constraints = RigidbodyConstraints.None;
         }
 
-        if(state==MyState.Attack)
+        if (state==MyState.Attack)
         {
             //PlayerSpeedOff();
             Vector3 horizontalVelocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
@@ -599,7 +646,7 @@ public class PlayerScript : MonoBehaviour
     public void OnAttack(InputAction.CallbackContext context)
     {
         //地面にいて武器を持っていたら攻撃する処理
-        if (context.started && !animator.IsInTransition(0) && !animator.GetCurrentAnimatorStateInfo(0).IsName("Jump") && changeequipscript.GetEquipment() >= 0/*&&pauseCooldown > 11*/)
+        if (context.started && !animator.IsInTransition(0) && !animator.GetCurrentAnimatorStateInfo(0).IsName("Jump") && changeequipscript.GetEquipment() >= 0&&!isPause/*&&pauseCooldown > 11*/)
         {
             SetState(MyState.Attack);
         }
@@ -634,10 +681,10 @@ public class PlayerScript : MonoBehaviour
     
     public void OnAvoid(InputAction.CallbackContext context)
     {
-        if(context.started&& !inAvoid)
+        if(context.started&& !inAvoid&&isPauseAvoid)
         {
             //入力しているかどうかとダメージ中ではないかの処理
-            if(state!=MyState.Damage&& pauseCooldown > 11)
+            if(state!=MyState.Damage)
             {
                 if(move.magnitude>0)
                 {
@@ -711,11 +758,18 @@ public class PlayerScript : MonoBehaviour
             animator.SetBool("Jump", false);
         }
 
-        if (transform.position.y <= 0 && !isJump && !inAvoid) 
+        //if (transform.position.y <= 0 && !isJump && !inAvoid) 
+        //{
+        //    rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        //}
+
+        if (Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown("joystick button 3"))
         {
-            rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+            jumpInput = true;
         }
-       
+
+
+
 
         if (mov&&!isPause)
         {
@@ -798,7 +852,7 @@ public class PlayerScript : MonoBehaviour
         {
             pauseCooldown++;
         }
-        if(pauseCooldown > 11)
+        if(pauseCooldown > 101)
         {
             pauseEnded = false;
         }
@@ -820,8 +874,13 @@ public class PlayerScript : MonoBehaviour
         //    StartCoroutine(StartInvincibilityBlink(3f)); // 無敵3秒間点滅
         //}
 
-      
-
+        if (myStatus.GetHp()<=1)
+        {
+            // GameOver 処理など
+            Dead();
+            ResetMaterialsToOpaque();
+            return;
+        }
        
     }
 
@@ -907,13 +966,18 @@ public class PlayerScript : MonoBehaviour
     public void StopPlayerMotion()
     {
         isPause = true;
-       // pauseCooldown = 0;
+        animator.updateMode = AnimatorUpdateMode.Normal;
+        //pauseCooldown = 0;
+        isPauseAvoid = false;
     }
 
     public void StartPlayerMotion()
     {
         isPause = false;
         pauseEnded = true;
+        animator.updateMode = AnimatorUpdateMode.UnscaledTime;
+        StartCoroutine("PauseAvoidCoroutine");
+        isPauseAvoid = true;
     }
 
     public void OnDamage()
@@ -944,7 +1008,12 @@ public class PlayerScript : MonoBehaviour
        }
     }
 
+    private IEnumerator PauseAvoidCoroutine()
+    {
+        yield return new WaitForEndOfFrame();
 
+        isPauseAvoid = true;
+    }
 
     private IEnumerator StartInvincibilityBlink(float invincibleTime)
     {
@@ -983,8 +1052,10 @@ public class PlayerScript : MonoBehaviour
 
     private IEnumerator HandleInvincibility()
     {
-        isInvincible = true;
-
+        if (state != MyState.Dead)
+        {
+            isInvincible = true;
+        }
         renderers = GetComponentsInChildren<Renderer>();
         Material[] materials = new Material[renderers.Length];
         Color[] originalColors = new Color[renderers.Length];
