@@ -240,6 +240,8 @@ public class PlayerScript : MonoBehaviour
         isPauseAvoid = true;
 
         animator = GetComponent<Animator>();
+
+        
     }
 
     // Update is called once per frame
@@ -281,7 +283,7 @@ public class PlayerScript : MonoBehaviour
                 Destroy(damageEffectIns, 1f);
             }
 
-
+            
 
             camera3D.StartShake();
            
@@ -751,22 +753,35 @@ public class PlayerScript : MonoBehaviour
     void Playerhauding()
     {
 
+        
+
+        // 地面にいるときだけジャンプ可能
         if (IsGrounded())
         {
 
-            isJump = false;
-            animator.SetBool("Jump", false);
+            if (!isJump)
+            {
+                animator.SetBool("Jump2", false);
+            }
+
+            // Fキー or ジョイスティックボタン3が押されたらジャンプ
+            if ((Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown("joystick button 3")) && !isJump)
+            {
+                jumpInput = true;
+                isJump = true;
+                animator.SetBool("Jump2", true);
+                rb.useGravity = true;
+            }
         }
-
-        //if (transform.position.y <= 0 && !isJump && !inAvoid) 
-        //{
-        //    rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-        //}
-
-        if (Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown("joystick button 3"))
+        else
         {
-            jumpInput = true;
+            // 空中にいる間はジャンプ中とみなす
+            isJump = true;
         }
+
+
+
+      
 
 
 

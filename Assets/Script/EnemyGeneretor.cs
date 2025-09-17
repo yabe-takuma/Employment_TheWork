@@ -31,6 +31,9 @@ public class EnemyGeneretor : MonoBehaviour
     //宝箱の情報
     [SerializeField]
     private GameObject chest;
+    //宝箱の裏側の情報
+    [SerializeField]
+    private GameObject chestBackCollisionUI;
    
     private Vector3[] chestsposition = new Vector3[5]; //複数の宝箱の座標
    
@@ -42,6 +45,8 @@ public class EnemyGeneretor : MonoBehaviour
     private MyItemScript myItemScript;  //敵のスクリプトに斧の情報を代入するため
 
     private ChestScript chestScript;  //宝箱のスクリプトに複数の宝箱の情報を代入するため
+    [SerializeField]
+    private ChestCollisionScript chestCollisionScript; //複数の宝箱に開けられないUIを代入するため
     [SerializeField]
     private List<GameObject> chestOpensUI;  //宝箱を開ける時の複数の説明文
     [SerializeField]
@@ -119,6 +124,8 @@ public class EnemyGeneretor : MonoBehaviour
                 chestScript.GetChangeEquipScript(changeEquipScript);
                 chestscaunter += 1;
                 chestScript.SetNormalAxeUI(normalAxeUI);
+                chestCollisionScript = chests.GetComponentInChildren<ChestCollisionScript>();
+                chestCollisionScript.ChestCollisionUI(chestBackCollisionUI);
             }
 
         }
