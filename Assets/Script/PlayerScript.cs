@@ -240,6 +240,7 @@ public class PlayerScript : MonoBehaviour
         isPauseAvoid = true;
 
         animator = GetComponent<Animator>();
+        transform.position = new Vector3(transform.position.x, 0.39f, transform.position.z);
 
         
     }
@@ -487,7 +488,7 @@ public class PlayerScript : MonoBehaviour
             animator.applyRootMotion = false;
             jumpInput = false;
             jumpTimer = jumpCooldown; // クールダウン開始
-            animator.SetTrigger("Jump2");
+           
         }
 
         // クールダウンタイマー更新
@@ -769,7 +770,8 @@ public class PlayerScript : MonoBehaviour
             {
                 jumpInput = true;
                 isJump = true;
-                animator.SetBool("Jump2", true);
+                //animator.SetBool("Jump2", true);
+                animator.SetTrigger("Jump2");
                 rb.useGravity = true;
             }
         }
