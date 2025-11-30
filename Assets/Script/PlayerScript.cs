@@ -154,6 +154,7 @@ public class PlayerScript : MonoBehaviour
     private Renderer[] renderers;
 
     //ポーズ画面を解除した時の一瞬だけ回避できないようにする
+    [SerializeField]
     private bool isPauseAvoid;
 
    [System.Serializable]
@@ -994,7 +995,8 @@ public class PlayerScript : MonoBehaviour
         pauseEnded = true;
         animator.updateMode = AnimatorUpdateMode.UnscaledTime;
         StartCoroutine("PauseAvoidCoroutine");
-        isPauseAvoid = true;
+        Debug.Log("ポーズ中");
+        //isPauseAvoid = true;
     }
 
     public void OnDamage()
@@ -1027,7 +1029,7 @@ public class PlayerScript : MonoBehaviour
 
     private IEnumerator PauseAvoidCoroutine()
     {
-        yield return new WaitForEndOfFrame();
+        yield return new WaitForSeconds(10f);
 
         isPauseAvoid = true;
     }

@@ -50,11 +50,12 @@ public class ChestCollisionScript : MonoBehaviour
         }
 
     }
-
+    //プレイヤーに宝箱が触れたらボタン表示するための処理
     public void ChestCollisionUI(GameObject chestscollisionUI)
     {
         collisionUI = chestscollisionUI;
     }
+    
     public void IsChestActive(GameObject chestflag)
     {
         collisionUI = chestflag;

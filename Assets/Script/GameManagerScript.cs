@@ -11,7 +11,7 @@ public class GameManagerScript : MonoBehaviour
     private GrayScaleSprict grayscript;
     //ゲーム開始時にフェードインの演出を入れる変数
     [SerializeField]
-    private Material material;
+    private Material material;  //黒にするためのマテリアル
     private float colorcounter;
     [SerializeField]
     private GameObject fadeOutUI;

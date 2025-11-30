@@ -36,15 +36,14 @@ public class AttackSwordScript : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        myStatus = transform.root.GetComponent<MyStatus>();
-        playerscript = transform.root.GetComponent<PlayerScript>();
-        animator = transform.root.GetComponent<Animator>();
-        processCharaAnimEvent = transform.root.GetComponent<ProcessCharaAnimEventScript>();
+        myStatus = transform.root.GetComponent<MyStatus>();  //プレイヤーのステータスのスクリプト
+        playerscript = transform.root.GetComponent<PlayerScript>();  //プレイヤーの移動や攻撃などのプレイヤーに関する全般のスクリプト
+        animator = transform.root.GetComponent<Animator>();  //プレイヤーのアニメーション
+        processCharaAnimEvent = transform.root.GetComponent<ProcessCharaAnimEventScript>();  //
         Transform moonSword= transform.Find("MoonSword Variant");
         weaponParticles = GetComponentsInChildren<ParticleSystem>();
 
         CacheParticles();
-        //swordTrailParticle.Stop();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -56,9 +55,8 @@ public class AttackSwordScript : MonoBehaviour
             // ここでアニメーションの時間をチェックし、特定の範囲のみヒットを許可
             float animTime = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
             //敵が死亡状態ではないとき敵に攻撃を与える処理
-            if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead /*&&  animTime > 0.2f && animTime < 0.4f*/)
+            if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead)
             {
-                isCollision = true;
                 other.GetComponent<MoveEnemyScript>().TakeDamage(myStatus.GetAttackPower(),other.ClosestPointOnBounds(transform.position));
                 if (!enemyScript.IsDead())
                 {
@@ -96,7 +94,7 @@ public class AttackSwordScript : MonoBehaviour
             // ここでアニメーションの時間をチェックし、特定の範囲のみヒットを許可
             float animTime = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
             //敵が死亡状態ではなくスキル攻撃ではないとき敵に攻撃を与える処理
-            if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead/*&& animTime > 0.2f && animTime < 0.4f*/&&playerscript.GetState()!=PlayerScript.MyState.SkillAttack)
+            if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead&&playerscript.GetState()!=PlayerScript.MyState.SkillAttack)
             {
                 other.GetComponent<MoveEnemyScript>().TakeDamage(myStatus.GetAttackPower(), other.ClosestPointOnBounds(transform.position));
                 if (!enemyScript.IsDead())
@@ -148,7 +146,7 @@ public class AttackSwordScript : MonoBehaviour
             // ここでアニメーションの時間をチェックし、特定の範囲のみヒットを許可
             float animTime = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
             //敵が死亡状態ではなくスキル攻撃ではないとき敵に攻撃を与える処理
-            if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead /*&& animTime > 0.2f && animTime < 0.4f*/ && playerscript.GetState() != PlayerScript.MyState.SkillAttack)
+            if (enemyScript.GetState() != MoveEnemyScript.EnemyState.Dead&& playerscript.GetState() != PlayerScript.MyState.SkillAttack)
             {
                 other.GetComponent<MoveEnemyScript>().TakeDamage(myStatus.GetAttackPower(), other.ClosestPointOnBounds(transform.position));
                 if (!enemyScript.IsDead())
@@ -343,20 +341,12 @@ public class AttackSwordScript : MonoBehaviour
         {
             isAttack = false;
         }
-        if (!processCharaAnimEvent.IsWeponCollision())
-        {
-            isCollision = false;
-        }
+       
     }
     //他のスクリプトに参照できるようにする関数です。
     public bool IsAttack()
     {
         return isAttack;
-    }
-
-    public bool IsCollision()
-    {
-        return isCollision;
     }
 
     public void offIsCollision()
@@ -386,30 +376,12 @@ public class AttackSwordScript : MonoBehaviour
     {
         Debug.Log("Play() 呼ばれました");
 
-        if (swordTrailParticle != null)
-        {
-            Debug.Log($"SwordTrailParticle Play! Delay: {swordTrailParticle.startDelay}, Duration: {swordTrailParticle.duration}");
-            //swordTrailParticle.Clear();
-            //swordTrailParticle.Play();
-        }
-
-
-
         if (subSwordTrailParticle != null)
         {
             Debug.Log("SubSwordTrailParticle Target: " + subSwordTrailParticle.transform.parent.name);
 
            
             subSwordTrailParticle.Play(); 
-
-
-
         }
-
-
-
-
     }
-
-
 }

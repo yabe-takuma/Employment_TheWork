@@ -96,8 +96,6 @@ public class AttackAxe : MonoBehaviour
                 weakobj.transform.SetParent(other.transform);
                 var axedamageobj = Instantiate(axedamageUI, new Vector3(other.bounds.center.x, other.bounds.center.y - 4.0f, other.bounds.center.z), Quaternion.identity);
                 axedamageobj.transform.SetParent(other.transform);
-                //var damageobj = Instantiate(damageEffects[0], new Vector3(other.bounds.center.x, other.bounds.center.y, other.bounds.center.z), Quaternion.identity);
-                //damageobj.transform.SetParent(other.transform);
                 var damageEffect = Instantiate<GameObject>(damageEffects[1]);
                 damageEffect.transform.position = other.ClosestPointOnBounds(transform.position);
                 Destroy(damageEffect, 1f);

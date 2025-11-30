@@ -2626,7 +2626,7 @@ MonoBehaviour:
   - {fileID: 468546074}
   - {fileID: 1025330253}
   - {fileID: 1971693201}
-  - {fileID: 1971693201}
+  - {fileID: 1334601707}
   isInput: 0
   isKeyInput: 0
   gameOverTextsUI:
@@ -17154,7 +17154,7 @@ MonoBehaviour:
   iconcooltime: 0
   axisCoolTime: 0.3
   isMoving: 0
-  coolTimeLimit: 1
+  coolTimeLimit: 30
 --- !u!114 &1615850848
 MonoBehaviour:
   m_ObjectHideFlags: 0

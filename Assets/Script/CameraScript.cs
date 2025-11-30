@@ -163,9 +163,9 @@ public class CameraScript : MonoBehaviour
             speed = new Vector3(context.ReadValue<Vector2>().x * 3, 0f, context.ReadValue<Vector2>().y * 3);
         }
     }
+    //特定のボタンを押されたらロックオンの処理が出来るようにフラグを立てる関数
     public void OnRockon(InputAction.CallbackContext context)
     {
-        //if (!isStartAnimation) return;
 
         if (context.started && RockonTarget != null && trollscript.GetState() != TrollScript.TrollState.Dead)
         {

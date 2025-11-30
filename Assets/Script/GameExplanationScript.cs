@@ -97,6 +97,7 @@ public class GameExplanationScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        UIActive();
         Keyshanding();
     }
     public bool GetIsAxeExplocion()
@@ -113,6 +114,9 @@ public class GameExplanationScript : MonoBehaviour
    
     void Keyshanding()
     { 
+
+      
+
         //キーやボタンを押した際にUIが出るか消えるかの処理
         if (Input.GetKeyDown("joystick button 7") && grayscript.enabled == false && !playerScript.IsGameOver() && !playerScript.IsGameClear() && !isChest || Input.GetKeyDown(KeyCode.Y) && grayscript.enabled == false && !playerScript.IsGameOver() && !playerScript.IsGameClear() && !isChest)
         {
@@ -192,6 +196,60 @@ public class GameExplanationScript : MonoBehaviour
             sceneScript.Title();
         }
 
+        //宝箱の説明が表示か非表示か確認する処理
+        for (int i = 0; i < chestsUI.Count; i++)
+        {
+            if (chestsUI[i].activeSelf)
+            {
+                StartCoroutine("ChestCoroutine");
+            }
+        }
+
+     
+
+
+        if (isExplanation || playerScript.IsGameOver() || playerScript.IsGameClear())
+        {
+            explanationsUI[0].SetActive(false);
+            explanationsUI[1].SetActive(false);
+            explanationsUI[2].SetActive(false);
+            explanationsUI[3].SetActive(false);
+        }
+       
+        if (playerScript.SetDeadCaunter() >= 5)
+        {
+            nextStageObject.SetActive(true);
+        }
+    }
+
+    void UIActive()
+    {
+        //コントローラーのボタンを押したらコントローラーの操作説明が表示される処理
+        if (isInput && !isKeyInput)
+        {
+            explanationsUI[0].SetActive(false);
+            explanationsUI[1].SetActive(false);
+            explanationsUI[2].SetActive(true);
+            explanationsUI[3].SetActive(true);
+            isKeyInput = false;
+            Debug.Log("コントローラー");
+        }
+        else
+        {
+            isKeyInput = true;
+        }
+        //キーボードを押したらキーボードの操作説明が表示される処理
+        if (IsKeyboardInput())
+        {
+            isInput = false;
+            isKeyInput = true;
+            explanationsUI[0].SetActive(true);
+            explanationsUI[1].SetActive(true);
+            explanationsUI[2].SetActive(false);
+            explanationsUI[3].SetActive(false);
+            Debug.Log("キーボード");
+        }
+
         //操作説明やゲームオーバーの際敵やボスの時間を止める処理
         if (grayscript.enabled == true && playerScript.IsGameOver())
         {
@@ -207,53 +265,6 @@ public class GameExplanationScript : MonoBehaviour
         else if (myItem.GetItemCounter() == 1 && islevelup == false)
         {
             StartCoroutine("ItemCoroutine");
-        }
-
-        //宝箱の説明が表示か非表示か確認する処理
-        for (int i = 0; i < chestsUI.Count; i++)
-        {
-            if (chestsUI[i].activeSelf)
-            {
-                StartCoroutine("ChestCoroutine");
-            }
-        }
-
-        //コントローラーのボタンを押したらコントローラーの操作説明が表示される処理
-        if (isInput && !isKeyInput)
-        {
-            explanationsUI[0].SetActive(false);
-            explanationsUI[1].SetActive(false);
-            explanationsUI[2].SetActive(true);
-            explanationsUI[3].SetActive(true);
-            isKeyInput = false;
-        }
-        else
-        {
-            isKeyInput = true;
-        }
-        //キーボードを押したらキーボードの操作説明が表示される処理
-        if (IsKeyboardInput())
-        {
-            isInput = false;
-            isKeyInput = true;
-            explanationsUI[0].SetActive(true);
-            explanationsUI[1].SetActive(true);
-            explanationsUI[2].SetActive(false);
-            explanationsUI[3].SetActive(false);
-        }
-
-
-        if (isExplanation || playerScript.IsGameOver() || playerScript.IsGameClear())
-        {
-            explanationsUI[0].SetActive(false);
-            explanationsUI[1].SetActive(false);
-            explanationsUI[2].SetActive(false);
-            explanationsUI[3].SetActive(false);
-        }
-
-        if (playerScript.SetDeadCaunter() >= 5)
-        {
-            nextStageObject.SetActive(true);
         }
     }
 

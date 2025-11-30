@@ -118,7 +118,8 @@ public class PauseScript : MonoBehaviour
         if (currentPosition.y == 0 && Input.GetKeyDown(KeyCode.DownArrow) || currentPosition.y == 0 && lsv <= 0.1f && lsv != 0 && iconcooltime >= coolTimeLimit)
         {
             imageTransform.anchoredPosition -= new Vector2(0, 300);
-            iconcooltime = 0; Debug.Log("Title");
+            iconcooltime = 0; 
+            Debug.Log("Title");
         }
         else if (currentPosition.y == 0 && Input.GetKeyDown(KeyCode.UpArrow) || currentPosition.y == 0 && lsv >= 0.1f && lsv != 0 && iconcooltime >= coolTimeLimit)
         {

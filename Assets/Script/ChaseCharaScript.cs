@@ -51,20 +51,6 @@ public class ChaseCharaScript : MonoBehaviour
        
     }
 
-    private void OnTriggerExit(Collider other)
-    {
-        ////キャラクターが範囲外に出たらidle状態にする
-        //if(other.tag == "Player"
-        //    && trollScript.GetState() == TrollScript.TrollState.chase)
-        //{
-        //    trollScript.SetState(TrollScript.TrollState.idle);
-        //    HPUI.SetActive(false);
-        //    target = null;
-        //    EndBossBattle();
-        //}
-       
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -91,7 +77,7 @@ public class ChaseCharaScript : MonoBehaviour
         Vector3 bottomLeft = bossPos + new Vector3(-horizontalBarrierDistance, 0, -verticalBarrierDistance);
         Vector3 bottomRight = bossPos + new Vector3(horizontalBarrierDistance, 0, -verticalBarrierDistance);
 
-        // 壁を4辺に展開（壁の長さに応じてforループや spacing を変えてもOK）
+        // 壁を4辺に展開
         CreateBarrierBetween(topLeft, topRight, yOffset);    // 上辺
         CreateBarrierBetween(bottomLeft, bottomRight, yOffset); // 下辺
         CreateBarrierBetween(topLeft, bottomLeft, yOffset);  // 左辺
