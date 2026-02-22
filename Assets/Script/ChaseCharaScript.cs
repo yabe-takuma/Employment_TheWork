@@ -8,6 +8,7 @@ public class ChaseCharaScript : MonoBehaviour
     //トロルの行動などがあるスクリプト
     private TrollScript trollScript;
     //HPUI
+    [Header("HPUI")]
     [SerializeField]
     private GameObject HPUI;
 

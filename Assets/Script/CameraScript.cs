@@ -10,10 +10,10 @@ using UnityEngine.InputSystem;
 
 public class CameraScript : MonoBehaviour
 {
+    [Header("カメラの操作スピード")]
     [SerializeField]
-    //カメラの操作スピード
     private Vector3 speed;
-    //プレイヤー追従
+    [Header("プレイヤー追従設定")]
     public GameObject TargetObject;
     public float Height = 1.5f;
     public float Distance = 5.0f;
@@ -67,7 +67,7 @@ public class CameraScript : MonoBehaviour
     [SerializeField]
     private GameObject rockonPlayer;
 
-    private float cameraRotateSpeed = 45f;
+   
 
     private float shakeDuration = 0.5f;  //揺れの時間
     private float shakeMagnitude = 0.1f; //揺れの強さ
@@ -87,7 +87,7 @@ public class CameraScript : MonoBehaviour
     [SerializeField]
     private new Camera camera;
 
-    private float angleSpeed=0.5f;
+   
 
     private bool isCameraAngle;
     [SerializeField]
@@ -97,7 +97,7 @@ public class CameraScript : MonoBehaviour
     private bool justLockedOn = false;
     private bool hasInitializedCamera = false;  // フラグを追加
 
-    private bool isTransitioning = false;
+  
     private float transitionTimer;
     private bool isFollowingPlayer;
 
@@ -113,7 +113,7 @@ public class CameraScript : MonoBehaviour
     private Quaternion unlockedRotation;
     private bool isUnlockTransitioning;
     private float unlockLerpTime;
-    private bool isUnlockJustNow = false;
+   
     private bool skipLerpOnce;
     private bool skipCameraUpdateOnce;
     private Vector3 velocity;

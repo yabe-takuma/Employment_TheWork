@@ -22,8 +22,7 @@ public class EnemyStatus : MonoBehaviour
     private GameObject HPUI;
     //HP表示用スライダー
     private Slider hpSlider;
-    [SerializeField]
-    private string filePath = "Assets/Resources/EnemySetting.asset";
+  
     [SerializeField]
     private EnemySetting enemySetting;
 

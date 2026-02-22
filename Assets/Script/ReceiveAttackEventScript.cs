@@ -44,7 +44,7 @@ public class ReceiveAttackEventScript : MonoBehaviour
     [SerializeField]
     private Quaternion rotation;
     private bool isWave;
-    private bool iscontinuous;
+    
     [SerializeField]
     private bool istimelineAnimation;
     private bool isWaveAttack;
@@ -142,21 +142,18 @@ public class ReceiveAttackEventScript : MonoBehaviour
         {
             Instantiate(shockwavePrefab, createShockwavePoint.position, shockwavePrefab.transform.rotation);
             isWave = false;
-            iscontinuous = false;
             isExplocion = false;
         }
         else if (trollScript.GetInstallation())
         {
             Instantiate(shockwavePrefab, createShockwavePoint.position, shockwavePrefab.transform.rotation);
             isWave = false;
-            iscontinuous = false;
         }
         else if (trollScript.GetExplocion())
         {
             Instantiate(explocion, createShockwavePoint.position, explocion.transform.rotation);
             Instantiate(ExplocionSphere, createShockwavePoint.position, explocion.transform.rotation);
             isWave = false;
-            iscontinuous = false;
             isExplocion = true;
         }
 

@@ -8,30 +8,35 @@ public class AttackAxe : MonoBehaviour
     // Start is called before the first frame update
     // 斧の攻撃力や特定の敵に当たった時だけダメージが変わるUI
     // や通常時のダメージUIやエフェクトなどの変数を用意しています。
+    [Header("プレイヤーのステータスについてのスクリプト(ただ勝手に取得しているので気にしなくてもいい)")]
     private MyStatus myStatus;
+    [Header("プレイヤースクリプト(ただ勝手に取得しているので気にしなくてもいい)")]
     private PlayerScript playerscript;
+    [Header("弱点を表示するためのUI")]
     [SerializeField]
     private GameObject weakUI;
+    [Header("斧の弱点ダメージを表示するためのUI")]
     [SerializeField]
     private GameObject axedamageUI;
+    [Header("斧の通常ダメージを表示するためのUI")]
     [SerializeField]
     private GameObject axenormaldamageUI;
+    [Header("ダメージのパーティクル")]
     [SerializeField]
     private List<GameObject> damageEffects;
     private bool isAttack;
 
+    [Header("剣のコライダー")]
     [SerializeField]
     private SphereCollider sphereCollider;  //最初から自動でコライダーのチェックをオンにするため
+    [Header("アイテムを取ることを記述しているスクリプト")]
     [SerializeField]
     private MyItemScript myItemScript;
-    [SerializeField]
-    private bool isCollision;
+    
     //3段目の攻撃時敵をダウンさせるためにAnimatorを参照
     [SerializeField]
     private Animator animator;
-    //プレイヤーが斧を取得したらanimatorにデータを送るために必要な変数
-    [SerializeField]
-    private bool isItem;
+  
     [SerializeField]
     private ParticleSystem[] weaponParticles;
 
@@ -45,7 +50,7 @@ public class AttackAxe : MonoBehaviour
         {
             sphereCollider.enabled = true;
         }
-        isItem = false;  //まだアイテムに触れていないのでfalseにする
+      
         animator = transform.root.GetComponent<Animator>();
         Transform axe = transform.Find("axe Variant");
         weaponParticles = GetComponentsInChildren<ParticleSystem>();
@@ -81,7 +86,7 @@ public class AttackAxe : MonoBehaviour
                     Destroy(damageEffect, 1f);
                 }
                 Debug.Log("敵に当たった");
-                isCollision = true;
+               
             }
         }
        
@@ -107,7 +112,7 @@ public class AttackAxe : MonoBehaviour
         if(other.tag=="SearchItemArea")
         {
             sphereCollider.enabled = false;
-            isItem = true;
+           
             Debug.Log("アイテムが削除");
         }
     }

@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class ChestCollisionScript : MonoBehaviour
 {
+    [Header("宝箱に触れた時のテキストも含めたUIを入れてください")]
     [SerializeField]
     private GameObject collisionUI;
     // Start is called before the first frame update

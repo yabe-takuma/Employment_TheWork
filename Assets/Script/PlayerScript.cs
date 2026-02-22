@@ -57,8 +57,7 @@ public class PlayerScript : MonoBehaviour
     private bool rotate = true;
     [SerializeField]
     private PlayableDirector[] timeline;
-    [SerializeField]
-    private float timelinespeed=1.0f;
+   
     [SerializeField]
     private bool isJump;
 
@@ -110,9 +109,7 @@ public class PlayerScript : MonoBehaviour
     //ジャスト回避の後の攻撃が出来るかのフラグ
     [SerializeField]
     private bool isJustAvoidAttack;
-    //ジャスト回避時フラグを立たせると敵に移動する変数
-    [SerializeField]
-    private bool isJustAvoidMove;
+ 
 
     [SerializeField]
     private GameObject target;
@@ -130,14 +127,12 @@ public class PlayerScript : MonoBehaviour
     private MoveEnemyScript nearestEnemyScript;
     [SerializeField]
     private int avoidCaunter;
-    [SerializeField]
-    private bool isDamage;
+   
     [SerializeField]
     private int damageCoolTime;
     [SerializeField]
     private Renderer playerRenderer;
-    [SerializeField]
-    private int blinkCount = 5;
+   
     [SerializeField]
     private bool isPause;
     private bool pauseEnded;
@@ -230,7 +225,7 @@ public class PlayerScript : MonoBehaviour
 
         characterController.skinWidth = 0.08f; // **デフォルト（0.05f）より少し広めに**
 
-        isDamage = false;
+       
 
         playerRenderer = GetComponentInChildren<Renderer>();
 
@@ -261,7 +256,7 @@ public class PlayerScript : MonoBehaviour
             if (isInvincible)
                 return; // 無敵中は無視
 
-            isDamage = true;
+           
 
             state = MyState.Damage;
             isJustAvoid = true;
@@ -344,11 +339,7 @@ public class PlayerScript : MonoBehaviour
             move = Vector3.zero;
             rb.velocity = new Vector3(0, rb.velocity.y, 0);
            
-            if (isJustAvoidAttack)
-            {
-                isJustAvoidMove = true;
-                Debug.Log("距離を詰める");
-            }
+            
             //もし剣を装備していたら剣のアニメーションをする処理
             if (changeequipscript.GetEquipment() == 0|| changeequipscript.GetEquipment() == 2||
                 changeequipscript.GetEquipment() ==3)
@@ -1065,7 +1056,7 @@ public class PlayerScript : MonoBehaviour
         foreach (Material m in materials)
             m.SetColor("_Color", opaqueColor);
 
-        isDamage = false;
+        
     }
 
 

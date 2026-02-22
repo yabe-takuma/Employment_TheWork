@@ -89,9 +89,7 @@ public class TrollScript : MonoBehaviour
     private int collisiontimer;
     [SerializeField]
     private float dis;
-    //突進時間
-    [SerializeField]
-    private int chargetimer;
+   
     //何の攻撃をしているかを他のスクリプトに分かるようにする処理
     [SerializeField]
     private bool Isshockwave, Isinstallation,Isexplocion,Iscontinuous, isWave;
@@ -113,7 +111,7 @@ public class TrollScript : MonoBehaviour
 
     private AnimatorStateInfo stateInfo;
 
-    private int loopcount;
+   
     private const int maxloop = 3;
 
     private bool isstarttimeline;
@@ -136,7 +134,7 @@ public class TrollScript : MonoBehaviour
         SetRandomDestination();
         timeline[0].Stop();
         timeline[1].Stop();
-        loopcount = 0;
+       
         animator.SetTrigger("ShockwaveAttack");
        // Time.timeScale = 0;
        // animator.updateMode = AnimatorUpdateMode.UnscaledTime;
@@ -224,7 +222,7 @@ public class TrollScript : MonoBehaviour
             animator.SetBool("Chase", false);
             animator.ResetTrigger("WaveAttack");
             SetRandomDestination();
-            chargetimer = 0;
+          
             Isshockwave = false;
             Isinstallation = false;
             Isexplocion = false;

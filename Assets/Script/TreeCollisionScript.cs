@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class TreeCollisionScript : MonoBehaviour
 {
-    [SerializeField]
-    private int Collisiontimer;
+   
 
     public int treeIndex;
     // Start is called before the first frame update
@@ -35,9 +34,6 @@ public class TreeCollisionScript : MonoBehaviour
     }
     public void OnTriggerExit(Collider other)
     {
-        if (other.tag == "Boss")
-        {
-            Collisiontimer = 0;
-        }
+       
     }
 }

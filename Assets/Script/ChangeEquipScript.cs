@@ -6,32 +6,38 @@ using UnityEngine.SceneManagement;
 
 public class ChangeEquipScript : MonoBehaviour
 {
-    //武器を複数格納するための変数
+    [Header("武器を複数格納するための変数")]
     [SerializeField]
-    private GameObject[] weapons;
+    private GameObject[] weapons;  //武器を複数格納するための変数
+    [Header("何番目の武器にしているかを確認する用の変数")]
     [SerializeField]
     private int equipment;
     //-----------------------//
-    //キャラクターのステータススプリクト
+    [Header("プレイヤーのステータス専用のスクリプト")]
     [SerializeField]
     private MyStatus myStatus;
     //武器の親のTransform
+    [Header("武器を生成する場所のオブジェクト")]
     [SerializeField]
     private Transform equipTransform;
     //武器のコライダーをゲーム開始で付けるための変数
     private ProcessCharaAnimEventScript processCharaAnimEvent;
     private PlayerScript playerScript;
     //--------------------------//
+    [Header("宝箱の動き全般を管理するスクリプト")]
     [SerializeField]
     private ChestScript chestScript;  //宝箱を開けた数に応じて使える武器を設定するため
 
+    [Header("宝箱のアイテムのデータを管理するスクリプト")]
     [SerializeField]
-    private ChestData chestData;
+    private ChestData chestData;  //宝箱のアイテムのデータを別のシーン内でも適用するために必要なスクリプト
+    [Header("ポーズ中の処理をするスクリプト")]
     [SerializeField]
     private GameExplanationScript gameExplanationScript;
-    //武器の情報のみ(生成はしない)
-    [SerializeField]
-    private GameObject weaponinfo;
+    ////武器の情報のみ(生成はしない)
+    //[SerializeField]
+    //private GameObject weaponinfo;
+    [Header("剣の攻撃について記述されているスクリプト")]
     [SerializeField]
     private AttackSwordScript attackSwordScript;
     //他のスクリプトに参照するための関数

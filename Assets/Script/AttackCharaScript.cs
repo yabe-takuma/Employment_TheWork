@@ -6,17 +6,23 @@ using static TrollScript;
 
 public class AttackCharaScript : MonoBehaviour
 {
+    [Header("トロルの移動や攻撃全般が書かれているスクリプト")]
     [SerializeField]
-    private TrollScript trollScript;  //トロルの移動や攻撃全般が書かれているスクリプト
-    [SerializeField]
-    private Animator trollAnimator;  //トロルのアニメーション全般
+    private TrollScript trollScript;  
 
+    [Header("トロルのアニメーション全般")]
     [SerializeField]
-    private float caunter;  //攻撃一つ一つを判断するための変数
+    private Animator trollAnimator; 
 
+    [Header("攻撃一つ一つを判断するための変数")]
+    [SerializeField]
+    private float caunter;  
+
+    [Header("トロルのステータス関連があるステータス専用のスクリプト")]
     [SerializeField]
     private TrollStatus trollstatus;  //このスクリプトの中にトロルのHPがありHPによって攻撃を追加したいため
 
+    [Header("攻撃用のクールタイム")]
     [SerializeField]
     private int cooltime;  //すぐに攻撃しないように少しクールタイムを入れる
 

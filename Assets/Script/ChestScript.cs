@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class ChestScript : MonoBehaviour
 {
+    [Header("宝箱のアニメーションを入れてください")]
     [SerializeField]
     private Animation chestanimation;  //宝箱のアニメーション
-    [SerializeField]
-    private Animator chestanimator;
+    [Header("宝箱を開けた時のフラグを検知する用の変数")]
     [SerializeField]
     private bool isOpen;  //宝箱を開けたかを検知する変数
     private bool isEndOpen;  //宝箱の処理に必要な変数
@@ -110,7 +110,6 @@ public class ChestScript : MonoBehaviour
         {
             isEndOpen = true;
             chestanimation.Play();
-            chestanimator.SetTrigger("Open");
             Debug.Log("宝箱を開けた");
         }
     }

@@ -11,7 +11,7 @@ public class PauseScript : MonoBehaviour
     private RectTransform imageTransform;
     public float moveSpeed = 50f;
     public float[] yPositions = { 300f, 0f, -300f }; // 上・中央・下のY座標
-    private int currentIndex = 1; // 最初は中央（y=0）
+    
     [SerializeField]
     private Vector2 targetPosition;
 
@@ -34,12 +34,11 @@ public class PauseScript : MonoBehaviour
     [SerializeField]
     private int iconcooltime;
 
-    [SerializeField] private float axisCoolTime = 0.3f;
-    private float axisTimer = 0f;
+   
+  
 
-    private bool isUp,isDown;
-    [SerializeField]
-    private bool isMoving = false;
+  
+  
 
     public int coolTimeLimit;
 
@@ -111,10 +110,7 @@ public class PauseScript : MonoBehaviour
         lsv = Input.GetAxis("Vertical");
         iconcooltime++;
         Vector2 currentPosition = imageTransform.anchoredPosition;
-        if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            isDown = true;
-        }
+        
         if (currentPosition.y == 0 && Input.GetKeyDown(KeyCode.DownArrow) || currentPosition.y == 0 && lsv <= 0.1f && lsv != 0 && iconcooltime >= coolTimeLimit)
         {
             imageTransform.anchoredPosition -= new Vector2(0, 300);

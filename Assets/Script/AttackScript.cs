@@ -5,9 +5,11 @@ using UnityEngine;
 public class AttackScript : MonoBehaviour
 {
     //敵の攻撃力のための変数やプレイヤーにアニメーションをするために変数を用意しています。
+    [Header("敵のステータス専用のスクリプト")]
     [SerializeField]
     private EnemyStatus enemyStatus;
 
+    [Header("プレイヤーの行動全般を処理するスクリプト")]
     [SerializeField]
     private PlayerScript playerScript;
 

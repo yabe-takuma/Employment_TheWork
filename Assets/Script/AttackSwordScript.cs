@@ -7,24 +7,27 @@ using UnityEngine.UI;
 public class AttackSwordScript : MonoBehaviour
 {
     //敵の攻撃力やプレイヤーにアニメーションをするためやUIやエフェクトなどの変数です。
+    [Header("プレイヤーのステータス専用のスクリプト")]
     [SerializeField]
     private MyStatus myStatus;
+    [Header("プレイヤーの行動全般を処理するスクリプト")]
     [SerializeField]
     private PlayerScript playerscript;
+    [Header("プレイヤーのアニメーション中に関数を入れるために必要なスクリプト")]
     [SerializeField]
     private ProcessCharaAnimEventScript processCharaAnimEvent;
+    [Header("剣でのダメージを表示させるためのUI")]
     [SerializeField]
     private GameObject sworddamageUI;
+    [Header("ダメージエフェクト")]
     [SerializeField]
     private List<GameObject> damageEffects;
     private bool isAttack;
     //3段目の攻撃時敵をダウンさせるためにAnimatorを参照
+    [Header("プレイヤーのアニメーター")]
     [SerializeField]
     private Animator animator;
-    [SerializeField]
-    private bool isCollision;
-    [SerializeField]
-    private ParticleSystem swordTrailParticle;
+   
     [SerializeField]
     private ParticleSystem fireSpark;
     [SerializeField]
@@ -43,7 +46,7 @@ public class AttackSwordScript : MonoBehaviour
         Transform moonSword= transform.Find("MoonSword Variant");
         weaponParticles = GetComponentsInChildren<ParticleSystem>();
 
-        CacheParticles();
+        //CacheParticles();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -351,24 +354,24 @@ public class AttackSwordScript : MonoBehaviour
 
     public void offIsCollision()
     {
-        isCollision = false;
+        
     }
 
-    void CacheParticles()
-    {
-        ParticleSystem[] allParticles = GetComponentsInChildren<ParticleSystem>();
-        foreach (var ps in allParticles)
-        {
-            if (ps.name == "SwordTrailParticle")
-            {
-                swordTrailParticle = ps;
-            }
-            else if (ps.name == "SubSwordTrailParticle2")
-            {
-                subSwordTrailParticle = ps;
-            }
-        }
-    }
+    //void CacheParticles()
+    //{
+    //    ParticleSystem[] allParticles = GetComponentsInChildren<ParticleSystem>();
+    //    foreach (var ps in allParticles)
+    //    {
+    //        if (ps.name == "SwordTrailParticle")
+    //        {
+    //            swordTrailParticle = ps;
+    //        }
+    //        else if (ps.name == "SubSwordTrailParticle2")
+    //        {
+    //            subSwordTrailParticle = ps;
+    //        }
+    //    }
+    //}
 
 
 

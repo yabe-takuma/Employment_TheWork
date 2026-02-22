@@ -31,8 +31,7 @@ public class MoveEnemyScript : MonoBehaviour
     private NavMeshAgent navMeshAgent;
     [SerializeField]
     private float rotateSpeed=45f;
-    [SerializeField]
-    private float walkSpeed = 1.0f;
+  
     //速度
     [SerializeField]
     private Vector3 velocity;
